@@ -23,7 +23,7 @@ final class TagTest  extends DatabaseDependantTestCase
         $tagRepository = $this->entityManager->getRepository(Tag::class);
         /** @var Tag $tagRecord */
         $tagRecord = $tagRepository->findOneBy(['tagName' => 'Математика']);
-        $questionRecord = $tagRecord->getQuestion();
+        $questionRecord = $tagRecord->getQuestion()->first();
 
         self::assertEquals('Математика', $tagRecord->getTagName());
         self::assertEquals('few variants', $questionRecord->getQuestionType());

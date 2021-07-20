@@ -50,15 +50,17 @@ class Question
      */
     private $position;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Tag::class, mappedBy="question")
-     */
-    private $tags;
 
     /**
      * @ORM\ManyToOne(targetEntity=Test::class, inversedBy="questions")
      */
     private $test;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Tag::class, mappedBy="question")
+     * @ORM\JoinColumn(name="tag_id", referencedColumnName="id", nullable=true)
+     */
+    private $tags;
 
     public function __construct()
     {
@@ -142,6 +144,18 @@ class Question
         return $this;
     }
 
+    public function getTest(): ?Test
+    {
+        return $this->test;
+    }
+
+    public function setTest(?Test $test): self
+    {
+        $this->test = $test;
+
+        return $this;
+    }
+
     /**
      * @return Collection|Tag[]
      */
@@ -154,7 +168,7 @@ class Question
     {
         if (!$this->tags->contains($tag)) {
             $this->tags[] = $tag;
-            $tag->setQuestion($this);
+            $tag->addQuestion($this);
         }
 
         return $this;
@@ -163,23 +177,8 @@ class Question
     public function removeTag(Tag $tag): self
     {
         if ($this->tags->removeElement($tag)) {
-            // set the owning side to null (unless already changed)
-            if ($tag->getQuestion() === $this) {
-                $tag->setQuestion(null);
-            }
+            $tag->removeQuestion($this);
         }
-
-        return $this;
-    }
-
-    public function getTest(): ?Test
-    {
-        return $this->test;
-    }
-
-    public function setTest(?Test $test): self
-    {
-        $this->test = $test;
 
         return $this;
     }

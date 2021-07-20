@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TagRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -23,9 +25,15 @@ class Tag
     private $tagName;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Question::class, inversedBy="tags")
+     * @ORM\ManyToMany(targetEntity=Question::class, inversedBy="tags")
      */
     private $question;
+
+    public function __construct()
+    {
+        $this->question = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -44,15 +52,28 @@ class Tag
         return $this;
     }
 
-    public function getQuestion(): ?Question
+    /**
+     * @return Collection|Question[]
+     */
+    public function getQuestion(): Collection
     {
         return $this->question;
     }
 
-    public function setQuestion(?Question $question): self
+    public function addQuestion(Question $question): self
     {
-        $this->question = $question;
+        if (!$this->question->contains($question)) {
+            $this->question[] = $question;
+        }
 
         return $this;
     }
+
+    public function removeQuestion(Question $question): self
+    {
+        $this->question->removeElement($question);
+
+        return $this;
+    }
+
 }
