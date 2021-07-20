@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=TestRepository::class)
+ * Добавить метод для сравнения позиции вопросов. Не должно быть одинаковых.
  */
 class Test
 {
@@ -192,12 +193,12 @@ class Test
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
         return $this->user_id;
     }
 
-    public function setUserId(?User $user_id): self
+    public function setUser(?User $user_id): self
     {
         $this->user_id = $user_id;
 

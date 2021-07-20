@@ -26,6 +26,7 @@ class Question
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * Добавить константы по разным типам вопроса
      */
     private $questionType;
 

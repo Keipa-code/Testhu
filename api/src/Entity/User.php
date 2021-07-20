@@ -255,7 +255,7 @@ class User
     {
         if (!$this->tests->contains($test)) {
             $this->tests[] = $test;
-            $test->setUserId($this);
+            $test->setUser($this);
         }
 
         return $this;
@@ -265,8 +265,8 @@ class User
     {
         if ($this->tests->removeElement($test)) {
             // set the owning side to null (unless already changed)
-            if ($test->getUserId() === $this) {
-                $test->setUserId(null);
+            if ($test->getUser() === $this) {
+                $test->setUser(null);
             }
         }
 
