@@ -2,14 +2,17 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
+ * @ApiResource()
  */
 class User
 {
@@ -191,7 +194,7 @@ class User
         return $this->network;
     }
 
-    public function addNetwork(Network $network): self
+    public function addNetwork(?Network $network): self
     {
         if (!$this->network->contains($network)) {
             $this->network[] = $network;
@@ -221,7 +224,7 @@ class User
         return $this->results;
     }
 
-    public function addResult(Result $result): self
+    public function addResult(?Result $result): self
     {
         if (!$this->results->contains($result)) {
             $this->results[] = $result;
@@ -251,7 +254,7 @@ class User
         return $this->tests;
     }
 
-    public function addTest(Test $test): self
+    public function addTest(?Test $test): self
     {
         if (!$this->tests->contains($test)) {
             $this->tests[] = $test;

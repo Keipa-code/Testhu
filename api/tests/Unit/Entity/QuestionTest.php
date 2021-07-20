@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace App\Tests\unit\Entity;
+namespace App\Tests\Unit\Entity;
 
 
 use App\Entity\Question;
@@ -20,9 +20,9 @@ final class QuestionTest extends DatabaseDependantTestCase
             'App\DataFixtures\QuestionFixtures',
         ));
 
-        $userRepository = $this->entityManager->getRepository(Question::class);
+        $questionRepository = $this->entityManager->getRepository(Question::class);
         /** @var Question $questionRecord */
-        $questionRecord = $userRepository->findOneBy(['questionType' => 'one variant']);
+        $questionRecord = $questionRepository->findOneBy(['questionType' => 'one variant']);
         $testRecord = $questionRecord->getTest();
         $tag = $questionRecord->getTags()->first();
 

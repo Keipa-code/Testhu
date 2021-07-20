@@ -58,7 +58,7 @@ class Question
 
     /**
      * @ORM\ManyToMany(targetEntity=Tag::class, mappedBy="question")
-     * @ORM\JoinColumn(name="tag_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="tag_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     private $tags;
 

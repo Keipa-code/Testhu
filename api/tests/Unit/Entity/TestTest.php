@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace App\Tests\unit\Entity;
+namespace App\Tests\Unit\Entity;
 
 
 use App\Entity\Test;
@@ -20,9 +20,9 @@ final class TestTest extends DatabaseDependantTestCase
             'App\DataFixtures\TestFixtures',
         ));
 
-        $userRepository = $this->entityManager->getRepository(Test::class);
+        $testRepository = $this->entityManager->getRepository(Test::class);
         /** @var Test $testRecord */
-        $testRecord = $userRepository->findOneBy(['testName' => 'Мой тест']);
+        $testRecord = $testRepository->findOneBy(['testName' => 'Мой тест']);
         $userRecord = $testRecord->getUser();
         $resultRecord = $testRecord->getResults()->first();
         $questionRecord = $testRecord->getQuestions()->first();
