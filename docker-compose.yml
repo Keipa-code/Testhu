@@ -1,0 +1,59 @@
+version: '3.8'
+services:
+
+  api:
+    ports:
+    - 80:80
+    build:
+      context: api/docker
+      dockerfile: development/nginx/Dockerfile
+    volumes:
+      - ./api:/var/www
+    depends_on:
+      - php-fpm
+
+  php-fpm:
+    build:
+      context: api/docker
+      dockerfile: development/php-fpm/Dockerfile
+    volumes:
+      - ./api:/var/www
+    environment:
+      PHP_IDE_CONFIG: "serverName=Testhub"
+      APP_ENV: dev
+      APP_DEBUG: 1
+      DB_HOST: postgres
+      DB_USER: admin
+      DB_PASSWORD: 123456
+      DB_NAME: phonedir
+
+  php-cli:
+    build:
+      context: api/docker
+      dockerfile: development/php-cli/Dockerfile
+    volumes:
+      - ./api:/var/www
+    restart: unless-stopped
+    environment:
+      APP_ENV: dev
+      APP_DEBUG: 1
+      DB_HOST: postgres
+      DB_USER: admin
+      DB_PASSWORD: 123456
+      DB_NAME: testhubdb
+      FRONTEND_URL: http://localhost:8080
+
+  postgres:
+    image: postgres:13.1-alpine
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: testhubdb
+    volumes:
+      - api-postgres:/var/lib/postgresql/data
+    ports:
+      - "54322:5432"
+    command: ["postgres", "-c", "log_statement=all"]
+
+volumes:
+  api-postgres:
