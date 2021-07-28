@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TestRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=TestRepository::class)
+ * @ApiResource()
  * Добавить метод для сравнения позиции вопросов. Не должно быть одинаковых.
  */
 class Test
@@ -146,7 +148,7 @@ class Test
         return $this->results;
     }
 
-    public function addResult(Result $result): self
+    public function addResult(?Result $result): self
     {
         if (!$this->results->contains($result)) {
             $this->results[] = $result;

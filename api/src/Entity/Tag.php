@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TagRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=TagRepository::class)
+ * @ApiResource()
  */
 class Tag
 {
@@ -25,7 +27,7 @@ class Tag
     private $tagName;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Question::class, inversedBy="tags")
+     * @ORM\OneToMany(targetEntity=Question::class, mappedBy="tags")
      */
     private $question;
 
@@ -60,7 +62,7 @@ class Tag
         return $this->question;
     }
 
-    public function addQuestion(Question $question): self
+    public function addQuestion(?Question $question): self
     {
         if (!$this->question->contains($question)) {
             $this->question[] = $question;

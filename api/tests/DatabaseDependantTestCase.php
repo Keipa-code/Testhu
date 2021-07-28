@@ -17,8 +17,6 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class DatabaseDependantTestCase extends KernelTestCase
 {
     protected EntityManagerInterface $entityManager;
-    private ?ORMExecutor $fixtureExecutor;
-    private ?ContainerAwareLoader $fixtureLoader;
 
     protected function setUp(): void
     {

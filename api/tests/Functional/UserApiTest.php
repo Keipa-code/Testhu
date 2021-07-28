@@ -65,21 +65,18 @@ final class UserApiTest extends ApiTestCase
                 'newEmail' => 'new-test@test.com',
                 'network' => [[
                     '@type' => 'Network',
-                    '@id' => '_:2599',
                     'id' => 1,
                     'name' => 'mail.ru',
                     'userId' => '/api/users/1',
                 ],],
                 'results' => [[
                     '@type' => 'Result',
-                    '@id' => '_:2751',
                     'id' => 1,
                     'userId' => '/api/users/1',
                     'link' => 'https://result.com',
                 ],],
                 'tests' => [[
                     '@type' => 'Test',
-                    '@id' => '_:2809',
                     'id' => 1,
                     'testName' => 'My test',
                     'results' => [],
