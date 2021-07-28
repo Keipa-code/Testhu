@@ -1,9 +1,40 @@
 version: '3.8'
 services:
 
-  api:
+  gateway:
+    build:
+      context: gateway/docker
+      dockerfile: development/nginx/Dockerfile
     ports:
-    - 80:80
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - frontend
+      - api
+
+  frontend:
+    build:
+      context: frontend/docker/development/nginx
+    depends_on:
+      - frontend-node
+
+  frontend-node:
+    build:
+      context: frontend/docker/development/node
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./frontend:/var/www
+    command: sh -c "until [ -f .ready ] ; do sleep 1 ; done && yarn start"
+    tty: true
+
+  frontend-node-cli:
+    build:
+      context: frontend/docker/development/node
+    volumes:
+      - ./frontend:/var/www
+
+  api:
     build:
       context: api/docker
       dockerfile: development/nginx/Dockerfile
