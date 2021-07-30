@@ -27,13 +27,12 @@ class Tag
     private $tagName;
 
     /**
-     * @ORM\OneToMany(targetEntity=Question::class, mappedBy="tags")
+     * @ORM\ManyToOne(targetEntity=Question::class, inversedBy="tags")
      */
     private $question;
 
     public function __construct()
     {
-        $this->question = new ArrayCollection();
     }
 
 
@@ -54,26 +53,14 @@ class Tag
         return $this;
     }
 
-    /**
-     * @return Collection|Question[]
-     */
-    public function getQuestion(): Collection
+    public function getQuestion(): ?Question
     {
         return $this->question;
     }
 
-    public function addQuestion(?Question $question): self
+    public function setQuestion(?Question $question): self
     {
-        if (!$this->question->contains($question)) {
-            $this->question[] = $question;
-        }
-
-        return $this;
-    }
-
-    public function removeQuestion(Question $question): self
-    {
-        $this->question->removeElement($question);
+        $this->question = $question;
 
         return $this;
     }

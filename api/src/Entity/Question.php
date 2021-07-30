@@ -54,12 +54,12 @@ class Question
 
 
     /**
-     * @ORM\ManyToOne(targetEntity=Test::class, inversedBy="questions")
+     * @ORM\OneToMany(targetEntity=Test::class, mappedBy="questions")
      */
     private $test;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Tag::class, inversedBy="question")
+     * @ORM\OneToMany(targetEntity=Tag::class, mappedBy="question")
      * @ORM\JoinColumn(name="tag_id", referencedColumnName="id", nullable=true)
      */
     private $tags;
@@ -170,7 +170,7 @@ class Question
     {
         if (!$this->tags->contains($tag)) {
             $this->tags[] = $tag;
-            $tag->addQuestion($this);
+            $tag->setQuestion($this);
         }
 
         return $this;
@@ -179,9 +179,14 @@ class Question
     public function removeTag(Tag $tag): self
     {
         if ($this->tags->removeElement($tag)) {
-            $tag->removeQuestion($this);
+            // set the owning side to null (unless already changed)
+            if ($tag->getQuestion() === $this) {
+                $tag->setQuestion(null);
+            }
         }
 
         return $this;
     }
+
+
 }
