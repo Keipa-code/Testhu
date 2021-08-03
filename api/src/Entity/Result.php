@@ -31,12 +31,6 @@ class Result
     private $test;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="results")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
-     */
-    private $user_id;
-
-    /**
      * @ORM\Column(type="integer", nullable=true)
      */
     private $correctAnswersCount;
@@ -45,6 +39,12 @@ class Result
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $link;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="results")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
+     */
+    private $user_id;
 
     public function getId(): ?int
     {
@@ -75,18 +75,6 @@ class Result
         return $this;
     }
 
-    public function getUserId(): ?User
-    {
-        return $this->user_id;
-    }
-
-    public function setUserId(?User $user_id): self
-    {
-        $this->user_id = $user_id;
-
-        return $this;
-    }
-
     public function getCorrectAnswersCount(): ?int
     {
         return $this->correctAnswersCount;
@@ -107,6 +95,18 @@ class Result
     public function setLink(string $link): self
     {
         $this->link = $link;
+
+        return $this;
+    }
+
+    public function getUserId(): ?User
+    {
+        return $this->user_id;
+    }
+
+    public function setUserId(?User $user_id): self
+    {
+        $this->user_id = $user_id;
 
         return $this;
     }

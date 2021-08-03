@@ -17,14 +17,13 @@ class UserFixtures extends Fixture implements FixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $hasher = new PasswordHasher();
         $user = new User();
-        $user->setUsername('TestUser');
+        $user->setUsername('myname');
         $user->setDate(new \DateTimeImmutable('2021-07-20 04:10:47'));
         $user->setEmail('test@test.com');
-        $user->setPasswordHash($hasher->hash('123456'));
+        $user->setPassword('123456');
         $user->setStatus('registered');
-        $user->setEmailConfirmToken('4ed161b5-0d3c-4f06-8381-5f14678e13da');
+        $user->setEmailConfirmationToken('4ed161b5-0d3c-4f06-8381-5f14678e13da');
         $user->setPasswordResetToken('4ed161b5-0d3c-4f06-8381-5f14678e1300');
         $user->setNewEmail('new-test@test.com');
 

@@ -54,7 +54,7 @@ class Question
 
 
     /**
-     * @ORM\OneToMany(targetEntity=Test::class, mappedBy="questions")
+     * @ORM\ManyToOne(targetEntity=Test::class, inversedBy="questions")
      */
     private $test;
 

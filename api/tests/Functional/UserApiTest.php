@@ -17,11 +17,11 @@ final class UserApiTest extends ApiTestCase
 
     public function testCreateUser()
     {
-        $response = static::createClient()->request('POST', 'http://localhost/api/users', ['json' => [
+        $response = static::createClient()->request('POST', 'http://localhost:8081/api/users', ['json' => [
             'username' => 'api test user',
             'date' => '2021-07-20 04:10:47',
             'email' => 'mail@mail.ru',
-            'passwordHash' => '123456',
+            'password' => '123456',
         ]]);
         $this->assertResponseStatusCodeSame(201);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -29,7 +29,7 @@ final class UserApiTest extends ApiTestCase
             'username' => 'api test user',
             'date' => '2021-07-20T04:10:47+00:00',
             'email' => 'mail@mail.ru',
-            'passwordHash' => '123456',
+            'password' => '123456',
         ]);
         $this->assertMatchesRegularExpression('~^/api/users/\d+$~', $response->toArray()['@id']);
         $this->assertMatchesResourceItemJsonSchema(User::class);
@@ -41,7 +41,7 @@ final class UserApiTest extends ApiTestCase
             'App\DataFixtures\UserFixtures',
         ));
         // The client implements Symfony HttpClient's `HttpClientInterface`, and the response `ResponseInterface`
-        $response = static::createClient()->request('GET', 'http://localhost/api/users');
+        $response = static::createClient()->request('GET', 'http://localhost:8081/api/users');
 
         $this->assertResponseIsSuccessful();
         // Asserts that the returned content type is JSON-LD (the default)
@@ -59,6 +59,7 @@ final class UserApiTest extends ApiTestCase
                 'username' => 'TestUser',
                 'date' => '2021-07-20T04:10:47+00:00',
                 'email' => 'test@test.com',
+                'password' => '123456',
                 'status' => 'registered',
                 'emailConfirmToken' => '4ed161b5-0d3c-4f06-8381-5f14678e13da',
                 'passwordResetToken' => '4ed161b5-0d3c-4f06-8381-5f14678e1300',

@@ -23,7 +23,7 @@ docker-pull:
 docker-down-clear:
 	docker-compose down -v --remove-orphans
 
-api-init: api-permission api-composer-install api-wait-db api-migrations
+api-init: api-permission api-composer-install api-wait-db api-migrate
 
 api-clear:
 	docker run --rm -v ${PWD}/api://var/www -w /var/www alpine sh -c 'rm -rf var/log/cli/* var/log/fpm-fcgi/* var/cache/* var/upload/* var/thumbs/*'
@@ -37,7 +37,7 @@ api-permission:
 api-wait-db:
 	docker-compose run --rm php-cli wait-for-it postgres:5432 -t 30
 
-api-migrations:
+api-migrate:
 	docker-compose run --rm php-cli php ./bin/console doctrine:migrations:migrate --quiet
 
 api-test:
@@ -47,7 +47,7 @@ api-cs-fix:
 	docker-compose run --rm php-cli composer php-cs-fixer fix
 
 api-fixtures:
-	docker-compose run --rm php-cli composer app fixtures:load
+	docker-compose run --rm php-cli php ./bin/console doctrine:fixtures:load --no-interaction
 
 frontend-clear:
 	docker run --rm -v ${PWD}/frontend://var/www -w /var/www alpine sh -c 'rm -rf .ready build'

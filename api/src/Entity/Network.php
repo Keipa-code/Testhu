@@ -31,9 +31,11 @@ class Network
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="network")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
      */
     private $user_id;
+
+
 
     public function getId(): ?int
     {
@@ -75,4 +77,5 @@ class Network
 
         return $this;
     }
+
 }
