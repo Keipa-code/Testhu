@@ -17,7 +17,9 @@ class FrontendAnonymousUser extends Fixture implements FixtureInterface
         $user = new User();
         $user->setUsername('frontend_anonymous');
         $user->setDate(new \DateTimeImmutable('now'));
-        $user->setPassword('123456');
+        $user->setPassword('12345678');
+        $user->setRoles('ROLE_ANON');
+
 
         $manager->persist($user);
 

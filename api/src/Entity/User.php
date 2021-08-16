@@ -10,15 +10,25 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
  * @ApiResource(
  *     attributes={"security"="is_granted('ROLE_USER')"},
+ *     collectionOperations={
+ *         "get",
+ *         "post"={"security"="is_granted('ROLE_ANON')"}
+ *     },
  *     itemOperations={
- *         "get"={"security"="is_granted('ROLE_USER') and object.owner == user", "security_message"="Sorry, but you are not the book owner."}
- *         "put"={"security_post_denormalize"="is_granted('ROLE_ADMIN') or (object.owner == user and previous_object.owner == user)", "security_post_denormalize_message"="Sorry, but you are not the actual book owner."},
+ *         "get"={"security"="is_granted('ROLE_USER')
+ *              and object.owner == user",
+ *              "security_message"="Sorry, but you are not the book owner."},
+ *         "put"={"security_post_denormalize"="is_granted('ROLE_ADMIN')
+ *              or (object.owner == user and previous_object.owner == user)",
+ *              "security_post_denormalize_message"="Sorry, but you are not the actual book owner."}
+ *     },
  * )
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -32,6 +42,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Length(min=2, minMessage="Имя пользователя не должно быть короче 2 символов")
+     * @Assert\Regex(pattern="/^[a-zA-Z0-9]{2,30}$/gmu",
+     *     message="Имя пользователя может содержать только латинские символы и цифры")
      */
     private $username;
 
@@ -51,7 +65,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $date;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=50, nullable=true)
+     * @Assert\Email(mode="loose")
      */
     private $email;
 
@@ -139,9 +154,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(?array $roles): self
+    public function setRoles(?string $roles): self
     {
-        $this->roles = $roles;
+        $this->roles[] = $roles;
 
         return $this;
     }
@@ -156,6 +171,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setPassword(string $password): self
     {
+        \Webmozart\Assert\Assert::minLength($password, 8, 'Минимальная длина пароля 8 символов');
+
         $hasher = new PasswordHasher();
         $this->password = $hasher->hash($password);
 

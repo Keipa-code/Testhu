@@ -21,7 +21,7 @@ class UserFixtures extends Fixture implements FixtureInterface
         $user->setUsername('myname');
         $user->setDate(new \DateTimeImmutable('2021-07-20 04:10:47'));
         $user->setEmail('test@test.com');
-        $user->setPassword('123456');
+        $user->setPassword('12345678');
         $user->setStatus('registered');
         $user->setEmailConfirmationToken('4ed161b5-0d3c-4f06-8381-5f14678e13da');
         $user->setPasswordResetToken('4ed161b5-0d3c-4f06-8381-5f14678e1300');

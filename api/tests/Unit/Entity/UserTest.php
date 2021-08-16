@@ -25,15 +25,15 @@ final class UserTest extends DatabaseDependantTestCase
 
         $userRepository = $this->entityManager->getRepository(User::class);
         /** @var User $userRecord */
-        $userRecord = $userRepository->findOneBy(['username' => 'TestUser']);
+        $userRecord = $userRepository->findOneBy(['username' => 'myname']);
         $testRecord = $userRecord->getTests()->first();
         $resultRecord = $userRecord->getResults()->first();
         $networkRecord = $userRecord->getNetwork()->first();
 
-        self::assertEquals('TestUser', $userRecord->getUsername());
+        self::assertEquals('myname', $userRecord->getUsername());
         self::assertEquals('test@test.com', $userRecord->getEmail());
         self::assertEquals('2021-Jul-20 04:10:47', $userRecord->getDate()->format('Y-M-d h:i:s'));
-        self::assertTrue($hasher->validate('123456', $userRecord->getPassword()));
+        self::assertTrue($hasher->validate('12345678', $userRecord->getPassword()));
         self::assertEquals('registered', $userRecord->getStatus());
         self::assertEquals('4ed161b5-0d3c-4f06-8381-5f14678e13da', $userRecord->getEmailConfirmationToken());
         self::assertEquals('4ed161b5-0d3c-4f06-8381-5f14678e1300', $userRecord->getPasswordResetToken());
@@ -41,5 +41,12 @@ final class UserTest extends DatabaseDependantTestCase
         self::assertEquals('My test', $testRecord->getTestName());
         self::assertEquals('https://result.com', $resultRecord->getLink());
         self::assertEquals('mail.ru', $networkRecord->getName());
+    }
+
+    public function testEmailIsIncorrect()
+    {
+        $user = new User();
+        $user->setEmail('123qwe');
+        self::assertEquals('This value is not a valid email address.', $user->setEmail('123qwe'));
     }
 }

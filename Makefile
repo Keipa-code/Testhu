@@ -15,7 +15,7 @@ docker-build:
 
 docker-rebuild: docker-build docker-down docker-up
 
-docker-restart: docker-down docker-up api-wait-db
+docker-restart: docker-down docker-up
 
 docker-pull:
 	docker-compose pull
@@ -23,7 +23,7 @@ docker-pull:
 docker-down-clear:
 	docker-compose down -v --remove-orphans
 
-api-init: api-permission api-composer-install api-wait-db api-migrate
+api-init: api-permission api-composer-install api-wait-db api-migrate api-fixtures
 
 api-clear:
 	docker run --rm -v ${PWD}/api://var/www -w /var/www alpine sh -c 'rm -rf var/log/cli/* var/log/fpm-fcgi/* var/cache/* var/upload/* var/thumbs/*'

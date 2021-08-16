@@ -23,7 +23,7 @@ final class TestTest extends DatabaseDependantTestCase
         $testRepository = $this->entityManager->getRepository(Test::class);
         /** @var Test $testRecord */
         $testRecord = $testRepository->findOneBy(['testName' => 'Мой тест']);
-        $userRecord = $testRecord->getUser();
+        $userRecord = $testRecord->getUserId();
         $resultRecord = $testRecord->getResults()->first();
         $questionRecord = $testRecord->getQuestions()->first();
 
