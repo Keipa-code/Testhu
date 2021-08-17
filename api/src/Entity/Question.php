@@ -52,7 +52,6 @@ class Question
      */
     private $position;
 
-
     /**
      * @ORM\ManyToOne(targetEntity=Test::class, inversedBy="questions")
      */
@@ -187,6 +186,4 @@ class Question
 
         return $this;
     }
-
-
 }

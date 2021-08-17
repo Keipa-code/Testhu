@@ -74,7 +74,6 @@ class Test
         $this->questions = new ArrayCollection();
     }
 
-
     public function getId(): ?int
     {
         return $this->id;
@@ -200,7 +199,6 @@ class Test
         return $this;
     }
 
-
     public function getLink(): ?string
     {
         return $this->link;
@@ -224,5 +222,4 @@ class Test
 
         return $this;
     }
-
 }

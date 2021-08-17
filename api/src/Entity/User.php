@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
-use App\Service\PasswordHasher;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,13 +17,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     attributes={"security"="is_granted('ROLE_USER')"},
  *     collectionOperations={
- *         "get",
+ *         "get"={"security"="object == user", "security_message"="Sorry, but you are not the book owner."},
  *         "post"={"security"="is_granted('ROLE_ANON')"}
  *     },
  *     itemOperations={
- *         "get"={"security"="is_granted('ROLE_USER')
- *              and object.owner == user",
- *              "security_message"="Sorry, but you are not the book owner."},
+ *         "get"={"security"="is_granted('ROLE_USER') and object == user", "security_message"="Sorry, but you are not the book owner."},
  *         "put"={"security_post_denormalize"="is_granted('ROLE_ADMIN')
  *              or (object.owner == user and previous_object.owner == user)",
  *              "security_post_denormalize_message"="Sorry, but you are not the actual book owner."}
@@ -44,7 +41,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank()
      * @Assert\Length(min=2, minMessage="Имя пользователя не должно быть короче 2 символов")
-     * @Assert\Regex(pattern="/^[a-zA-Z0-9]{2,30}$/gmu",
+     * @Assert\Regex(pattern="/^[a-zA-Z0-9]{2,30}$/u",
      *     message="Имя пользователя может содержать только латинские символы и цифры")
      */
     private $username;
@@ -60,13 +57,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     /**
+     * @Assert\Regex(
+     *     pattern="/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/",
+     *     message="Пароль не должен быть короче 8 символов и должен содержать хотя бы 1 большую и 1 маленькую букву алфавита, а также хотя бы 1 цифру"
+     * )
+     */
+    private $plainPassword;
+
+    /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
     private $date;
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
-     * @Assert\Email(mode="loose")
+     * @Assert\Email(mode="loose", message="Веденные вами данные не являются email адресом")
      */
     private $email;
 
@@ -164,17 +169,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string
+    public function getPassword(): string | null
     {
         return $this->password;
     }
 
     public function setPassword(string $password): self
     {
-        \Webmozart\Assert\Assert::minLength($password, 8, 'Минимальная длина пароля 8 символов');
-
-        $hasher = new PasswordHasher();
-        $this->password = $hasher->hash($password);
+        $this->password = $password;
 
         return $this;
     }
@@ -196,7 +198,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getDate(): ?\DateTimeImmutable
@@ -361,4 +363,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param mixed $plainPassword
+     */
+    public function setPlainPassword($plainPassword): void
+    {
+        $this->plainPassword = $plainPassword;
+    }
 }

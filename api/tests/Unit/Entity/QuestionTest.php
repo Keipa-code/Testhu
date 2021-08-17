@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-
 namespace App\Tests\Unit\Entity;
-
 
 use App\Entity\Question;
 use App\Tests\DatabaseDependantTestCase;
@@ -16,9 +14,9 @@ final class QuestionTest extends DatabaseDependantTestCase
 
     public function testQuestionAddedInDB()
     {
-        $this->loadFixtures(array(
+        $this->loadFixtures([
             'App\DataFixtures\QuestionFixtures',
-        ));
+        ]);
 
         $questionRepository = $this->entityManager->getRepository(Question::class);
         /** @var Question $questionRecord */

@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-
 namespace App\Tests\Unit\Entity;
-
 
 use App\Entity\Network;
 use App\Tests\DatabaseDependantTestCase;
@@ -16,9 +14,9 @@ final class NetworkTest extends DatabaseDependantTestCase
 
     public function testNetworkAddedInDB()
     {
-        $this->loadFixtures(array(
+        $this->loadFixtures([
             'App\DataFixtures\NetworkFixtures',
-        ));
+        ]);
 
         $networkRepository = $this->entityManager->getRepository(Network::class);
         /** @var Network $networkRecord */

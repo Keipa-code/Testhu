@@ -2,81 +2,117 @@
 
 declare(strict_types=1);
 
-
 namespace App\Tests\Functional;
 
-
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\User;
-use App\Tests\DatabaseDependantTestCase;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 
 final class UserApiTest extends ApiTestCase
 {
     use FixturesTrait;
 
-    protected function createAuthenticatedClient($username = 'frontend_anonymous', $password = '12345678')
+    private $token;
+
+    protected function setUp(): void
     {
         $response = static::createClient()->request(
             'POST',
-            'http://localhost:8081/api/login_check',
+            'http://localhost:8081/api/login',
             [
                 'headers' => ['Content-Type' => 'application/json'],
                 'json' => [
                     'username' => 'frontend_anonymous',
                     'password' => '12345678',
                 ],
-
             ]
         );
 
-        $data = $response->toArray();
+        $this->token = $response->toArray()['token'];
+    }
 
-        if(!$data['token']) {
-            throw new \DomainException('Not found token');
-        }
+    protected function createAuthenticatedClient($username = 'frontend_anonymous', $password = '12345678')
+    {
+        $response = static::createClient()->request(
+            'POST',
+            'http://localhost:8081/api/login',
+            [
+                'headers' => ['Content-Type' => 'application/json'],
+                'json' => [
+                    'username' => $username,
+                    'password' => $password,
+                ],
+            ]
+        );
 
-        $client = static::createClient()->withOptions([
-            'headers' => [
-                'HTTP_Authorization' => sprintf('Bearer %s', $data['token']),
+        return $response->toArray();
+        /*
+                $client = static::createClient()->withOptions([
 
-            ],
-            'auth_bearer' => $data['token'],
-        ]);
+                    'auth_bearer' => $data['token'],
+                ]);
 
-        return $client;
+                return $client;*/
     }
 
     public function testCreateUser()
     {
-        $client = $this->createAuthenticatedClient();
+        $response = static::createClient()->request(
+            'POST',
+            'http://localhost:8081/api/users',
+            [
+                'auth_bearer' => $this->token,
+                'json' => [
+                    'username' => 'apiTestUser',
+                    'date' => '2021-07-20 04:10:47',
+                    'email' => 'mail@mail.ru',
+                    'plainPassword' => 'Privet78',
+                ],
+            ]);
 
-        $response = $client->request('POST', 'http://localhost:8081/api/users', ['json' => [
-            'username' => 'api test user',
-            'date' => '2021-07-20 04:10:47',
-            'email' => 'mail@mail.ru',
-            'password' => '12345678',
-        ]]);
         $this->assertResponseStatusCodeSame(201);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
-            'username' => 'api test user',
+            'username' => 'apiTestUser',
+            'roles' => ['ROLE_USER'],
             'date' => '2021-07-20T04:10:47+00:00',
             'email' => 'mail@mail.ru',
-            'password' => '12345678',
         ]);
         $this->assertMatchesRegularExpression('~^/api/users/\d+$~', $response->toArray()['@id']);
-        $this->assertMatchesResourceItemJsonSchema(User::class);
     }
 
-    public function testGetCollection(): void
+    public function testIncorrectEmail()
     {
-        $this->loadFixtures(array(
-            'App\DataFixtures\UserFixtures',
-        ));
-        // The client implements Symfony HttpClient's `HttpClientInterface`, and the response `ResponseInterface`
-        $response = static::createClient()->request('GET', 'http://localhost:8081/api/users');
+        $response = static::createClient()->request(
+            'POST',
+            'http://localhost:8081/api/users',
+            [
+                'auth_bearer' => $this->token,
+                'json' => [
+                    'username' => 'apiTestUser',
+                    'date' => '2021-07-20 04:10:47',
+                    'email' => 'not_email',
+                    'password' => '12345678',
+                ],
+            ]);
 
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertJsonContains([
+            'hydra:description' => 'email: Веденные вами данные не являются email адресом',
+        ]);
+    }
+
+    public function testGetUser(): void
+    {
+        $data = $this->createAuthenticatedClient('myname', '12345678');
+        // The client implements Symfony HttpClient's `HttpClientInterface`, and the response `ResponseInterface`
+
+        $user = static::createClient()->request(
+            'GET',
+            'http://localhost:8081/getme',
+            [
+                'auth_bearer' => $data['token'],
+            ]
+        );
         $this->assertResponseIsSuccessful();
         // Asserts that the returned content type is JSON-LD (the default)
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -84,49 +120,24 @@ final class UserApiTest extends ApiTestCase
         // Asserts that the returned JSON is a superset of this one
         $this->assertJsonContains([
             '@context' => '/api/contexts/User',
-            '@id' => '/api/users',
-            '@type' => 'hydra:Collection',
-            'hydra:member' => [[
-                '@id' => '/api/users/1',
-                '@type' => 'User',
-                'id' => 1,
-                'username' => 'TestUser',
-                'date' => '2021-07-20T04:10:47+00:00',
-                'email' => 'test@test.com',
-                'password' => '12345678',
-                'status' => 'registered',
-                'emailConfirmToken' => '4ed161b5-0d3c-4f06-8381-5f14678e13da',
-                'passwordResetToken' => '4ed161b5-0d3c-4f06-8381-5f14678e1300',
-                'newEmail' => 'new-test@test.com',
-                'network' => [[
-                    '@type' => 'Network',
-                    'id' => 1,
-                    'name' => 'mail.ru',
-                    'userId' => '/api/users/1',
-                ],],
-                'results' => [[
-                    '@type' => 'Result',
-                    'id' => 1,
-                    'userId' => '/api/users/1',
-                    'link' => 'https://result.com',
-                ],],
-                'tests' => [[
-                    '@type' => 'Test',
-                    'id' => 1,
-                    'testName' => 'My test',
-                    'results' => [],
-                    'questions' => [],
-                    'user' => '/api/users/1',
-                ],],]],
-            'hydra:totalItems' => 1,
+            '@id' => '/api/users/5',
+            '@type' => 'User',
+            'id' => 5,
+            'username' => 'myname',
+            'date' => '2021-07-20T04:10:47+00:00',
+            'email' => 'test@test.com',
+            'status' => 'registered',
+            'passwordResetToken' => '4ed161b5-0d3c-4f06-8381-5f14678e1300',
+            'newEmail' => 'new-test@test.com',
+            'network' => [
+                '/api/networks/2',
+            ],
+            'results' => [
+                '/api/results/3',
+            ],
+            'tests' => [
+                '/api/tests/4',
+            ],
         ]);
-
-        // Because test fixtures are automatically loaded between each test, you can assert on them
-        $this->assertCount(1, $response->toArray()['hydra:member']);
-
-        // Asserts that the returned JSON is validated by the JSON Schema generated for this resource by API Platform
-        // This generated JSON Schema is also used in the OpenAPI spec!
-        $this->assertMatchesResourceCollectionJsonSchema(User::class);
     }
-
 }

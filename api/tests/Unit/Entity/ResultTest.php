@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-
 namespace App\Tests\Unit\Entity;
-
 
 use App\Entity\Result;
 use App\Tests\DatabaseDependantTestCase;
@@ -16,9 +14,9 @@ final class ResultTest extends DatabaseDependantTestCase
 
     public function testResultAddedInDB()
     {
-        $this->loadFixtures(array(
+        $this->loadFixtures([
             'App\DataFixtures\ResultFixtures',
-        ));
+        ]);
 
         $resultRepository = $this->entityManager->getRepository(Result::class);
         /** @var Result $resultRecord */

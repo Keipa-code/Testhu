@@ -35,8 +35,6 @@ class Network
      */
     private $user_id;
 
-
-
     public function getId(): ?int
     {
         return $this->id;
@@ -77,5 +75,4 @@ class Network
 
         return $this;
     }
-
 }

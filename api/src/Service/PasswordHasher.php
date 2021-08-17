@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-
 namespace App\Service;
-
 
 use http\Exception\RuntimeException;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
@@ -28,9 +26,10 @@ final class PasswordHasher
     {
         Assert::notEmpty($password);
         $hash = $this->passwordHasher->hash($password);
-        if ($hash === null) {
+        if (null === $hash) {
             throw new RuntimeException('Unable to generate password');
         }
+
         return $hash;
     }
 

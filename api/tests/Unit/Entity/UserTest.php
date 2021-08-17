@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-
 namespace App\Tests\Unit\Entity;
-
 
 use App\Entity\User;
 use App\Service\PasswordHasher;
@@ -13,14 +11,13 @@ use Liip\TestFixturesBundle\Test\FixturesTrait;
 
 final class UserTest extends DatabaseDependantTestCase
 {
-
     use FixturesTrait;
 
     public function testUserAddedInDB()
     {
-        $this->loadFixtures(array(
+        $this->loadFixtures([
             'App\DataFixtures\UserFixtures',
-        ));
+        ]);
         $hasher = new PasswordHasher();
 
         $userRepository = $this->entityManager->getRepository(User::class);

@@ -23,9 +23,8 @@ class ResultFixtures extends Fixture
         $result->setCorrectAnswersCount(40);
         $result->setDate(new \DateTimeImmutable('2021-07-20 07:10:47'));
 
-
         $user->addResult($result);
-        $test->addResult($result);;
+        $test->addResult($result);
         $manager->persist($user);
         $manager->persist($test);
         $manager->persist($result);

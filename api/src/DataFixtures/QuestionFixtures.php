@@ -18,7 +18,6 @@ class QuestionFixtures extends Fixture
         $tag = new Tag();
         $tag->setTagName('Физика');
 
-
         $question = new Question();
         $question->setQuestionText('Два паравоза выехали из точкии А и Б. Какая марка у этих паравозов');
         $question->setQuestionType('one variant');
