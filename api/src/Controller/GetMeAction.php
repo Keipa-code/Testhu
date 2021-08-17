@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class GetMeAction extends AbstractController
+final class GetMeAction extends AbstractController
 {
     /**
      * @Route(
@@ -18,8 +18,8 @@ class GetMeAction extends AbstractController
      *     path="getme",
      *     methods={"GET"},
      *     defaults={
-     *         "_api_resource_class"=User::class,
-     *         "_api_collection_operation_name"="get_me"
+     *         "_api_resource_class": User::class,
+     *         "_api_collection_operation_name": "get_me"
      *     }
      * )
      */

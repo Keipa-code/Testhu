@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Network;
@@ -12,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Network[]    findAll()
  * @method Network[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class NetworkRepository extends ServiceEntityRepository
+final class NetworkRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

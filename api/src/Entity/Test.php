@@ -1,17 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TestRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=TestRepository::class)
- * @ApiResource()
+ * @ApiResource
  * Добавить метод для сравнения позиции вопросов. Не должно быть одинаковых.
+ *
+ * @internal
  */
 class Test
 {
@@ -40,7 +45,7 @@ class Test
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private ?\DateTimeImmutable $date;
+    private ?DateTimeImmutable $date;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -115,12 +120,12 @@ class Test
         return $this;
     }
 
-    public function getDate(): ?\DateTimeImmutable
+    public function getDate(): ?DateTimeImmutable
     {
         return $this->date;
     }
 
-    public function setDate(?\DateTimeImmutable $date): self
+    public function setDate(?DateTimeImmutable $date): self
     {
         $this->date = $date;
 

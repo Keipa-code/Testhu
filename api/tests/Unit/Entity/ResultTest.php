@@ -8,11 +8,14 @@ use App\Entity\Result;
 use App\Tests\DatabaseDependantTestCase;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 
+/**
+ * @internal
+ */
 final class ResultTest extends DatabaseDependantTestCase
 {
     use FixturesTrait;
 
-    public function testResultAddedInDB()
+    public function testResultAddedInDB(): void
     {
         $this->loadFixtures([
             'App\DataFixtures\ResultFixtures',

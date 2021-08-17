@@ -8,11 +8,14 @@ use App\Entity\Network;
 use App\Tests\DatabaseDependantTestCase;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 
+/**
+ * @internal
+ */
 final class NetworkTest extends DatabaseDependantTestCase
 {
     use FixturesTrait;
 
-    public function testNetworkAddedInDB()
+    public function testNetworkAddedInDB(): void
     {
         $this->loadFixtures([
             'App\DataFixtures\NetworkFixtures',

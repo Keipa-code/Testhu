@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,17 +18,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
  * @ApiResource(
- *     attributes={"security"="is_granted('ROLE_USER')"},
+ *     attributes={"security": "is_granted('ROLE_USER')"},
  *     collectionOperations={
- *         "get"={"security"="object == user", "security_message"="Sorry, but you are not the book owner."},
- *         "post"={"security"="is_granted('ROLE_ANON')"}
+ *         "get": {"security": "object == user", "security_message": "Sorry, but you are not the book owner."},
+ *         "post": {"security": "is_granted('ROLE_ANON')"}
  *     },
  *     itemOperations={
- *         "get"={"security"="is_granted('ROLE_USER') and object == user", "security_message"="Sorry, but you are not the book owner."},
- *         "put"={"security_post_denormalize"="is_granted('ROLE_ADMIN')
- *              or (object.owner == user and previous_object.owner == user)",
- *              "security_post_denormalize_message"="Sorry, but you are not the actual book owner."}
- *     },
+ *         "get": {"security": "is_granted('ROLE_USER') and object == user", "security_message": "Sorry, but you are not the book owner."},
+ *         "put": {"security": "is_granted('ROLE_ADMIN') or object == user"},
+ *     }
  * )
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -39,10 +40,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      * @Assert\Length(min=2, minMessage="Имя пользователя не должно быть короче 2 символов")
      * @Assert\Regex(pattern="/^[a-zA-Z0-9]{2,30}$/u",
-     *     message="Имя пользователя может содержать только латинские символы и цифры")
+     * message="Имя пользователя может содержать только латинские символы и цифры")
      */
     private $username;
 
@@ -91,7 +92,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $passwordResetToken;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=50, nullable=true)
+     * @Assert\Email(mode="loose", message="Веденные вами данные не являются email адресом")
      */
     private $newEmail;
 
@@ -127,7 +129,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->username;
+        return (string)$this->username;
     }
 
     public function setUsername(string $username): self
@@ -144,7 +146,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->username;
+        return (string)$this->username;
     }
 
     /**
@@ -195,18 +197,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         $this->plainPassword = null;
     }
 
-    public function getDate(): ?\DateTimeImmutable
+    public function getDate(): ?DateTimeImmutable
     {
         return $this->date;
     }
 
-    public function setDate(?\DateTimeImmutable $date): self
+    public function setDate(?DateTimeImmutable $date): self
     {
         $this->date = $date;
 

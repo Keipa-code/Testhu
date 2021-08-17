@@ -9,11 +9,14 @@ use App\Service\PasswordHasher;
 use App\Tests\DatabaseDependantTestCase;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 
+/**
+ * @internal
+ */
 final class UserTest extends DatabaseDependantTestCase
 {
     use FixturesTrait;
 
-    public function testUserAddedInDB()
+    public function testUserAddedInDB(): void
     {
         $this->loadFixtures([
             'App\DataFixtures\UserFixtures',
@@ -38,12 +41,5 @@ final class UserTest extends DatabaseDependantTestCase
         self::assertEquals('My test', $testRecord->getTestName());
         self::assertEquals('https://result.com', $resultRecord->getLink());
         self::assertEquals('mail.ru', $networkRecord->getName());
-    }
-
-    public function testEmailIsIncorrect()
-    {
-        $user = new User();
-        $user->setEmail('123qwe');
-        self::assertEquals('This value is not a valid email address.', $user->setEmail('123qwe'));
     }
 }

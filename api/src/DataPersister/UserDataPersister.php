@@ -9,7 +9,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserDataPersister implements ContextAwareDataPersisterInterface
+final class UserDataPersister implements ContextAwareDataPersisterInterface
 {
     private EntityManagerInterface $entityManager;
     private UserPasswordHasherInterface $hasher;
@@ -30,7 +30,7 @@ class UserDataPersister implements ContextAwareDataPersisterInterface
     /**
      * @param User $data
      */
-    public function persist($data, array $context = [])
+    public function persist($data, array $context = []): void
     {
         if ($data->getPlainPassword()) {
             $data->setPassword(
@@ -38,11 +38,16 @@ class UserDataPersister implements ContextAwareDataPersisterInterface
             );
             $data->eraseCredentials();
         }
+
+        if ($data->getNewEmail()) {
+
+        }
+
         $this->entityManager->persist($data);
         $this->entityManager->flush();
     }
 
-    public function remove($data, array $context = [])
+    public function remove($data, array $context = []): void
     {
         $this->entityManager->remove($data);
         $this->entityManager->flush();

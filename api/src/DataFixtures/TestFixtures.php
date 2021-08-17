@@ -1,17 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
 use App\Entity\Question;
 use App\Entity\Result;
 use App\Entity\Test;
 use App\Entity\User;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class TestFixtures extends Fixture
+final class TestFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $user = new User();
         $user->setUsername('TestUser');
@@ -26,7 +29,7 @@ class TestFixtures extends Fixture
         $test->setTestName('Мой тест');
         $test->setDescription('Этой мой тест. Я очень люблю свой тест. Мой тест самый лучший в мире');
         $test->setRules('Время прохождения теста 40 минут. Нужно выбирать один вариант');
-        $test->setDate(new \DateTimeImmutable('2021-07-20 06:10:47'));
+        $test->setDate(new DateTimeImmutable('2021-07-20 06:10:47'));
         $test->setTimeLimit(60);
 
         $user->addTest($test);

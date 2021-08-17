@@ -7,6 +7,9 @@ namespace App\Tests\Functional;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 
+/**
+ * @internal
+ */
 final class UserApiTest extends ApiTestCase
 {
     use FixturesTrait;
@@ -15,7 +18,7 @@ final class UserApiTest extends ApiTestCase
 
     protected function setUp(): void
     {
-        $response = static::createClient()->request(
+        $response = self::createClient()->request(
             'POST',
             'http://localhost:8081/api/login',
             [
@@ -30,33 +33,9 @@ final class UserApiTest extends ApiTestCase
         $this->token = $response->toArray()['token'];
     }
 
-    protected function createAuthenticatedClient($username = 'frontend_anonymous', $password = '12345678')
+    public function testCreateUser(): void
     {
-        $response = static::createClient()->request(
-            'POST',
-            'http://localhost:8081/api/login',
-            [
-                'headers' => ['Content-Type' => 'application/json'],
-                'json' => [
-                    'username' => $username,
-                    'password' => $password,
-                ],
-            ]
-        );
-
-        return $response->toArray();
-        /*
-                $client = static::createClient()->withOptions([
-
-                    'auth_bearer' => $data['token'],
-                ]);
-
-                return $client;*/
-    }
-
-    public function testCreateUser()
-    {
-        $response = static::createClient()->request(
+        $response = self::createClient()->request(
             'POST',
             'http://localhost:8081/api/users',
             [
@@ -67,7 +46,8 @@ final class UserApiTest extends ApiTestCase
                     'email' => 'mail@mail.ru',
                     'plainPassword' => 'Privet78',
                 ],
-            ]);
+            ]
+        );
 
         $this->assertResponseStatusCodeSame(201);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -77,28 +57,7 @@ final class UserApiTest extends ApiTestCase
             'date' => '2021-07-20T04:10:47+00:00',
             'email' => 'mail@mail.ru',
         ]);
-        $this->assertMatchesRegularExpression('~^/api/users/\d+$~', $response->toArray()['@id']);
-    }
-
-    public function testIncorrectEmail()
-    {
-        $response = static::createClient()->request(
-            'POST',
-            'http://localhost:8081/api/users',
-            [
-                'auth_bearer' => $this->token,
-                'json' => [
-                    'username' => 'apiTestUser',
-                    'date' => '2021-07-20 04:10:47',
-                    'email' => 'not_email',
-                    'password' => '12345678',
-                ],
-            ]);
-
-        $this->assertResponseStatusCodeSame(422);
-        $this->assertJsonContains([
-            'hydra:description' => 'email: Веденные вами данные не являются email адресом',
-        ]);
+        self::assertMatchesRegularExpression('~^/api/users/\d+$~', $response->toArray()['@id']);
     }
 
     public function testGetUser(): void
@@ -106,7 +65,7 @@ final class UserApiTest extends ApiTestCase
         $data = $this->createAuthenticatedClient('myname', '12345678');
         // The client implements Symfony HttpClient's `HttpClientInterface`, and the response `ResponseInterface`
 
-        $user = static::createClient()->request(
+        $user = self::createClient()->request(
             'GET',
             'http://localhost:8081/getme',
             [
@@ -139,5 +98,90 @@ final class UserApiTest extends ApiTestCase
                 '/api/tests/4',
             ],
         ]);
+    }
+
+    public function testIncorrectEmailFormat(): void
+    {
+        $response = self::createClient()->request(
+            'POST',
+            'http://localhost:8081/api/users',
+            [
+                'auth_bearer' => $this->token,
+                'json' => [
+                    'username' => 'apiTestUser',
+                    'date' => '2021-07-20 04:10:47',
+                    'email' => 'not_email',
+                    'password' => '12345678',
+                ],
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertJsonContains([
+            'hydra:description' => 'email: Веденные вами данные не являются email адресом',
+        ]);
+    }
+
+    public function testIncorrectPasswordFormat()
+    {
+        $response = self::createClient()->request(
+            'POST',
+            'http://localhost:8081/api/users',
+            [
+                'auth_bearer' => $this->token,
+                'json' => [
+                    'username' => 'apiTestUser',
+                    'date' => '2021-07-20 04:10:47',
+                    'email' => 'test@mail.ru',
+                    'plainPassword' => '12345678',
+                ],
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertJsonContains([
+            'hydra:description' => 'plainPassword: Пароль не должен быть короче 8 символов и должен содержать хотя бы 1 большую и 1 маленькую букву алфавита, а также хотя бы 1 цифру',
+        ]);
+    }
+
+    public function testChangePassword()
+    {
+        $data = $this->createAuthenticatedClient('myname', '12345678');
+        $response = self::createClient()->request(
+            'PUT',
+            'http://localhost:8081/api/users/5',
+            [
+                'auth_bearer' => $data['token'],
+                'json' => [
+                    'plainPassword' => 'Priv1234567890',
+                ],
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertJsonContains([
+            '@context' => '/api/contexts/User',
+            '@id' => '/api/users/5',
+            '@type' => 'User',
+            'id' => 5,
+            'username' => 'myname',
+        ]);
+    }
+
+    protected function createAuthenticatedClient($username = 'frontend_anonymous', $password = '12345678')
+    {
+        $response = self::createClient()->request(
+            'POST',
+            'http://localhost:8081/api/login',
+            [
+                'headers' => ['Content-Type' => 'application/json'],
+                'json' => [
+                    'username' => $username,
+                    'password' => $password,
+                ],
+            ]
+        );
+
+        return $response->toArray();
     }
 }

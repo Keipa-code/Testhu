@@ -8,11 +8,14 @@ use App\Entity\Tag;
 use App\Tests\DatabaseDependantTestCase;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 
+/**
+ * @internal
+ */
 final class TagTest extends DatabaseDependantTestCase
 {
     use FixturesTrait;
 
-    public function testTagAddedInDB()
+    public function testTagAddedInDB(): void
     {
         $this->loadFixtures([
             'App\DataFixtures\TagFixtures',

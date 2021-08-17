@@ -8,11 +8,14 @@ use App\Entity\Test;
 use App\Tests\DatabaseDependantTestCase;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 
+/**
+ * @internal
+ */
 final class TestTest extends DatabaseDependantTestCase
 {
     use FixturesTrait;
 
-    public function testTestAddedInDB()
+    public function testTestAddedInDB(): void
     {
         $this->loadFixtures([
             'App\DataFixtures\TestFixtures',
@@ -26,10 +29,14 @@ final class TestTest extends DatabaseDependantTestCase
         $questionRecord = $testRecord->getQuestions()->first();
 
         self::assertEquals('Мой тест', $testRecord->getTestName());
-        self::assertEquals('Этой мой тест. Я очень люблю свой тест. Мой тест самый лучший в мире',
-            $testRecord->getDescription());
-        self::assertEquals('Время прохождения теста 40 минут. Нужно выбирать один вариант',
-            $testRecord->getRules());
+        self::assertEquals(
+            'Этой мой тест. Я очень люблю свой тест. Мой тест самый лучший в мире',
+            $testRecord->getDescription()
+        );
+        self::assertEquals(
+            'Время прохождения теста 40 минут. Нужно выбирать один вариант',
+            $testRecord->getRules()
+        );
         self::assertEquals('2021-Jul-20 06:10:47', $testRecord->getDate()->format('Y-M-d h:i:s'));
         self::assertEquals(60, $testRecord->getTimeLimit());
         self::assertEquals('TestUser', $userRecord->getUsername());

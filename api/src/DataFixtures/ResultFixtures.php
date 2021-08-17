@@ -1,16 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
 use App\Entity\Result;
 use App\Entity\Test;
 use App\Entity\User;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class ResultFixtures extends Fixture
+final class ResultFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $user = new User();
         $user->setUsername('ResultUser');
@@ -21,7 +24,7 @@ class ResultFixtures extends Fixture
         $result = new Result();
         $result->setLink('https://result.com');
         $result->setCorrectAnswersCount(40);
-        $result->setDate(new \DateTimeImmutable('2021-07-20 07:10:47'));
+        $result->setDate(new DateTimeImmutable('2021-07-20 07:10:47'));
 
         $user->addResult($result);
         $test->addResult($result);

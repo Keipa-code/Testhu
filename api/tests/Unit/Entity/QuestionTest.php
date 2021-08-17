@@ -8,11 +8,14 @@ use App\Entity\Question;
 use App\Tests\DatabaseDependantTestCase;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 
+/**
+ * @internal
+ */
 final class QuestionTest extends DatabaseDependantTestCase
 {
     use FixturesTrait;
 
-    public function testQuestionAddedInDB()
+    public function testQuestionAddedInDB(): void
     {
         $this->loadFixtures([
             'App\DataFixtures\QuestionFixtures',
@@ -24,8 +27,10 @@ final class QuestionTest extends DatabaseDependantTestCase
         $testRecord = $questionRecord->getTest();
         $tag = $questionRecord->getTags()->first();
 
-        self::assertEquals('Два паравоза выехали из точкии А и Б. Какая марка у этих паравозов',
-            $questionRecord->getQuestionText());
+        self::assertEquals(
+            'Два паравоза выехали из точкии А и Б. Какая марка у этих паравозов',
+            $questionRecord->getQuestionText()
+        );
         self::assertEquals('one variant', $questionRecord->getQuestionType());
         self::assertEquals(['Mersedes', 'BMW', 'Volga'], $questionRecord->getVariants());
         self::assertEquals(['BMW'], $questionRecord->getAnswer());

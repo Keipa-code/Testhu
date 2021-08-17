@@ -7,7 +7,10 @@ namespace App\Tests;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class DatabaseDependantTestCase extends KernelTestCase
+/**
+ * @internal
+ */
+abstract class DatabaseDependantTestCase extends KernelTestCase
 {
     protected EntityManagerInterface $entityManager;
 
