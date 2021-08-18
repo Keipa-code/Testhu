@@ -5,15 +5,19 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
+use DateTimeImmutable;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
+#[AsController]
 class RegistrationController extends AbstractController
 {
     private $emailVerifier;
@@ -23,12 +27,33 @@ class RegistrationController extends AbstractController
         $this->emailVerifier = $emailVerifier;
     }
 
-    #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
+    #[Route(
+        path: '/register',
+        name: 'app_register',
+        defaults: [
+            '_api_resource_class' => User::class,
+            '_api_item_operation_name' => 'register',
+        ],
+        methods: ['POST'],
+    )]
+    public function __invoke(User $user): User
     {
+        dd($user);
+        return $user;
+    }
+
+/*    public function register(Request $request, UserPasswordHasherInterface $passwordEncoder): Response
+    {
+        $data = $request->toArray();
         $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
-        $form->handleRequest($request);
+        $user->setUsername($data);
+        $user->setDate(new DateTimeImmutable('now'));
+        $user->setEmail('test@test.com');
+        $user->setStatus('registered');
+        $user->setEmailConfirmationToken('4ed161b5-0d3c-4f06-8381-5f14678e13da');
+        $user->setPasswordResetToken('4ed161b5-0d3c-4f06-8381-5f14678e1300');
+        $user->setNewEmail('new-test@test.com');
+        $user->setPassword($passwordEncoder->hashPassword($user, '12345678'));
 
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
@@ -79,5 +104,5 @@ class RegistrationController extends AbstractController
         $this->addFlash('success', 'Your email address has been verified.');
 
         return $this->redirectToRoute('app_register');
-    }
+    }*/
 }

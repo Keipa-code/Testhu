@@ -14,6 +14,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Controller\RegistrationController;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -22,7 +23,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     attributes={"security": "is_granted('ROLE_USER')"},
  *     collectionOperations={
  *         "get": {"security": "object == user", "security_message": "Sorry, but you are not the book owner."},
- *         "post": {"security": "is_granted('ROLE_ANON')"}
+ *         "post": {"security": "is_granted('ROLE_ADMIN')"},
+ *         "register": {
+ *             "method": "POST",
+ *             "path": "/register",
+ *             "controller"=RegistrationController::class,
+ *         }
  *     },
  *     itemOperations={
  *         "get": {"security": "is_granted('ROLE_USER') and object == user", "security_message": "Sorry, but you are not the book owner."},
