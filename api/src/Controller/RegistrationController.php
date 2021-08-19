@@ -21,16 +21,12 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 class RegistrationController extends AbstractController
 {
-
-    private VerifyEmailHelperInterface $helper;
     private EmailVerifier $emailVerifier;
 
     public function __construct(
-        VerifyEmailHelperInterface $helper,
         EmailVerifier $emailVerifier
     )
     {
-        $this->helper = $helper;
         $this->emailVerifier = $emailVerifier;
     }
 

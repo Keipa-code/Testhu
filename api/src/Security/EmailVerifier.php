@@ -2,9 +2,11 @@
 
 namespace App\Security;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -30,7 +32,11 @@ class EmailVerifier
         $this->entityManager = $manager;
     }
 
-    public function sendEmailConfirmation(string $verifyEmailRouteName, UserInterface $user, TemplatedEmail $email): void
+    /**
+     * @param User $user
+     * @throws TransportExceptionInterface
+     */
+    public function sendEmailConfirmation(UserInterface $user): void
     {
         $signatureComponents = $this->verifyEmailHelper->generateSignature(
             self::VERIFY_URL,
@@ -39,7 +45,7 @@ class EmailVerifier
             ['id' => $user->getId()]
         );
 
-        $templatedEmail = (new TemplatedEmail())
+        $email = (new TemplatedEmail())
             ->from(new Address(self::EMAIL_FROM, self::NAME_FROM))
             ->to($user->getEmail())
             ->subject(self::SUBJECT)
@@ -57,9 +63,13 @@ class EmailVerifier
 
     /**
      * @throws VerifyEmailExceptionInterface
+     * @param User $user
      */
     public function handleEmailConfirmation(Request $request, UserInterface $user): void
     {
+        if ($user->getNewEmail()) {
+            $user->setEmail($user->getNewEmail());
+        }
         $this->verifyEmailHelper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail());
 
         $user->setIsVerified(true);

@@ -49,13 +49,12 @@ final class UserDataPersister implements ContextAwareDataPersisterInterface
         $this->entityManager->flush();
 
         if ($data->getEmail()) {
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $data,
-                (new TemplatedEmail())
-                    ->from(new Address('sikhed@gmail.com', 'mailer bot'))
-                    ->to($data->getEmail())
-                    ->subject('Please Confirm your Email')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
+            $this->emailVerifier->sendEmailConfirmation($data);
+        }
+
+        if ($data->getNewEmail() && $data->getNewEmail() !== $data->getEmail()) {
+            $data->setEmail($data->getNewEmail());
+            $this->emailVerifier->sendEmailConfirmation($data);
         }
     }
 
