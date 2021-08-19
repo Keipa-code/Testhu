@@ -6,12 +6,19 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Security\Core\User\UserInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 class EmailVerifier
 {
+    CONST VERIFY_URL = 'app_verify_email';
+    CONST EMAIL_FROM = 'bot@app.test';
+    CONST NAME_FROM = 'mailer bot';
+    CONST SUBJECT = 'Please Confirm your Email';
+    CONST HTML_TEMPLATE = 'registration/confirmation_email.html.twig';
+
     private $verifyEmailHelper;
     private $mailer;
     private $entityManager;
@@ -26,10 +33,17 @@ class EmailVerifier
     public function sendEmailConfirmation(string $verifyEmailRouteName, UserInterface $user, TemplatedEmail $email): void
     {
         $signatureComponents = $this->verifyEmailHelper->generateSignature(
-            $verifyEmailRouteName,
+            self::VERIFY_URL,
             $user->getId(),
-            $user->getEmail()
+            $user->getEmail(),
+            ['id' => $user->getId()]
         );
+
+        $templatedEmail = (new TemplatedEmail())
+            ->from(new Address(self::EMAIL_FROM, self::NAME_FROM))
+            ->to($user->getEmail())
+            ->subject(self::SUBJECT)
+            ->htmlTemplate(self::HTML_TEMPLATE);
 
         $context = $email->getContext();
         $context['signedUrl'] = $signatureComponents->getSignedUrl();

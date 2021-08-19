@@ -23,16 +23,11 @@ use App\Controller\RegistrationController;
  *     attributes={"security": "is_granted('ROLE_USER')"},
  *     collectionOperations={
  *         "get": {"security": "object == user", "security_message": "Sorry, but you are not the book owner."},
- *         "post": {"security": "is_granted('ROLE_ADMIN')"},
- *         "register": {
- *             "method": "POST",
- *             "path": "/register",
- *             "controller"=RegistrationController::class,
- *         }
+ *         "post": {"security": "is_granted('ROLE_ANON')"}
  *     },
  *     itemOperations={
  *         "get": {"security": "is_granted('ROLE_USER') and object == user", "security_message": "Sorry, but you are not the book owner."},
- *         "put": {"security": "is_granted('ROLE_ADMIN') or object == user"},
+ *         "put": {"security": "is_granted('ROLE_ADMIN') or object == user"}
  *     }
  * )
  * @UniqueEntity(fields={"username"}, message="There is already an account with this username")
@@ -132,7 +127,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->tests = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }

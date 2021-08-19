@@ -43,7 +43,7 @@ final class UserApiTest extends ApiTestCase
                 'json' => [
                     'username' => 'apiTestUser',
                     'date' => '2021-07-20 04:10:47',
-                    'email' => 'mail@mail.ru',
+                    'email' => 'mail@app.test',
                     'plainPassword' => 'Privet78',
                 ],
             ]
@@ -55,7 +55,7 @@ final class UserApiTest extends ApiTestCase
             'username' => 'apiTestUser',
             'roles' => ['ROLE_USER'],
             'date' => '2021-07-20T04:10:47+00:00',
-            'email' => 'mail@mail.ru',
+            'email' => 'mail@app.test',
         ]);
         self::assertMatchesRegularExpression('~^/api/users/\d+$~', $response->toArray()['@id']);
     }
@@ -151,7 +151,9 @@ final class UserApiTest extends ApiTestCase
             'PUT',
             'http://localhost:8081/api/users/5',
             [
-                'auth_bearer' => $data['token'],
+                'headers' => [
+                    'Authorization' => sprintf('Bearer %s', $data['token']),
+                ],
                 'json' => [
                     'plainPassword' => 'Priv1234567890',
                 ],

@@ -49,6 +49,17 @@ api-cs-fix:
 api-fixtures:
 	docker-compose run --rm php-cli php ./bin/console doctrine:fixtures:load --no-interaction
 
+api-test-db-init: api-test-create-db api-test-migrate api-test-fixtures
+
+api-test-create-db:
+	docker-compose run --rm php-cli php ./bin/console doctrine:database:create --env=test
+
+api-test-migrate:
+	docker-compose run --rm php-cli php ./bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+api-test-fixtures:
+	docker-compose run --rm php-cli php ./bin/console doctrine:fixtures:load --env=test --no-interaction
+
 frontend-clear:
 	docker run --rm -v ${PWD}/frontend://var/www -w /var/www alpine sh -c 'rm -rf .ready build'
 
