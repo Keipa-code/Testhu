@@ -6,8 +6,10 @@ namespace App\DataPersister;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
+use DomainException;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -17,15 +19,18 @@ final class UserDataPersister implements ContextAwareDataPersisterInterface
     private EntityManagerInterface $entityManager;
     private UserPasswordHasherInterface $hasher;
     private EmailVerifier $emailVerifier;
+    private UserRepository $repository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
+        UserRepository $repository,
         UserPasswordHasherInterface $hasher,
         EmailVerifier $emailVerifier
     ) {
         $this->entityManager = $entityManager;
         $this->hasher = $hasher;
         $this->emailVerifier = $emailVerifier;
+        $this->repository = $repository;
     }
 
     public function supports($data, array $context = []): bool
@@ -44,7 +49,7 @@ final class UserDataPersister implements ContextAwareDataPersisterInterface
             );
             $data->eraseCredentials();
         }
-
+        $data->setUsername(mb_strtolower($data->getUserIdentifier()));
         $this->entityManager->persist($data);
         $this->entityManager->flush();
 

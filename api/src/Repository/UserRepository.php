@@ -38,6 +38,28 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
         $this->_em->flush();
     }
 
+    public function hasByEmail($email): bool
+    {
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->andWhere('u.email = :email')
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->getSingleScalarResult() > 0
+            ;
+    }
+
+    public function hasByUsername($username): bool
+    {
+        return $this->createQueryBuilder('u')
+                ->select('COUNT(u.id)')
+                ->andWhere('u.username = :username')
+                ->setParameter('username', $username)
+                ->getQuery()
+                ->getSingleScalarResult() > 0
+            ;
+    }
+
     // /**
     //  * @return User[] Returns an array of User objects
     //  */

@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Entity\User;
+use App\Service\TemplatedEmailFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,16 +17,17 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 class EmailVerifier
 {
     CONST VERIFY_URL = 'app_verify_email';
-    CONST EMAIL_FROM = 'bot@app.test';
-    CONST NAME_FROM = 'mailer bot';
-    CONST SUBJECT = 'Please Confirm your Email';
-    CONST HTML_TEMPLATE = 'registration/confirmation_email.html.twig';
 
     private $verifyEmailHelper;
     private $mailer;
     private $entityManager;
 
-    public function __construct(VerifyEmailHelperInterface $helper, MailerInterface $mailer, EntityManagerInterface $manager)
+    public function __construct
+    (
+        VerifyEmailHelperInterface $helper,
+        MailerInterface $mailer,
+        EntityManagerInterface $manager
+    )
     {
         $this->verifyEmailHelper = $helper;
         $this->mailer = $mailer;
@@ -45,11 +47,7 @@ class EmailVerifier
             ['id' => $user->getId()]
         );
 
-        $email = (new TemplatedEmail())
-            ->from(new Address(self::EMAIL_FROM, self::NAME_FROM))
-            ->to($user->getEmail())
-            ->subject(self::SUBJECT)
-            ->htmlTemplate(self::HTML_TEMPLATE);
+        $email = TemplatedEmailFactory::create($user->getEmail());
 
         $context = $email->getContext();
         $context['signedUrl'] = $signatureComponents->getSignedUrl();

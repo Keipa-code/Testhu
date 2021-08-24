@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use App\Tests\MailerClient;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 
 /**
@@ -33,8 +34,11 @@ final class UserApiTest extends ApiTestCase
         $this->token = $response->toArray()['token'];
     }
 
-    public function testCreateUser(): void
+    public function testCreateUserSuccess(): void
     {
+        $mailer = new MailerClient();
+        $mailer->clear();
+
         $response = self::createClient()->request(
             'POST',
             'http://localhost:8081/api/users',
@@ -58,6 +62,8 @@ final class UserApiTest extends ApiTestCase
             'email' => 'mail@app.test',
         ]);
         self::assertMatchesRegularExpression('~^/api/users/\d+$~', $response->toArray()['@id']);
+
+        $this->assertTrue($mailer->hasEmailSentTo('mail@app.test'));
     }
 
     public function testGetUser(): void
@@ -167,6 +173,42 @@ final class UserApiTest extends ApiTestCase
             '@type' => 'User',
             'id' => 5,
             'username' => 'myname',
+        ]);
+    }
+
+    public function testHasByUsernameTrue()
+    {
+        $response = self::createClient()->request(
+            'GET',
+            'http://localhost:8081/api/users?username=myname',
+            [
+                'auth_bearer' => $this->token
+            ]
+        );
+
+        $this->assertJsonContains([
+            'hydra:member' => [[
+                'username' => 'myname',
+                'email' => 'test@test.com'
+            ]],
+            ]);
+    }
+
+    public function testHasByEmailTrue()
+    {
+        $response = self::createClient()->request(
+            'GET',
+            'http://localhost:8081/api/users?email=test@test.com',
+            [
+                'auth_bearer' => $this->token
+            ]
+        );
+
+        $this->assertJsonContains([
+            'hydra:member' => [[
+                'username' => 'myname',
+                'email' => 'test@test.com'
+            ]],
         ]);
     }
 

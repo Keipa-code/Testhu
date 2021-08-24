@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -22,14 +24,15 @@ use App\Controller\RegistrationController;
  * @ApiResource(
  *     attributes={"security": "is_granted('ROLE_USER')"},
  *     collectionOperations={
- *         "get": {"security": "object == user", "security_message": "Sorry, but you are not the book owner."},
+ *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
  *         "post": {"security": "is_granted('ROLE_ANON')"}
  *     },
  *     itemOperations={
- *         "get": {"security": "is_granted('ROLE_USER') and object == user", "security_message": "Sorry, but you are not the book owner."},
+ *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
  *         "put": {"security": "is_granted('ROLE_ADMIN') or object == user"}
  *     }
  * )
+ * @ApiFilter(SearchFilter::class, properties={"username": "exact", "email": "exact"})
  * @UniqueEntity(fields={"username"}, message="There is already an account with this username")
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -74,7 +77,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $date;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=50, nullable=true, unique=true)
      * @Assert\Email(mode="loose", message="Веденные вами данные не являются email адресом")
      */
     private $email;
