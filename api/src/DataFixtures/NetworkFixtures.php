@@ -18,6 +18,7 @@ final class NetworkFixtures extends Fixture
     {
         $this->hasher = $hasher;
     }
+
     public function load(ObjectManager $manager): void
     {
         $user = new User();

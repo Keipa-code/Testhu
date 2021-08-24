@@ -1,34 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Security;
 
 use App\Entity\User;
 use App\Service\TemplatedEmailFactory;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\Security\Core\User\UserInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
-class EmailVerifier
+final class EmailVerifier
 {
-    CONST VERIFY_URL = 'app_verify_email';
+    public const VERIFY_URL = 'app_verify_email';
 
     private $verifyEmailHelper;
     private $mailer;
     private $entityManager;
 
-    public function __construct
-    (
+    public function __construct(
         VerifyEmailHelperInterface $helper,
         MailerInterface $mailer,
         EntityManagerInterface $manager
-    )
-    {
+    ) {
         $this->verifyEmailHelper = $helper;
         $this->mailer = $mailer;
         $this->entityManager = $manager;
@@ -42,7 +40,7 @@ class EmailVerifier
     {
         $signatureComponents = $this->verifyEmailHelper->generateSignature(
             self::VERIFY_URL,
-            $user->getId(),
+            (string)$user->getId(),
             $user->getEmail(),
             ['id' => $user->getId()]
         );
@@ -60,15 +58,15 @@ class EmailVerifier
     }
 
     /**
-     * @throws VerifyEmailExceptionInterface
      * @param User $user
+     * @throws VerifyEmailExceptionInterface
      */
     public function handleEmailConfirmation(Request $request, UserInterface $user): void
     {
         if ($user->getNewEmail()) {
             $user->setEmail($user->getNewEmail());
         }
-        $this->verifyEmailHelper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail());
+        $this->verifyEmailHelper->validateEmailConfirmation($request->getUri(), (string)$user->getId(), $user->getEmail());
 
         $user->setIsVerified(true);
 

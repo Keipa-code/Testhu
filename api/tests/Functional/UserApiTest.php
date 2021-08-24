@@ -56,14 +56,14 @@ final class UserApiTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(201);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
-            'username' => 'apiTestUser',
+            'username' => 'apitestuser',
             'roles' => ['ROLE_USER'],
             'date' => '2021-07-20T04:10:47+00:00',
             'email' => 'mail@app.test',
         ]);
         self::assertMatchesRegularExpression('~^/api/users/\d+$~', $response->toArray()['@id']);
 
-        $this->assertTrue($mailer->hasEmailSentTo('mail@app.test'));
+        self::assertTrue($mailer->hasEmailSentTo('mail@app.test'));
     }
 
     public function testGetUser(): void
@@ -128,7 +128,7 @@ final class UserApiTest extends ApiTestCase
         ]);
     }
 
-    public function testIncorrectPasswordFormat()
+    public function testIncorrectPasswordFormat(): void
     {
         $response = self::createClient()->request(
             'POST',
@@ -150,7 +150,7 @@ final class UserApiTest extends ApiTestCase
         ]);
     }
 
-    public function testChangePassword()
+    public function testChangePassword(): void
     {
         $data = $this->createAuthenticatedClient('myname', '12345678');
         $response = self::createClient()->request(
@@ -176,38 +176,38 @@ final class UserApiTest extends ApiTestCase
         ]);
     }
 
-    public function testHasByUsernameTrue()
+    public function testHasByUsernameTrue(): void
     {
         $response = self::createClient()->request(
             'GET',
             'http://localhost:8081/api/users?username=myname',
             [
-                'auth_bearer' => $this->token
+                'auth_bearer' => $this->token,
             ]
         );
 
         $this->assertJsonContains([
             'hydra:member' => [[
                 'username' => 'myname',
-                'email' => 'test@test.com'
+                'email' => 'test@test.com',
             ]],
-            ]);
+        ]);
     }
 
-    public function testHasByEmailTrue()
+    public function testHasByEmailTrue(): void
     {
         $response = self::createClient()->request(
             'GET',
             'http://localhost:8081/api/users?email=test@test.com',
             [
-                'auth_bearer' => $this->token
+                'auth_bearer' => $this->token,
             ]
         );
 
         $this->assertJsonContains([
             'hydra:member' => [[
                 'username' => 'myname',
-                'email' => 'test@test.com'
+                'email' => 'test@test.com',
             ]],
         ]);
     }

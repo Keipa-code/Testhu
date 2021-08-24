@@ -2,18 +2,17 @@
 
 declare(strict_types=1);
 
-
 namespace App\Service;
 
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mime\Address;
 
-class TemplatedEmailFactory
+final class TemplatedEmailFactory
 {
-    CONST EMAIL_FROM = 'bot@app.test';
-    CONST NAME_FROM = 'mailer bot';
-    CONST SUBJECT = 'Please Confirm your Email';
-    CONST HTML_TEMPLATE = 'registration/confirmation_email.html.twig';
+    public const EMAIL_FROM = 'bot@app.test';
+    public const NAME_FROM = 'mailer bot';
+    public const SUBJECT = 'Please Confirm your Email';
+    public const HTML_TEMPLATE = 'registration/confirmation_email.html.twig';
 
     public static function create($userEmail): TemplatedEmail
     {

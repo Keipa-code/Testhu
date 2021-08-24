@@ -1,32 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
-use DateTimeImmutable;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\AsController;
-use Symfony\Component\Mime\Address;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
-use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
-class RegistrationController extends AbstractController
+final class RegistrationController extends AbstractController
 {
     private EmailVerifier $emailVerifier;
 
     public function __construct(
         EmailVerifier $emailVerifier
-    )
-    {
+    ) {
         $this->emailVerifier = $emailVerifier;
     }
 
@@ -35,42 +27,46 @@ class RegistrationController extends AbstractController
     {
         $id = $request->get('id');
 
-        if(null === $id) {
+        if (null === $id) {
             return $this->json(
                 ['Error' => 'Не найден id'],
                 404,
                 ['headers' => [
-                    'Content-Type' => 'application/json'
-                ]]);
+                    'Content-Type' => 'application/json',
+                ]]
+            );
         }
 
         $user = $userRepository->find($id);
 
-        if(null === $user) {
+        if (null === $user) {
             return $this->json(
                 ['Error' => 'Не найден пользователь'],
                 404,
                 ['headers' => [
-                    'Content-Type' => 'application/json'
-                ]]);
+                    'Content-Type' => 'application/json',
+                ]]
+            );
         }
 
-        try{
+        try {
             $this->emailVerifier->handleEmailConfirmation($request, $user);
-        } catch (VerifyEmailExceptionInterface $e){
+        } catch (VerifyEmailExceptionInterface $e) {
             return $this->json(
                 ['Error' => 'Ссылка не работает'],
                 404,
                 ['headers' => [
-                    'Content-Type' => 'application/json'
-                ]]);
+                    'Content-Type' => 'application/json',
+                ]]
+            );
         }
 
         return $this->json(
             ['Success' => 'Почта успешно подтверждена'],
             200,
             ['headers' => [
-                'Content-Type' => 'application/json'
-            ]]);
+                'Content-Type' => 'application/json',
+            ]]
+        );
     }
 }

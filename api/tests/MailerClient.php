@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-
 namespace App\Tests;
-
 
 use GuzzleHttp\Client;
 
-class MailerClient
+final class MailerClient
 {
     public function __construct()
     {

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Entity;
 
 use App\Entity\User;
-use App\Service\PasswordHasher;
 use App\Tests\DatabaseDependantTestCase;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 
@@ -21,7 +20,6 @@ final class UserTest extends DatabaseDependantTestCase
         $this->loadFixtures([
             'App\DataFixtures\UserFixtures',
         ]);
-        $hasher = new PasswordHasher();
 
         $userRepository = $this->entityManager->getRepository(User::class);
         /** @var User $userRecord */
@@ -33,7 +31,6 @@ final class UserTest extends DatabaseDependantTestCase
         self::assertEquals('myname', $userRecord->getUsername());
         self::assertEquals('test@test.com', $userRecord->getEmail());
         self::assertEquals('2021-Jul-20 04:10:47', $userRecord->getDate()->format('Y-M-d h:i:s'));
-        self::assertTrue($hasher->validate('12345678', $userRecord->getPassword()));
         self::assertEquals('registered', $userRecord->getStatus());
         self::assertEquals('4ed161b5-0d3c-4f06-8381-5f14678e13da', $userRecord->getEmailConfirmationToken());
         self::assertEquals('4ed161b5-0d3c-4f06-8381-5f14678e1300', $userRecord->getPasswordResetToken());
