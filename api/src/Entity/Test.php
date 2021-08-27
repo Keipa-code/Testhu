@@ -10,24 +10,25 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=TestRepository::class)
- * @ApiResource(
- *     attributes={"security": "is_granted('ROLE_USER')"},
- *     collectionOperations={
- *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
- *         "post": {"security": "is_granted('ROLE_ANON') or object == user"}
- *     },
- *     itemOperations={
- *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
- *         "put": {"security": "is_granted('ROLE_ANON') or object == user"}
- *     }
- * )
  * Добавить метод для сравнения позиции вопросов. Не должно быть одинаковых.
  *
  * @internal
  */
+#[ApiResource(
+    itemOperations: [
+        'put' => [
+            'denormalization_context' => ['groups' =>['put:Test']]
+        ],
+        'get' => [
+            'normalization_context' => ['groups' => ['read:collection', 'read:item', 'read:Post']]
+        ]
+    ],
+    normalizationContext: ['groups' => ['read:collection']]
+)]
 class Test
 {
     /**
@@ -35,46 +36,55 @@ class Test
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Groups(['read:collection'])]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=500)
      */
+    #[Groups(['read:collection'])]
     private string $testName;
 
     /**
      * @ORM\Column(type="string", length=2000, nullable=true)
      */
+    #[Groups(['read:item'])]
     private ?string $description;
 
     /**
      * @ORM\Column(type="string", length=2000, nullable=true)
      */
+    #[Groups(['read:item'])]
     private ?string $rules;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
+    #[Groups(['read:collection'])]
     private ?DateTimeImmutable $date;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
+    #[Groups(['read:collection'])]
     private ?int $timeLimit;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Result", mappedBy="test")
      */
+    #[Groups(['read:item', 'put:Test'])]
     private $results;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Question", mappedBy="test")
      */
+    #[Groups(['read:item', 'put:Test'])]
     private $questions;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[Groups(['read:item'])]
     private $link;
 
     /**

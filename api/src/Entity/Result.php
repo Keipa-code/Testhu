@@ -8,6 +8,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ResultRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ResultRepository::class)
@@ -20,6 +21,7 @@ class Result
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Groups(['read:Post'])]
     private $id;
 
     /**
@@ -41,6 +43,7 @@ class Result
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[Groups(['read:Post'])]
     private $link;
 
     /**

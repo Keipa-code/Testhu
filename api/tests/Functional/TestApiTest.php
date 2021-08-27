@@ -59,13 +59,12 @@ class TestApiTest extends ApiTestCase
     {
         $response = self::createClient()->request(
             'PUT',
-            'http://localhost:8081/api/tests/9',
+            'http://localhost:8081/api/tests/2',
             [
                 'auth_bearer' => $this->token,
                 'json' => [
-                    'question' => [
-                        '/api/question/5'
-                    ]],
+                    'question' => ['/api/questions/2'],
+                ],
             ]
         );
         $this->assertResponseStatusCodeSame(200);
