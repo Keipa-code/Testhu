@@ -13,7 +13,17 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=TestRepository::class)
- * @ApiResource
+ * @ApiResource(
+ *     attributes={"security": "is_granted('ROLE_USER')"},
+ *     collectionOperations={
+ *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
+ *         "post": {"security": "is_granted('ROLE_ANON') or object == user"}
+ *     },
+ *     itemOperations={
+ *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
+ *         "put": {"security": "is_granted('ROLE_ANON') or object == user"}
+ *     }
+ * )
  * Добавить метод для сравнения позиции вопросов. Не должно быть одинаковых.
  *
  * @internal
@@ -28,17 +38,17 @@ class Test
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=500)
      */
-    private ?string $testName;
+    private string $testName;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=2000, nullable=true)
      */
     private ?string $description;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=2000, nullable=true)
      */
     private ?string $rules;
 
@@ -84,12 +94,12 @@ class Test
         return $this->id;
     }
 
-    public function getTestName(): ?string
+    public function getTestName(): string
     {
         return $this->testName;
     }
 
-    public function setTestName(?string $testName): self
+    public function setTestName(string $testName): self
     {
         $this->testName = $testName;
 
