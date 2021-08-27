@@ -38,8 +38,6 @@ class TestApiTest extends ApiTestCase
                 'json' => [
                     'testName' => 'apiTestTest',
                     'date' => '2021-07-20 04:10:47',
-                    'description' => 'Тест (от англ. test «испытание, проверка») или испытание — способ изучения глубинных процессов деятельности системы, посредством помещения системы в разные ситуации и отслеживание доступных наблюдению изменений в ней.',
-                    'rules' => '«Правила игры» (фр. La Règle du jeu) — художественный фильм режиссёра Жана Ренуара, снятый в 1939 году во Франции. На протяжении многих десятилетий признаётся киноведами и кинокритиками одним из высших достижений европейского кинематографа.',
                 ],
             ]
         );
@@ -47,34 +45,50 @@ class TestApiTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(201);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
-            'testName' => 'apiTestTest',
-            'date' => '2021-07-20T04:10:47+00:00',
-            'description' => 'Тест (от англ. test «испытание, проверка») или испытание — способ изучения глубинных процессов деятельности системы, посредством помещения системы в разные ситуации и отслеживание доступных наблюдению изменений в ней.',
-            'rules' => '«Правила игры» (фр. La Règle du jeu) — художественный фильм режиссёра Жана Ренуара, снятый в 1939 году во Франции. На протяжении многих десятилетий признаётся киноведами и кинокритиками одним из высших достижений европейского кинематографа.',
-        ]);
+            'testName' => 'Мой тест с результатом',
+            ]);
         self::assertMatchesRegularExpression('~^/api/tests/\d+$~', $response->toArray()['@id']);
     }
 
     public function testAddQuestion()
     {
-        $response = self::createClient()->request(
+        self::createClient()->request(
             'PUT',
             'http://localhost:8081/api/tests/2',
             [
                 'auth_bearer' => $this->token,
+                'headers' => [
+                    'accept' => 'application/ld+json',
+                    'Content-Type' => 'application/ld+json',
+                ],
                 'json' => [
-                    'question' => ['/api/questions/2'],
+                    'questions' => ['/api/questions/2'],
+                ],
+            ]
+        );
+
+        self::createClient()->request(
+            'GET',
+            'http://localhost:8081/api/tests/2',
+            [
+                'auth_bearer' => $this->token,
+                'headers' => [
+                    'accept' => 'application/ld+json',
                 ],
             ]
         );
         $this->assertResponseStatusCodeSame(200);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
-            'testName' => 'apiTestTest',
-            'date' => '2021-07-20T04:10:47+00:00',
-            'description' => 'Тест (от англ. test «испытание, проверка») или испытание — способ изучения глубинных процессов деятельности системы, посредством помещения системы в разные ситуации и отслеживание доступных наблюдению изменений в ней.',
-            'rules' => '«Правила игры» (фр. La Règle du jeu) — художественный фильм режиссёра Жана Ренуара, снятый в 1939 году во Франции. На протяжении многих десятилетий признаётся киноведами и кинокритиками одним из высших достижений европейского кинематографа.',
-        ]);
+            'testName' => 'Мой тест с результатом',
+            'questions' => [
+                [
+                    '@id' => '/api/questions/2',
+                    '@type' => 'Question',
+                    'id' => 2,
+                    'questionText' => NULL,
+                ]
+            ]]);
     }
 
     protected function createAuthenticatedClient($username = 'frontend_anonymous', $password = '12345678')

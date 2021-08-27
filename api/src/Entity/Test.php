@@ -36,13 +36,13 @@ class Test
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups(['read:collection'])]
+    #[Groups(['read:collection', 'read:item'])]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=500)
      */
-    #[Groups(['read:collection'])]
+    #[Groups(['read:collection', 'read:item'])]
     private string $testName;
 
     /**
@@ -60,13 +60,13 @@ class Test
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    #[Groups(['read:collection'])]
+    #[Groups(['read:collection', 'read:item'])]
     private ?DateTimeImmutable $date;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    #[Groups(['read:collection'])]
+    #[Groups(['read:collection', 'read:item'])]
     private ?int $timeLimit;
 
     /**
