@@ -21,7 +21,7 @@ class Result
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups(['read:Post'])]
+    #[Groups(['read:Test', 'read:User'])]
     private $id;
 
     /**
@@ -43,7 +43,7 @@ class Result
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    #[Groups(['read:Post'])]
+    #[Groups(['read:Test', 'read:User'])]
     private $link;
 
     /**

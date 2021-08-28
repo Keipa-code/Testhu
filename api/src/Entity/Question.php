@@ -22,13 +22,13 @@ class Question
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups(['read:Post'])]
+    #[Groups(['read:Test'])]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    #[Groups(['read:Post'])]
+    #[Groups(['read:Test'])]
     private $questionText;
 
     /**

@@ -31,8 +31,6 @@ final class UserTest extends DatabaseDependantTestCase
         self::assertEquals('myname', $userRecord->getUsername());
         self::assertEquals('test@test.com', $userRecord->getEmail());
         self::assertEquals('2021-Jul-20 04:10:47', $userRecord->getDate()->format('Y-M-d h:i:s'));
-        self::assertEquals('registered', $userRecord->getStatus());
-        self::assertEquals('4ed161b5-0d3c-4f06-8381-5f14678e13da', $userRecord->getEmailConfirmationToken());
         self::assertEquals('4ed161b5-0d3c-4f06-8381-5f14678e1300', $userRecord->getPasswordResetToken());
         self::assertEquals('new-test@test.com', $userRecord->getNewEmail());
         self::assertEquals('My test', $testRecord->getTestName());

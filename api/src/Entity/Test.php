@@ -11,9 +11,21 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=TestRepository::class)
+ * @ApiResource(
+ *     attributes={"security": "is_granted('ROLE_USER')"},
+ *     collectionOperations={
+ *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
+ *         "post": {"security": "is_granted('ROLE_ANON')"}
+ *     },
+ *     itemOperations={
+ *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
+ *         "put": {"security": "is_granted('ROLE_ADMIN') or object == user"}
+ *     }
+ * )
  * Добавить метод для сравнения позиции вопросов. Не должно быть одинаковых.
  *
  * @internal
@@ -24,9 +36,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'denormalization_context' => ['groups' =>['put:Test']]
         ],
         'get' => [
-            'normalization_context' => ['groups' => ['read:collection', 'read:item', 'read:Post']]
+            'normalization_context' => ['groups' => ['read:collection', 'read:item', 'read:Test']]
         ]
     ],
+    denormalizationContext: ['groups' => ['write:Test']],
     normalizationContext: ['groups' => ['read:collection']]
 )]
 class Test
@@ -36,37 +49,39 @@ class Test
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups(['read:collection', 'read:item'])]
+    #[Groups(['read:collection', 'read:item', 'read:User'])]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=500)
      */
-    #[Groups(['read:collection', 'read:item'])]
+    #[Groups(['read:collection', 'read:item', 'write:Test', 'read:User'])]
     private string $testName;
 
     /**
      * @ORM\Column(type="string", length=2000, nullable=true)
      */
-    #[Groups(['read:item'])]
+    #[Groups(['read:item', 'write:Test'])]
     private ?string $description;
 
     /**
      * @ORM\Column(type="string", length=2000, nullable=true)
      */
-    #[Groups(['read:item'])]
+    #[Groups(['read:item', 'write:Test'])]
     private ?string $rules;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    #[Groups(['read:collection', 'read:item'])]
+    #[Groups(['read:collection', 'read:item', 'write:Test'])]
     private ?DateTimeImmutable $date;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Assert\Regex(pattern="/^\d{1,43200}$/g",
+     * message="Имя пользователя может содержать только латинские символы и цифры")
      */
-    #[Groups(['read:collection', 'read:item'])]
+    #[Groups(['read:collection', 'read:item', 'write:Test'])]
     private ?int $timeLimit;
 
     /**
@@ -84,7 +99,7 @@ class Test
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    #[Groups(['read:item'])]
+    #[Groups(['read:item', 'write:Test'])]
     private $link;
 
     /**

@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -34,6 +35,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiFilter(SearchFilter::class, properties={"username": "exact", "email": "exact"})
  * @UniqueEntity(fields={"username"}, message="There is already an account with this username")
  */
+#[ApiResource(
+    itemOperations: [
+        'put' => [
+            'denormalization_context' => ['groups' => ['put:User']]
+        ],
+        'get' => [
+            'normalization_context' => ['groups' => ['read:item', 'read:User']]
+        ]
+    ],
+    denormalizationContext: ['groups' => ['write:Test']],
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
@@ -41,6 +53,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Groups(['read:item'])]
     private $id;
 
     /**
@@ -50,6 +63,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Assert\Regex(pattern="/^[a-zA-Z0-9]{2,30}$/u",
      * message="Имя пользователя может содержать только латинские символы и цифры")
      */
+    #[Groups(['read:item', 'write:Test'])]
     private $username;
 
     /**
@@ -68,28 +82,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *     message="Пароль не должен быть короче 8 символов и должен содержать хотя бы 1 большую и 1 маленькую букву алфавита, а также хотя бы 1 цифру"
      * )
      */
+    #[Groups(['write:Test', 'put:User'])]
     private $plainPassword;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
+    #[Groups(['read:item', 'write:Test'])]
     private $date;
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true, unique=true)
      * @Assert\Email(mode="loose", message="Веденные вами данные не являются email адресом")
      */
+    #[Groups(['read:item', 'write:Test'])]
     private $email;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $status;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $emailConfirmationToken;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -100,6 +107,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", length=50, nullable=true)
      * @Assert\Email(mode="loose", message="Веденные вами данные не являются email адресом")
      */
+    #[Groups(['put:User'])]
     private $newEmail;
 
     /**
@@ -110,11 +118,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\OneToMany(targetEntity=Result::class, mappedBy="user_id")
      */
+    #[Groups(['put:User', 'read:item'])]
     private $results;
 
     /**
      * @ORM\OneToMany(targetEntity=Test::class, mappedBy="user_id")
      */
+    #[Groups(['put:User', 'read:item'])]
     private $tests;
 
     /**
@@ -181,7 +191,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string | null
+    public function getPassword(): string|null
     {
         return $this->password;
     }
@@ -233,30 +243,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(?string $email): self
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    public function setStatus(?string $status): self
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    public function getEmailConfirmationToken(): ?string
-    {
-        return $this->emailConfirmationToken;
-    }
-
-    public function setEmailConfirmationToken(?string $emailConfirmationToken): self
-    {
-        $this->emailConfirmationToken = $emailConfirmationToken;
 
         return $this;
     }

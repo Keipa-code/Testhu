@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20210801033832 extends AbstractMigration
+final class Version20210828111206 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -36,11 +36,12 @@ final class Version20210801033832 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN result.date IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE tag (id INT NOT NULL, question_id INT DEFAULT NULL, tag_name VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_389B7831E27F6BF ON tag (question_id)');
-        $this->addSql('CREATE TABLE test (id INT NOT NULL, user_id INT DEFAULT NULL, test_name VARCHAR(255) DEFAULT NULL, description VARCHAR(255) DEFAULT NULL, rules VARCHAR(255) DEFAULT NULL, date TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, time_limit INT DEFAULT NULL, link VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE test (id INT NOT NULL, user_id INT DEFAULT NULL, test_name VARCHAR(500) NOT NULL, description VARCHAR(2000) DEFAULT NULL, rules VARCHAR(2000) DEFAULT NULL, date TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, time_limit INT DEFAULT NULL, link VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_D87F7E0CA76ED395 ON test (user_id)');
         $this->addSql('COMMENT ON COLUMN test.date IS \'(DC2Type:datetime_immutable)\'');
-        $this->addSql('CREATE TABLE "user" (id INT NOT NULL, username VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, date TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, email VARCHAR(255) DEFAULT NULL, status VARCHAR(255) DEFAULT NULL, email_confirmation_token VARCHAR(255) DEFAULT NULL, password_reset_token VARCHAR(255) DEFAULT NULL, new_email VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE "user" (id INT NOT NULL, username VARCHAR(180) NOT NULL, roles JSON DEFAULT NULL, password VARCHAR(255) DEFAULT NULL, date TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, email VARCHAR(50) DEFAULT NULL, password_reset_token VARCHAR(255) DEFAULT NULL, new_email VARCHAR(50) DEFAULT NULL, is_verified BOOLEAN NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649F85E0677 ON "user" (username)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649E7927C74 ON "user" (email)');
         $this->addSql('COMMENT ON COLUMN "user".date IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('ALTER TABLE network ADD CONSTRAINT FK_608487BCA76ED395 FOREIGN KEY (user_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE question ADD CONSTRAINT FK_B6F7494E1E5D0459 FOREIGN KEY (test_id) REFERENCES test (id) NOT DEFERRABLE INITIALLY IMMEDIATE');

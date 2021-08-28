@@ -91,7 +91,6 @@ final class UserApiTest extends ApiTestCase
             'username' => 'myname',
             'date' => '2021-07-20T04:10:47+00:00',
             'email' => 'test@test.com',
-            'status' => 'registered',
             'passwordResetToken' => '4ed161b5-0d3c-4f06-8381-5f14678e1300',
             'newEmail' => 'new-test@test.com',
             'network' => [
@@ -210,6 +209,92 @@ final class UserApiTest extends ApiTestCase
                 'email' => 'test@test.com',
             ]],
         ]);
+    }
+
+    public function testAddTestSuccess()
+    {
+        $data = $this->createAuthenticatedClient('myname', '12345678');
+
+        self::createClient()->request(
+            'PUT',
+            'http://localhost:8081/api/users/5',
+            [
+                'auth_bearer' => $data['token'],
+                'headers' => [
+                    'accept' => 'application/ld+json',
+                    'Content-Type' => 'application/ld+json',
+                ],
+                'json' => [
+                    'tests' => ['/api/tests/2'],
+                ],
+            ]
+        );
+        $this->assertResponseStatusCodeSame(200);
+
+        self::createClient()->request(
+            'GET',
+            'http://localhost:8081/api/users/5',
+            [
+                'auth_bearer' => $this->token,
+                'headers' => [
+                    'accept' => 'application/ld+json',
+                ],
+            ]
+        );
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertJsonContains([
+            'username' => 'myname',
+            'tests' => [
+                [
+                    '@id' => '/api/tests/2',
+                    '@type' => 'Test',
+                    'testName' => 'Мой тест с результатом',
+                ]
+            ]]);
+    }
+
+    public function testAddResultSuccess()
+    {
+        $data = $this->createAuthenticatedClient('myname', '12345678');
+
+        self::createClient()->request(
+            'PUT',
+            'http://localhost:8081/api/users/5',
+            [
+                'auth_bearer' => $data['token'],
+                'headers' => [
+                    'accept' => 'application/ld+json',
+                    'Content-Type' => 'application/ld+json',
+                ],
+                'json' => [
+                    'results' => ['/api/results/3'],
+                ],
+            ]
+        );
+        $this->assertResponseStatusCodeSame(200);
+
+        self::createClient()->request(
+            'GET',
+            'http://localhost:8081/api/users/5',
+            [
+                'auth_bearer' => $this->token,
+                'headers' => [
+                    'accept' => 'application/ld+json',
+                ],
+            ]
+        );
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertJsonContains([
+            'username' => 'myname',
+            'results' => [
+                [
+                    '@id' => '/api/results/3',
+                    '@type' => 'Result',
+                    'link' => 'https://result.com',
+                ]
+            ]]);
     }
 
     protected function createAuthenticatedClient($username = 'frontend_anonymous', $password = '12345678')
