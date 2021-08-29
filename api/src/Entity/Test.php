@@ -27,8 +27,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     }
  * )
  * Добавить метод для сравнения позиции вопросов. Не должно быть одинаковых.
- *
- * @internal
  */
 #[ApiResource(
     itemOperations: [

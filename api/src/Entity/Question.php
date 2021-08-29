@@ -13,8 +13,32 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=QuestionRepository::class)
- * @ApiResource
+ * @ApiResource(
+ *     attributes={"security": "is_granted('ROLE_USER')"},
+ *     collectionOperations={
+ *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
+ *         "post": {"security": "is_granted('ROLE_ANON')"}
+ *     },
+ *     itemOperations={
+ *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
+ *         "put": {"security": "is_granted('ROLE_ADMIN') or object == user"}
+ *     }
+ * )
+ * Добавить метод для сравнения позиции вопросов. Не должно быть одинаковых.
  */
+#[ApiResource(
+    itemOperations: [
+    'put' => [
+        'denormalization_context' => ['groups' =>['put:Question']]
+    ],
+    'get' => [
+        'normalization_context' => ['groups' => ['read:collection', 'read:item', 'read:Question']]
+    ]
+],
+    denormalizationContext: ['groups' => ['write:Question']],
+    forceEager: false,
+    normalizationContext: ['groups' => ['read:collection']],
+)]
 class Question
 {
     /**
@@ -22,50 +46,57 @@ class Question
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups(['read:Test'])]
+    #[Groups(['read:collection', 'read:item', 'read:Question', 'write:Question'])]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    #[Groups(['read:Test'])]
+    #[Groups(['read:collection', 'read:item', 'read:Question', 'write:Question'])]
     private $questionText;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * Добавить константы по разным типам вопроса
      */
+    #[Groups(['read:collection', 'read:item', 'write:Question'])]
     private $questionType;
 
     /**
      * @ORM\Column(type="json", nullable=true)
      */
+    #[Groups(['read:item', 'write:Question'])]
     private $variants = [];
 
     /**
      * @ORM\Column(type="json", nullable=true)
      */
+    #[Groups(['read:item', 'write:Question'])]
     private $answer = [];
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
+    #[Groups(['read:item', 'write:Question'])]
     private $points;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
+    #[Groups(['read:item', 'put:Question', 'write:Question'])]
     private $position;
 
     /**
      * @ORM\ManyToOne(targetEntity=Test::class, inversedBy="questions")
      */
+    #[Groups(['read:item', 'put:Question'])]
     private $test;
 
     /**
      * @ORM\OneToMany(targetEntity=Tag::class, mappedBy="question")
      * @ORM\JoinColumn(name="tag_id", referencedColumnName="id", nullable=true)
      */
+    #[Groups(['read:item'])]
     private $tags;
 
     public function __construct()
