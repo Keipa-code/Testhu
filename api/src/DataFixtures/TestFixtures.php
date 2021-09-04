@@ -6,6 +6,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Question;
 use App\Entity\Result;
+use App\Entity\Tag;
 use App\Entity\Test;
 use App\Entity\User;
 use DateTimeImmutable;
@@ -28,6 +29,13 @@ final class TestFixtures extends Fixture
         $user->setUsername('TestUser');
         $user->setPassword($this->hasher->hashPassword($user, '12345678'));
 
+
+        $tag1 = new Tag();
+        $tag1->setTagName('Физика');
+
+        $tag2 = new Tag();
+        $tag2->setTagName('Химия');
+
         $result = new Result();
         $result->setLink('https://result.com');
 
@@ -40,11 +48,15 @@ final class TestFixtures extends Fixture
         $test->setRules('Время прохождения теста 40 минут. Нужно выбирать один вариант');
         $test->setDate(new DateTimeImmutable('2021-07-20 06:10:47'));
         $test->setTimeLimit(60);
+        $test->addTag($tag1);
+        $test->addTag($tag2);
 
         $user->addTest($test);
         $test->addResult($result);
         $test->addQuestion($question);
 
+        $manager->persist($tag1);
+        $manager->persist($tag2);
         $manager->persist($user);
         $manager->persist($result);
         $manager->persist($question);

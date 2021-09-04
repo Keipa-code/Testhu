@@ -46,7 +46,6 @@ class QuestionApiTest extends ApiTestCase
                     ],
                     'points' => 50,
                     'position' => 2,
-                    'tags' => ['/api/tags/1', '/api/tags/2']
                 ],
             ]
         );
@@ -74,62 +73,8 @@ class QuestionApiTest extends ApiTestCase
             ],
             'points' => 50,
             'position' => 2,
-            'tags' => [
-                [
-                    '@id' => '/api/tags/1',
-                    '@type' => 'Tag',
-                    'id' => 1,
-                    'tagName' => 'Физика',
-                ],
-                [
-                    '@id' => '/api/tags/2',
-                    '@type' => 'Tag',
-                    'id' => 2,
-                    'tagName' => 'Химия',
-                ]],
         ]);
         self::assertMatchesRegularExpression('~^/api/questions/\d+$~', $response->toArray()['@id']);
-    }
-
-    public function testAddResultSuccess()
-    {
-        self::createClient()->request(
-            'PUT',
-            'http://localhost:8081/api/tests/4',
-            [
-                'auth_bearer' => $this->token,
-                'headers' => [
-                    'accept' => 'application/ld+json',
-                    'Content-Type' => 'application/ld+json',
-                ],
-                'json' => [
-                    'results' => ['/api/results/3'],
-                ],
-            ]
-        );
-        $this->assertResponseStatusCodeSame(200);
-
-        self::createClient()->request(
-            'GET',
-            'http://localhost:8081/api/tests/4',
-            [
-                'auth_bearer' => $this->token,
-                'headers' => [
-                    'accept' => 'application/ld+json',
-                ],
-            ]
-        );
-        $this->assertResponseStatusCodeSame(200);
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains([
-            'testName' => 'My test',
-            'results' => [
-                [
-                    '@id' => '/api/results/3',
-                    '@type' => 'Result',
-                    'link' => 'https://result.com',
-                ]
-            ]]);
     }
 
     protected function createAuthenticatedClient($username = 'frontend_anonymous', $password = '12345678')

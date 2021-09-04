@@ -27,6 +27,7 @@ final class TestTest extends DatabaseDependantTestCase
         $userRecord = $testRecord->getUserId();
         $resultRecord = $testRecord->getResults()->first();
         $questionRecord = $testRecord->getQuestions()->first();
+        $tag = $testRecord->getTags()->first();
 
         self::assertEquals('Мой тест', $testRecord->getTestName());
         self::assertEquals(
@@ -42,5 +43,6 @@ final class TestTest extends DatabaseDependantTestCase
         self::assertEquals('TestUser', $userRecord->getUsername());
         self::assertEquals('https://result.com', $resultRecord->getLink());
         self::assertEquals('one variant', $questionRecord->getQuestionType());
+        self::assertEquals('Физика', $tag->getTagName());
     }
 }

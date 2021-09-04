@@ -45,6 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ]
     ],
     denormalizationContext: ['groups' => ['write:User']],
+    forceEager: false,
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {

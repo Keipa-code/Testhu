@@ -92,18 +92,6 @@ class Question
     #[Groups(['read:item', 'put:Question'])]
     private $test;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Tag::class, mappedBy="questions")
-     * @ORM\JoinColumn(name="tag_id", referencedColumnName="id", nullable=true)
-     */
-    #[Groups(['read:item', 'write:Question'])]
-    private $tags;
-
-    public function __construct()
-    {
-        $this->tags = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -189,33 +177,6 @@ class Question
     public function setTest(?Test $test): self
     {
         $this->test = $test;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Tag[]
-     */
-    public function getTags(): Collection
-    {
-        return $this->tags;
-    }
-
-    public function addTag(?Tag $tag): self
-    {
-        if (!$this->tags->contains($tag)) {
-            $this->tags[] = $tag;
-            $tag->addQuestion($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTag(Tag $tag): self
-    {
-        if ($this->tags->removeElement($tag)) {
-            $tag->removeQuestion($this);
-        }
 
         return $this;
     }

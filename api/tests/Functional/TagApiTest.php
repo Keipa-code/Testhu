@@ -5,9 +5,10 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional;
 
+
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 
-class TestApiTest extends ApiTestCase
+final class TagApiTest extends ApiTestCase
 {
     private $token;
 
@@ -28,58 +29,43 @@ class TestApiTest extends ApiTestCase
         $this->token = $response->toArray()['token'];
     }
 
-    public function testCreateTestSuccess(): void
+    public function testCreateTagSuccess(): void
     {
         $response = self::createClient()->request(
             'POST',
-            'http://localhost:8081/api/tests',
+            'http://localhost:8081/api/tags',
             [
                 'auth_bearer' => $this->token,
                 'json' => [
-                    'testName' => 'apiTestTest',
-                    'date' => '2021-07-20 04:10:47',
-                    'tags' => ['/api/tags/1', '/api/tags/2']
+                    'tagName' => 'Музыка',
+                ],
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(201);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertJsonContains([
+            '@type' => 'Tag',
+            'tagName' => 'Музыка',
+        ]);
+        self::assertMatchesRegularExpression('~^/api/tags/\d+$~', $response->toArray()['@id']);
+    }
+
+    public function testAttachTagToTest()
+    {
+        $response = self::createClient()->request(
+            'POST',
+            'http://localhost:8081/api/tags',
+            [
+                'auth_bearer' => $this->token,
+                'json' => [
+                    'tagName' => 'Спорт',
                 ],
             ]
         );
 
         $this->assertResponseStatusCodeSame(201);
 
-        self::createClient()->request(
-            'GET',
-            'http://localhost:8081/api/tests/' . $response->toArray()['id'],
-            [
-                'auth_bearer' => $this->token,
-            ]
-        );
-
-        $this->assertResponseStatusCodeSame(200);
-
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains([
-            '@type' => 'Test',
-            'testName' => 'apiTestTest',
-            'date' => '2021-07-20T04:10:47+00:00',
-            'timeLimit' => NULL,
-            'tags' => [
-                [
-                    '@id' => '/api/tags/1',
-                    '@type' => 'Tag',
-                    'id' => 1,
-                    'tagName' => 'Физика',
-                ],
-                [
-                    '@id' => '/api/tags/2',
-                    '@type' => 'Tag',
-                    'id' => 2,
-                    'tagName' => 'Химия',
-                ]],
-        ]);
-        self::assertMatchesRegularExpression('~^/api/tests/\d+$~', $response->toArray()['@id']);
-    }
-
-    public function testAddQuestion()
-    {
         self::createClient()->request(
             'PUT',
             'http://localhost:8081/api/tests/2',
@@ -90,7 +76,7 @@ class TestApiTest extends ApiTestCase
                     'Content-Type' => 'application/ld+json',
                 ],
                 'json' => [
-                    'questions' => ['/api/questions/2'],
+                    'tags' => ['/api/tags/' . $response->toArray()['id']],
                 ],
             ]
         );
@@ -110,12 +96,9 @@ class TestApiTest extends ApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
             'testName' => 'Мой тест с результатом',
-            'questions' => [
+            'tags' => [
                 [
-                    '@id' => '/api/questions/2',
-                    '@type' => 'Question',
-                    'id' => 2,
-                    'questionText' => NULL,
+                    'tagName' => 'Спорт',
                 ]
             ]]);
     }

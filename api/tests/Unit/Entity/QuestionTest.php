@@ -25,7 +25,7 @@ final class QuestionTest extends DatabaseDependantTestCase
         /** @var Question $questionRecord */
         $questionRecord = $questionRepository->findOneBy(['questionType' => 'one variant']);
         $testRecord = $questionRecord->getTest();
-        $tag = $questionRecord->getTags()->first();
+
 
         self::assertEquals(
             'Два паравоза выехали из точкии А и Б. Какая марка у этих паравозов',
@@ -37,6 +37,5 @@ final class QuestionTest extends DatabaseDependantTestCase
         self::assertEquals(50, $questionRecord->getPoints());
         self::assertEquals(5, $questionRecord->getPosition());
         self::assertEquals('Мой тест', $testRecord->getTestName());
-        self::assertEquals('Физика', $tag->getTagName());
     }
 }

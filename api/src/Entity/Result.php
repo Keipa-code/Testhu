@@ -34,40 +34,36 @@ class Result
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups(['read:User', 'read:item'])]
+    #[Groups(['read:User'])]
     private $id;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    #[Groups(['write:Result', 'read:item'])]
     private $date;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Test", inversedBy="results")
      * @ORM\JoinColumn(name="test_id", referencedColumnName="id", nullable=true)
      */
-    #[Groups(['read:item'])]
     private $test;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    #[Groups(['write:Result', 'read:item'])]
     private $correctAnswersCount;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Assert\Url(message="Эта строка должна содержать ссылку на интернет ресурс. Например: https://ya.ru")
      */
-    #[Groups(['read:User', 'write:Result', 'read:item'])]
+    #[Groups(['read:User'])]
     private $link;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="results")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
      */
-    #[Groups(['read:item'])]
     private $user_id;
 
     public function getId(): ?int

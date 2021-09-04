@@ -27,11 +27,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ApiResource(
     itemOperations: [
-    'get' => [
-        'normalization_context' => ['groups' => ['read:collection', 'read:item']]
-    ]
+    'get'
 ],
-    denormalizationContext: ['groups' => ['write:Question']],
+    denormalizationContext: ['groups' => ['write:Tag']],
     normalizationContext: ['groups' => ['read:collection']]
 )]
 class Tag
@@ -41,24 +39,24 @@ class Tag
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups(['read:collection', 'read:item', 'read:Question'])]
+    #[Groups(['read:collection', 'read:Test'])]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=30)
-     * @Assert\Regex(pattern="/^[a-zа-яA-ZА-Я]{2,30}$/gu", message="Название может содержать только кириллицу, латиницу, знак '-' и не больше 30 символов")
+     * @Assert\Regex(pattern="/^[a-zа-яA-ZА-Я]{2,30}$/u", message="Название может содержать только кириллицу, латиницу, знак '-' и не больше 30 символов")
      */
-    #[Groups(['read:collection', 'read:item', 'read:Question'])]
+    #[Groups(['read:collection', 'read:Test', 'write:Tag'])]
     private $tagName;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Question::class, inversedBy="tags")
+     * @ORM\ManyToMany(targetEntity=Test::class, inversedBy="tags")
      */
-    private $questions;
+    private $tests;
 
     public function __construct()
     {
-        $this->questions = new ArrayCollection();
+        $this->tests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -79,27 +77,27 @@ class Tag
     }
 
     /**
-     * @return Collection|Question[]
+     * @return Collection|Test[]
      */
-    public function getQuestions(): Collection
+    public function getTests(): Collection
     {
-        return $this->questions;
+        return $this->tests;
     }
 
-    public function addQuestion(Question $question): self
+    public function addTest(Test $test): self
     {
-        if (!$this->questions->contains($question)) {
-            $this->questions[] = $question;
-            $question->addTag($this);
+        if (!$this->tests->contains($test)) {
+            $this->tests[] = $test;
+            $test->addTag($this);
         }
 
         return $this;
     }
 
-    public function removeQuestion(Question $question): self
+    public function removeTest(Test $test): self
     {
-        if ($this->questions->removeElement($question)) {
-            $question->removeTag($this);
+        if ($this->tests->removeElement($test)) {
+            $test->removeTag($this);
         }
 
         return $this;

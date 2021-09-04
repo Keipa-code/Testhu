@@ -38,6 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ]
     ],
     denormalizationContext: ['groups' => ['write:Test']],
+    forceEager: false,
     normalizationContext: ['groups' => ['read:collection']]
 )]
 class Test
@@ -85,7 +86,7 @@ class Test
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Result", mappedBy="test")
      */
-    #[Groups(['put:Test'])]
+    #[Groups(['put:Test', 'read:item'])]
     private $results;
 
     /**
@@ -106,10 +107,18 @@ class Test
      */
     private $user_id;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Tag::class, mappedBy="tests")
+     * @ORM\JoinColumn(name="tag_id", referencedColumnName="id", nullable=true)
+     */
+    #[Groups(['read:item', 'write:Test', 'put:Test'])]
+    private $tags;
+
     public function __construct()
     {
         $this->results = new ArrayCollection();
         $this->questions = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -257,6 +266,33 @@ class Test
     public function setUserId(?User $user_id): self
     {
         $this->user_id = $user_id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Tag[]
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(?Tag $tag): self
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags[] = $tag;
+            $tag->addTest($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): self
+    {
+        if ($this->tags->removeElement($tag)) {
+            $tag->removeTest($this);
+        }
 
         return $this;
     }
