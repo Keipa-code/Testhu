@@ -9,11 +9,24 @@ use App\Repository\ResultRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ResultRepository::class)
- * @ApiResource
+ * @ApiResource(
+ *     attributes={"security": "is_granted('ROLE_USER')"},
+ *     collectionOperations={
+ *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
+ *         "post": {"security": "is_granted('ROLE_ANON')"}
+ *     },
+ *     itemOperations={
+ *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
+ *         "put": {"security": "is_granted('ROLE_ADMIN')"}
+ *     }
+ * )
+ * Добавить метод для сравнения позиции вопросов. Не должно быть одинаковых.
  */
+
 class Result
 {
     /**
@@ -21,35 +34,40 @@ class Result
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups(['read:Test', 'read:User'])]
+    #[Groups(['read:User', 'read:item'])]
     private $id;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
+    #[Groups(['write:Result', 'read:item'])]
     private $date;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Test", inversedBy="results")
      * @ORM\JoinColumn(name="test_id", referencedColumnName="id", nullable=true)
      */
+    #[Groups(['read:item'])]
     private $test;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
+    #[Groups(['write:Result', 'read:item'])]
     private $correctAnswersCount;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Url(message="Эта строка должна содержать ссылку на интернет ресурс. Например: https://ya.ru")
      */
-    #[Groups(['read:Test', 'read:User'])]
+    #[Groups(['read:User', 'write:Result', 'read:item'])]
     private $link;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="results")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="results")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
      */
+    #[Groups(['read:item'])]
     private $user_id;
 
     public function getId(): ?int

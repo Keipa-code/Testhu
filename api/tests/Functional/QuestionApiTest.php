@@ -46,6 +46,7 @@ class QuestionApiTest extends ApiTestCase
                     ],
                     'points' => 50,
                     'position' => 2,
+                    'tags' => ['/api/tags/1', '/api/tags/2']
                 ],
             ]
         );
@@ -73,50 +74,21 @@ class QuestionApiTest extends ApiTestCase
             ],
             'points' => 50,
             'position' => 2,
+            'tags' => [
+                [
+                    '@id' => '/api/tags/1',
+                    '@type' => 'Tag',
+                    'id' => 1,
+                    'tagName' => 'Физика',
+                ],
+                [
+                    '@id' => '/api/tags/2',
+                    '@type' => 'Tag',
+                    'id' => 2,
+                    'tagName' => 'Химия',
+                ]],
         ]);
         self::assertMatchesRegularExpression('~^/api/questions/\d+$~', $response->toArray()['@id']);
-    }
-
-    public function testAddQuestion()
-    {
-        self::createClient()->request(
-            'PUT',
-            'http://localhost:8081/api/questions/2',
-            [
-                'auth_bearer' => $this->token,
-                'headers' => [
-                    'accept' => 'application/ld+json',
-                    'Content-Type' => 'application/ld+json',
-                ],
-                'json' => [
-                    'tag' => ['/api/questions/2'],
-                ],
-            ]
-        );
-        $this->assertResponseStatusCodeSame(200);
-
-        self::createClient()->request(
-            'GET',
-            'http://localhost:8081/api/questions/2',
-            [
-                'auth_bearer' => $this->token,
-                'headers' => [
-                    'accept' => 'application/ld+json',
-                ],
-            ]
-        );
-        $this->assertResponseStatusCodeSame(200);
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains([
-            'testName' => 'Мой тест с результатом',
-            'questions' => [
-                [
-                    '@id' => '/api/questions/2',
-                    '@type' => 'Question',
-                    'id' => 2,
-                    'questionText' => NULL,
-                ]
-            ]]);
     }
 
     public function testAddResultSuccess()

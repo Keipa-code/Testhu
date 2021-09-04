@@ -32,7 +32,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'denormalization_context' => ['groups' =>['put:Question']]
     ],
     'get' => [
-        'normalization_context' => ['groups' => ['read:collection', 'read:item', 'read:Question']]
+        'normalization_context' => ['groups' => ['read:collection', 'read:item']]
     ]
 ],
     denormalizationContext: ['groups' => ['write:Question']],
@@ -46,13 +46,13 @@ class Question
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups(['read:collection', 'read:item', 'read:Question', 'write:Question'])]
+    #[Groups(['read:collection', 'read:item', 'write:Question'])]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    #[Groups(['read:collection', 'read:item', 'read:Question', 'write:Question'])]
+    #[Groups(['read:collection', 'read:item', 'write:Question'])]
     private $questionText;
 
     /**
@@ -93,10 +93,10 @@ class Question
     private $test;
 
     /**
-     * @ORM\OneToMany(targetEntity=Tag::class, mappedBy="question")
+     * @ORM\ManyToMany(targetEntity=Tag::class, mappedBy="questions")
      * @ORM\JoinColumn(name="tag_id", referencedColumnName="id", nullable=true)
      */
-    #[Groups(['read:item'])]
+    #[Groups(['read:item', 'write:Question'])]
     private $tags;
 
     public function __construct()
@@ -205,7 +205,7 @@ class Question
     {
         if (!$this->tags->contains($tag)) {
             $this->tags[] = $tag;
-            $tag->setQuestion($this);
+            $tag->addQuestion($this);
         }
 
         return $this;
@@ -214,10 +214,7 @@ class Question
     public function removeTag(Tag $tag): self
     {
         if ($this->tags->removeElement($tag)) {
-            // set the owning side to null (unless already changed)
-            if ($tag->getQuestion() === $this) {
-                $tag->setQuestion(null);
-            }
+            $tag->removeQuestion($this);
         }
 
         return $this;

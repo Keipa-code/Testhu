@@ -44,7 +44,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'normalization_context' => ['groups' => ['read:item', 'read:User']]
         ]
     ],
-    denormalizationContext: ['groups' => ['write:Test']],
+    denormalizationContext: ['groups' => ['write:User']],
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -63,7 +63,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Assert\Regex(pattern="/^[a-zA-Z0-9]{2,30}$/u",
      * message="Имя пользователя может содержать только латинские символы и цифры")
      */
-    #[Groups(['read:item', 'write:Test'])]
+    #[Groups(['read:item', 'write:User'])]
     private $username;
 
     /**
@@ -82,20 +82,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *     message="Пароль не должен быть короче 8 символов и должен содержать хотя бы 1 большую и 1 маленькую букву алфавита, а также хотя бы 1 цифру"
      * )
      */
-    #[Groups(['write:Test', 'put:User'])]
+    #[Groups(['write:User', 'put:User'])]
     private $plainPassword;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    #[Groups(['read:item', 'write:Test'])]
+    #[Groups(['read:item', 'write:User'])]
     private $date;
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true, unique=true)
      * @Assert\Email(mode="loose", message="Веденные вами данные не являются email адресом")
      */
-    #[Groups(['read:item', 'write:Test'])]
+    #[Groups(['read:item', 'write:User'])]
     private $email;
 
     /**
@@ -118,7 +118,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\OneToMany(targetEntity=Result::class, mappedBy="user_id")
      */
-    #[Groups(['put:User', 'read:item'])]
+    #[Groups(['put:User', 'read:item', 'write:User'])]
     private $results;
 
     /**

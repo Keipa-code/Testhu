@@ -6,6 +6,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TagRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -50,12 +52,13 @@ class Tag
     private $tagName;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Question::class, inversedBy="tags")
+     * @ORM\ManyToMany(targetEntity=Question::class, inversedBy="tags")
      */
-    private $question;
+    private $questions;
 
     public function __construct()
     {
+        $this->questions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -75,14 +78,29 @@ class Tag
         return $this;
     }
 
-    public function getQuestion(): ?Question
+    /**
+     * @return Collection|Question[]
+     */
+    public function getQuestions(): Collection
     {
-        return $this->question;
+        return $this->questions;
     }
 
-    public function setQuestion(?Question $question): self
+    public function addQuestion(Question $question): self
     {
-        $this->question = $question;
+        if (!$this->questions->contains($question)) {
+            $this->questions[] = $question;
+            $question->addTag($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuestion(Question $question): self
+    {
+        if ($this->questions->removeElement($question)) {
+            $question->removeTag($this);
+        }
 
         return $this;
     }

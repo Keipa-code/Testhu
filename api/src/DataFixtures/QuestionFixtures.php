@@ -17,8 +17,11 @@ final class QuestionFixtures extends Fixture
         $test = new Test();
         $test->setTestName('Мой тест');
 
-        $tag = new Tag();
-        $tag->setTagName('Физика');
+        $tag1 = new Tag();
+        $tag1->setTagName('Физика');
+
+        $tag2 = new Tag();
+        $tag2->setTagName('Химия');
 
         $question = new Question();
         $question->setQuestionText('Два паравоза выехали из точкии А и Б. Какая марка у этих паравозов');
@@ -27,11 +30,13 @@ final class QuestionFixtures extends Fixture
         $question->setAnswer(['BMW']);
         $question->setPoints(50);
         $question->setPosition(5);
-        $question->addTag($tag);
+        $question->addTag($tag1);
+        $question->addTag($tag2);
 
         $test->addQuestion($question);
 
-        $manager->persist($tag);
+        $manager->persist($tag1);
+        $manager->persist($tag2);
         $manager->persist($question);
         $manager->persist($test);
 

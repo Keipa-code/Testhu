@@ -47,13 +47,13 @@ class Test
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups(['read:collection', 'read:item', 'read:User'])]
+    #[Groups(['read:collection', 'read:item', 'read:User', 'read:Result'])]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=500)
      */
-    #[Groups(['read:collection', 'read:item', 'write:Test', 'read:User'])]
+    #[Groups(['read:collection', 'read:item', 'write:Test', 'read:User', 'read:Result'])]
     private string $testName;
 
     /**
@@ -76,7 +76,7 @@ class Test
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Assert\Regex(pattern="/^\d{1,43200}$/g",
+     * @Assert\Regex(pattern="/^\d{1,43200}$/",
      * message="Имя пользователя может содержать только латинские символы и цифры")
      */
     #[Groups(['read:collection', 'read:item', 'write:Test'])]
@@ -85,7 +85,7 @@ class Test
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Result", mappedBy="test")
      */
-    #[Groups(['read:item', 'put:Test'])]
+    #[Groups(['put:Test'])]
     private $results;
 
     /**
