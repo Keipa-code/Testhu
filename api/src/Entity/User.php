@@ -28,33 +28,30 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         "post": {"security": "is_granted('ROLE_ANON')"}
  *     },
  *     itemOperations={
- *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
- *         "put": {"security": "is_granted('ROLE_ADMIN') or object == user"}
- *     }
+ *         "get": {
+ *             "security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')",
+ *             "security_message": "Sorry, but you are not the book owner.",
+ *             "normalization_context": {"groups"={"read:item", "read:User"}
+ *         },
+ *         "put": {
+ *             "security": "is_granted('ROLE_ADMIN') or object == user",
+ *             "denormalization_context": {"groups"={"put:User"}
+ *         }
+ *     },
+ *     denormalizationContext={"groups"={"write:User"}},
+ *     forceEager=false
  * )
  * @ApiFilter(SearchFilter::class, properties={"username": "exact", "email": "exact"})
  * @UniqueEntity(fields={"username"}, message="There is already an account with this username")
  */
-#[ApiResource(
-    itemOperations: [
-        'put' => [
-            'denormalization_context' => ['groups' => ['put:User']]
-        ],
-        'get' => [
-            'normalization_context' => ['groups' => ['read:item', 'read:User']]
-        ]
-    ],
-    denormalizationContext: ['groups' => ['write:User']],
-    forceEager: false,
-)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read:item"})
      */
-    #[Groups(['read:item'])]
     private $id;
 
     /**
@@ -63,8 +60,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Assert\Length(min=2, minMessage="Имя пользователя не должно быть короче 2 символов")
      * @Assert\Regex(pattern="/^[a-zA-Z0-9]{2,30}$/u",
      * message="Имя пользователя может содержать только латинские символы и цифры")
+     * @Groups({"read:item", "write:User"})
      */
-    #[Groups(['read:item', 'write:User'])]
     private $username;
 
     /**
@@ -82,21 +79,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *     pattern="/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/",
      *     message="Пароль не должен быть короче 8 символов и должен содержать хотя бы 1 большую и 1 маленькую букву алфавита, а также хотя бы 1 цифру"
      * )
+     * @Groups({"put:User", "write:User"})
      */
-    #[Groups(['write:User', 'put:User'])]
     private $plainPassword;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"read:item", "write:User"})
      */
-    #[Groups(['read:item', 'write:User'])]
     private $date;
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true, unique=true)
      * @Assert\Email(mode="loose", message="Веденные вами данные не являются email адресом")
+     * @Groups({"read:item", "write:User"})
      */
-    #[Groups(['read:item', 'write:User'])]
     private $email;
 
     /**
@@ -107,8 +104,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
      * @Assert\Email(mode="loose", message="Веденные вами данные не являются email адресом")
+     * @Groups({"put:User"})
      */
-    #[Groups(['put:User'])]
     private $newEmail;
 
     /**
@@ -118,14 +115,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=Result::class, mappedBy="user_id")
+     * @Groups({"put:User", "read:item", "write:User"})
      */
-    #[Groups(['put:User', 'read:item', 'write:User'])]
     private $results;
 
     /**
      * @ORM\OneToMany(targetEntity=Test::class, mappedBy="user_id")
+     * @Groups({"put:User", "read:item"})
      */
-    #[Groups(['put:User', 'read:item'])]
     private $tests;
 
     /**
