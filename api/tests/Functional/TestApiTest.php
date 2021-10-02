@@ -66,13 +66,13 @@ class TestApiTest extends ApiTestCase
                     '@id' => '/api/tags/1',
                     '@type' => 'Tag',
                     'id' => 1,
-                    'tagName' => 'Физика',
+                    'tagName' => 'Математика',
                 ],
                 [
                     '@id' => '/api/tags/2',
                     '@type' => 'Tag',
                     'id' => 2,
-                    'tagName' => 'Химия',
+                    'tagName' => 'Физика',
                 ]],
         ]);
         self::assertMatchesRegularExpression('~^/api/tests/\d+$~', $response->toArray()['@id']);
@@ -111,12 +111,7 @@ class TestApiTest extends ApiTestCase
         $this->assertJsonContains([
             'testName' => 'Мой тест с результатом',
             'questions' => [
-                [
-                    '@id' => '/api/questions/2',
-                    '@type' => 'Question',
-                    'id' => 2,
-                    'questionText' => NULL,
-                ]
+                '/api/questions/2'
             ]]);
     }
 
@@ -151,7 +146,7 @@ class TestApiTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(200);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
-            'testName' => 'My test',
+            'testName' => 'Мой тест',
             'results' => ['/api/results/3']
         ]);
     }

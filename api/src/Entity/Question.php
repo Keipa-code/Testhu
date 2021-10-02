@@ -11,85 +11,66 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass=QuestionRepository::class)
- * @ApiResource(
- *     attributes={"security": "is_granted('ROLE_USER')"},
- *     collectionOperations={
- *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
- *         "post": {"security": "is_granted('ROLE_ANON')"}
- *     },
- *     itemOperations={
- *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
- *         "put": {"security": "is_granted('ROLE_ADMIN') or object == user"}
- *     }
- * )
- * Добавить метод для сравнения позиции вопросов. Не должно быть одинаковых.
- */
+
+#[ORM\Entity(repositoryClass: QuestionRepository::class)]
 #[ApiResource(
+    collectionOperations: [
+    'get' => [
+        'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
+    ],
+    'post' => [
+        'security' => "is_granted('ROLE_ANON')"
+    ],
+],
     itemOperations: [
     'put' => [
-        'denormalization_context' => ['groups' =>['put:Question']]
+        'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
     ],
     'get' => [
-        'normalization_context' => ['groups' => ['read:collection', 'read:item']]
+        'security' => "is_granted('ROLE_USER') or object == user"
     ]
 ],
-    denormalizationContext: ['groups' => ['write:Question']],
-    forceEager: false,
-    normalizationContext: ['groups' => ['read:collection']],
+    denormalizationContext: ['groups' => ['questions:write']],
+    normalizationContext: ['groups' => ['questions:read']]
 )]
 class Question
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    #[Groups(['read:collection', 'read:item', 'write:Question'])]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    #[Groups(['questions:read', 'questions:write'])]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    #[Groups(['read:collection', 'read:item', 'write:Question'])]
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    #[Groups(['questions:read', 'questions:write'])]
     private $questionText;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
      * Добавить константы по разным типам вопроса
      */
-    #[Groups(['read:collection', 'read:item', 'write:Question'])]
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    #[Groups(['questions:read', 'questions:write'])]
     private $questionType;
 
-    /**
-     * @ORM\Column(type="json", nullable=true)
-     */
-    #[Groups(['read:item', 'write:Question'])]
+    #[ORM\Column(type: "json", nullable: true)]
+    #[Groups(['questions:read', 'questions:write'])]
     private $variants = [];
 
-    /**
-     * @ORM\Column(type="json", nullable=true)
-     */
-    #[Groups(['read:item', 'write:Question'])]
+    #[ORM\Column(type: "json", nullable: true)]
+    #[Groups(['questions:read', 'questions:write'])]
     private $answer = [];
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    #[Groups(['read:item', 'write:Question'])]
+    #[ORM\Column(type: "integer", nullable: true)]
+    #[Groups(['questions:read', 'questions:write'])]
     private $points;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    #[Groups(['read:item', 'put:Question', 'write:Question'])]
+    #[ORM\Column(type: "integer", nullable: true)]
+    #[Groups(['questions:read', 'questions:write'])]
     private $position;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Test::class, inversedBy="questions")
-     */
-    #[Groups(['read:item', 'put:Question'])]
+    #[ORM\ManyToOne(targetEntity: Test::class, inversedBy: "questions")]
+    #[ORM\JoinColumn(name: "test", referencedColumnName: "id", nullable: true)]
+    #[Groups(['questions:read', 'questions:write'])]
     private $test;
 
     public function getId(): ?int

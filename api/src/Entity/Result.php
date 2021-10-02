@@ -11,59 +11,50 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=ResultRepository::class)
- * @ApiResource(
- *     attributes={"security": "is_granted('ROLE_USER')"},
- *     collectionOperations={
- *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
- *         "post": {"security": "is_granted('ROLE_ANON')"}
- *     },
- *     itemOperations={
- *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
- *         "put": {"security": "is_granted('ROLE_ADMIN')"}
- *     }
- * )
- * Добавить метод для сравнения позиции вопросов. Не должно быть одинаковых.
- */
-
+#[ORM\Entity(repositoryClass: ResultRepository::class)]
+#[ApiResource(
+    collectionOperations: [
+    'get' => [
+        'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
+    ],
+    'post' => [
+        'security' => "is_granted('ROLE_ANON')"
+    ],
+],
+    itemOperations: [
+    'put' => [
+        'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
+    ],
+    'get' => [
+        'security' => "is_granted('ROLE_USER') or object == user"
+    ]
+],
+)]
 class Result
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    #[Groups(['read:User'])]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    #[Groups(['users:read'])]
     private $id;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     */
+    #[Orm\Column(type: "datetime_immutable", nullable: true)]
     private $date;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Test", inversedBy="results")
-     * @ORM\JoinColumn(name="test_id", referencedColumnName="id", nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Test", inversedBy: "results")]
+    #[ORM\JoinColumn(name: "test_id", referencedColumnName: "id", nullable: true)]
     private $test;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: "integer", nullable: true)]
     private $correctAnswersCount;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\Url(message="Эта строка должна содержать ссылку на интернет ресурс. Например: https://ya.ru")
-     */
-    #[Groups(['read:User'])]
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    #[Assert\Url(message: "Эта строка должна содержать ссылку на интернет ресурс. Например: https://ya.ru")]
+    #[Groups(['users:read'])]
     private $link;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="results")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\User", inversedBy: "results")]
+    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: true)]
     private $user_id;
 
     public function getId(): ?int

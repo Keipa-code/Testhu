@@ -57,7 +57,6 @@ final class UserApiTest extends ApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
             'username' => 'apitestuser',
-            'roles' => ['ROLE_USER'],
             'date' => '2021-07-20T04:10:47+00:00',
             'email' => 'mail@app.test',
         ]);
@@ -97,10 +96,16 @@ final class UserApiTest extends ApiTestCase
                 '/api/networks/2',
             ],
             'results' => [
-                '/api/results/3',
+                0 => [
+                        '@type' => 'Result',
+                        'link' => 'https://result.com',
+                    ],
             ],
             'tests' => [
-                '/api/tests/4',
+                0 => [
+                    '@type' => 'Test',
+                    'testName' => 'My test',
+                ],
             ],
         ]);
     }

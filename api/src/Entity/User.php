@@ -18,116 +18,93 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ORM\Table(name="`user`")
- * @ApiResource(
- *     attributes={"security": "is_granted('ROLE_USER')"},
- *     collectionOperations={
- *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
- *         "post": {"security": "is_granted('ROLE_ANON')"}
- *     },
- *     itemOperations={
- *         "get": {
- *             "security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')",
- *             "security_message": "Sorry, but you are not the book owner.",
- *             "normalization_context": {"groups"={"read:item", "read:User"}
- *         },
- *         "put": {
- *             "security": "is_granted('ROLE_ADMIN') or object == user",
- *             "denormalization_context": {"groups"={"put:User"}
- *         }
- *     },
- *     denormalizationContext={"groups"={"write:User"}},
- *     forceEager=false
- * )
- * @ApiFilter(SearchFilter::class, properties={"username": "exact", "email": "exact"})
- * @UniqueEntity(fields={"username"}, message="There is already an account with this username")
- */
+
+#[ORM\Entity(repositoryClass: UserRepository::class), ORM\Table(name: "`user`")]
+#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
+#[
+    ApiResource(
+        collectionOperations: [
+        'get' => [
+            'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')",
+        ],
+        'post' => [
+            'security' => "is_granted('ROLE_ANON')",
+        ]
+    ],
+        itemOperations: [
+        'get' => [
+            'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')",
+        ],
+        'put' => [
+            'security' => "is_granted('ROLE_USER') or object == user",
+        ]
+    ],
+        denormalizationContext: ['groups' => ['users:write']],
+        normalizationContext: ['groups' => ['users:read']],
+    )]
+#[ApiFilter(SearchFilter::class, properties: ['username' => 'exact', 'email' => 'exact'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     * @Groups({"read:item"})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    #[Groups(['users:read'])]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     * @Assert\NotBlank
-     * @Assert\Length(min=2, minMessage="Имя пользователя не должно быть короче 2 символов")
-     * @Assert\Regex(pattern="/^[a-zA-Z0-9]{2,30}$/u",
-     * message="Имя пользователя может содержать только латинские символы и цифры")
-     * @Groups({"read:item", "write:User"})
-     */
+    #[ORM\Column(type: "string", length: 180, unique: true)]
+    #[Groups(['users:read', 'users:write'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 2, max: 30, minMessage: 'Имя пользователя не должно быть короче 2 символов')]
+    #[Assert\Regex(pattern: "/^[a-zA-Z0-9]{2,30}$/u",
+        message: 'Имя пользователя может содержать только латинские символы и цифры'),
+    ]
     private $username;
 
-    /**
-     * @ORM\Column(type="json", nullable=true)
-     */
+    #[Orm\Column(type: "json", nullable: true)]
     private $roles = [];
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[Orm\Column(type: "string", nullable: true)]
     private $password;
 
-    /**
-     * @Assert\Regex(
-     *     pattern="/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/",
-     *     message="Пароль не должен быть короче 8 символов и должен содержать хотя бы 1 большую и 1 маленькую букву алфавита, а также хотя бы 1 цифру"
-     * )
-     * @Groups({"put:User", "write:User"})
-     */
+    #[Groups(['users:read', 'users:write'])]
+    #[Assert\Regex(
+        pattern: "/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/",
+        message: "Пароль не должен быть короче 8 символов и должен содержать "
+        . "хотя бы 1 большую и 1 маленькую букву алфавита, а также хотя бы 1 цифру"
+    )]
     private $plainPassword;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"read:item", "write:User"})
-     */
+    #[Orm\Column(type: "datetime_immutable", nullable: true)]
+    #[Groups(['users:read', 'users:write'])]
     private $date;
 
-    /**
-     * @ORM\Column(type="string", length=50, nullable=true, unique=true)
-     * @Assert\Email(mode="loose", message="Веденные вами данные не являются email адресом")
-     * @Groups({"read:item", "write:User"})
-     */
+    #[Orm\Column(type: "string", length: 50, unique: true, nullable: true)]
+    #[Groups(['users:read', 'users:write'])]
+    #[Assert\Email(message: "Веденные вами данные не являются email адресом", mode: "loose")]
     private $email;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[Orm\Column(type: "string", length: 250, nullable: true)]
+    #[Groups(['users:read'])]
     private $passwordResetToken;
 
-    /**
-     * @ORM\Column(type="string", length=50, nullable=true)
-     * @Assert\Email(mode="loose", message="Веденные вами данные не являются email адресом")
-     * @Groups({"put:User"})
-     */
+    #[Orm\Column(type: "string", length: 50, unique: true, nullable: true)]
+    #[Groups(['users:read', 'users:write'])]
+    #[Assert\Email(message: "Веденные вами данные не являются email адресом", mode: "loose")]
     private $newEmail;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Network::class, mappedBy="user_id")
-     */
+    #[ORM\OneToMany(mappedBy: "user_id", targetEntity: Network::class)]
+    #[Groups(['users:read', 'users:write'])]
     private $network;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Result::class, mappedBy="user_id")
-     * @Groups({"put:User", "read:item", "write:User"})
-     */
+    #[ORM\OneToMany(mappedBy: "user_id", targetEntity: Result::class)]
+    #[Groups(['users:read', 'users:write'])]
     private $results;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Test::class, mappedBy="user_id")
-     * @Groups({"put:User", "read:item"})
-     */
+    #[ORM\OneToMany(mappedBy: "user_id", targetEntity: Test::class)]
+    #[Groups(['users:read', 'users:write'])]
     private $tests;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: "boolean")]
     private $isVerified = false;
 
     public function __construct()

@@ -8,33 +8,23 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\NetworkRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=NetworkRepository::class)
- * @ApiResource
- */
+#[ORM\Entity(repositoryClass: NetworkRepository::class)]
+#[ApiResource]
 class Network
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $name;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $identity;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="network")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "questions")]
+    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: true)]
     private $user_id;
 
     public function getId(): ?int

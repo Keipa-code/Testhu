@@ -12,46 +12,39 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=TagRepository::class)
- * @ApiResource(
- *     attributes={"security": "is_granted('ROLE_USER')"},
- *     collectionOperations={
- *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
- *         "post": {"security": "is_granted('ROLE_USER')"}
- *     },
- *     itemOperations={
- *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."}
- *     }
- * )
- */
+#[ORM\Entity(repositoryClass: TagRepository::class)]
 #[ApiResource(
+    collectionOperations: [
+        'get' => [
+            'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
+        ],
+        'post' => [
+            'security' => "is_granted('ROLE_USER')"
+        ]
+    ],
     itemOperations: [
-    'get'
-],
-    denormalizationContext: ['groups' => ['write:Tag']],
-    normalizationContext: ['groups' => ['read:collection']]
+        'get' => [
+            'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
+        ]    
+    ],
+    denormalizationContext: ['groups' => ['tags:write']],
+    normalizationContext: ['groups' => ['tags:write']]
 )]
 class Tag
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    #[Groups(['read:collection', 'read:Test'])]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    #[Groups(['tags:write', 'tests:read'])]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=30)
-     * @Assert\Regex(pattern="/^[a-zа-яA-ZА-Я]{2,30}$/u", message="Название может содержать только кириллицу, латиницу, знак '-' и не больше 30 символов")
-     */
-    #[Groups(['read:collection', 'read:Test', 'write:Tag'])]
+    #[ORM\Column(type: "string", length: 30)]
+    #[Assert\Regex(pattern: "/^[a-zа-яA-ZА-Я]{2,30}$/u",
+        message: "Название может содержать только кириллицу, латиницу, знак '-' и не больше 30 символов")]
+    #[Groups(['tags:write', 'tests:read', 'tags:write'])]
     private $tagName;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Test::class, inversedBy="tags")
-     */
+    #[ORM\ManyToMany(targetEntity: Test::class, inversedBy: "tags")]
     private $tests;
 
     public function __construct()

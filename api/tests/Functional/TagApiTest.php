@@ -134,7 +134,7 @@ final class TagApiTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(200);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
-            'testName' => 'My test',
+            'testName' => 'Мой тест',
             'results' => ['/api/results/3']
         ]);
     }

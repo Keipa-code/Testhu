@@ -13,105 +13,79 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=TestRepository::class)
- * @ApiResource(
- *     attributes={"security": "is_granted('ROLE_USER')"},
- *     collectionOperations={
- *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
- *         "post": {"security": "is_granted('ROLE_ANON')"}
- *     },
- *     itemOperations={
- *         "get": {"security": "is_granted('ROLE_USER') or is_granted('ROLE_ANON')", "security_message": "Sorry, but you are not the book owner."},
- *         "put": {"security": "is_granted('ROLE_ADMIN') or object == user"}
- *     }
- * )
- * Добавить метод для сравнения позиции вопросов. Не должно быть одинаковых.
- */
+#[ORM\Entity(repositoryClass: TestRepository::class)]
 #[ApiResource(
+    collectionOperations: [
+        'get' => [
+            'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
+        ],
+        'post' => [
+            'security' => "is_granted('ROLE_ANON')"
+        ],
+    ],
     itemOperations: [
         'put' => [
-            'denormalization_context' => ['groups' =>['put:Test']]
+            'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
         ],
         'get' => [
-            'normalization_context' => ['groups' => ['read:collection', 'read:item', 'read:Test']]
+            'security' => "is_granted('ROLE_USER') or object == user"
         ]
     ],
-    denormalizationContext: ['groups' => ['write:Test']],
-    forceEager: false,
-    normalizationContext: ['groups' => ['read:collection']]
+    denormalizationContext: ['groups' => ['tests:write']],
+    normalizationContext: ['groups' => ['tests:read']]
 )]
 class Test
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    #[Groups(['read:collection', 'read:item', 'read:User', 'read:Result'])]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    #[Groups(['tests:read', 'users:read'])]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=500)
-     */
-    #[Groups(['read:collection', 'read:item', 'write:Test', 'read:User', 'read:Result'])]
+
+    #[ORM\Column(type: "string", length: 500)]
+    #[Groups(['tests:read', 'tests:write', 'users:read'])]
     private string $testName;
 
-    /**
-     * @ORM\Column(type="string", length=2000, nullable=true)
-     */
-    #[Groups(['read:item', 'write:Test'])]
+    #[ORM\Column(type: "string", length: 2000, nullable: true)]
+    #[Groups(['tests:read', 'tests:write'])]
     private ?string $description;
 
-    /**
-     * @ORM\Column(type="string", length=2000, nullable=true)
-     */
-    #[Groups(['read:item', 'write:Test'])]
+
+    #[ORM\Column(type: "string", length: 2000, nullable: true)]
+    #[Groups(['tests:read', 'tests:write'])]
     private ?string $rules;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     */
-    #[Groups(['read:collection', 'read:item', 'write:Test'])]
+    #[ORM\Column(type: "datetime_immutable", nullable: true)]
+    #[Groups(['tests:read', 'tests:write'])]
     private ?DateTimeImmutable $date;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Assert\Regex(pattern="/^\d{1,43200}$/",
-     * message="Имя пользователя может содержать только латинские символы и цифры")
-     */
-    #[Groups(['read:collection', 'read:item', 'write:Test'])]
+    #[ORM\Column(type: "integer", nullable: true)]
+    #[Assert\Regex(pattern: "/^\d{1,43200}$/",
+        message: "Имя пользователя может содержать только латинские символы и цифры"
+    )]
+    #[Groups(['tests:read', 'tests:write'])]
     private ?int $timeLimit;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Result", mappedBy="test")
-     */
-    #[Groups(['put:Test', 'read:item'])]
+    #[ORM\OneToMany(mappedBy: "test", targetEntity: "App\Entity\Result")]
+    #[Groups(['tests:write', 'tests:read'])]
     private $results;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Question", mappedBy="test")
-     */
-    #[Groups(['read:item', 'put:Test'])]
+    #[ORM\OneToMany(mappedBy: "test", targetEntity: "App\Entity\Question")]
+    #[Groups(['tests:read', 'tests:write'])]
     private $questions;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    #[Groups(['read:item', 'write:Test'])]
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    #[Groups(['tests:read', 'tests:write'])]
     private $link;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tests")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "tests")]
+    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: true)]
     private $user_id;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Tag::class, mappedBy="tests")
-     * @ORM\JoinColumn(name="tag_id", referencedColumnName="id", nullable=true)
-     */
-    #[Groups(['read:item', 'write:Test', 'put:Test'])]
+    #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: "tests")]
+    #[ORM\JoinColumn(name: "tag_id", referencedColumnName: "id", nullable: true)]
+    #[Groups(['tests:read', 'tests:write'])]
     private $tags;
 
     public function __construct()
