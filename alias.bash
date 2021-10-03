@@ -3,6 +3,7 @@
 
 # PROXIES (to Docker-containers commands)
 alias php="docker-compose run --rm php-cli"
+alias yarn="docker-compose run --rm frontend-node-cli yarn"
 alias node-cli="docker-compose run --rm frontend-node-cli"
 alias composer="docker-compose run --rm php-cli composer"
 alias symfony="docker-compose run --rm php-cli symfony"

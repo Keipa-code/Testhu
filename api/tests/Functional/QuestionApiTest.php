@@ -77,6 +77,35 @@ class QuestionApiTest extends ApiTestCase
         self::assertMatchesRegularExpression('~^/api/questions/\d+$~', $response->toArray()['@id']);
     }
 
+    public function testGetQuestionByPosition(): void
+    {
+        $response = self::createClient()->request(
+            'GET',
+            'http://localhost:8081/api/questions?test=1&position=5',
+            [
+                'auth_bearer' => $this->token,
+            ]
+        );
+
+        $this->assertJsonContains([
+            'hydra:member' => [[
+                'questionText' => 'Два паравоза выехали из точкии А и Б. Какая марка у этих паравозов',
+                'questionType' => 'one variant',
+                'variants' => [
+                        0 => 'Mersedes',
+                        1 => 'BMW',
+                        2 => 'Volga',
+                    ],
+                'answer' => [
+                        0 => 'BMW',
+                    ],
+                'points' => 50,
+                'position' => 5,
+                'test' => '/api/tests/1',
+            ]],
+        ]);
+    }
+
     protected function createAuthenticatedClient($username = 'frontend_anonymous', $password = '12345678')
     {
         $response = self::createClient()->request(

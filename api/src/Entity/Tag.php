@@ -28,20 +28,20 @@ use Symfony\Component\Validator\Constraints as Assert;
         ]    
     ],
     denormalizationContext: ['groups' => ['tags:write']],
-    normalizationContext: ['groups' => ['tags:write']]
+    normalizationContext: ['groups' => ['tags:read']]
 )]
 class Tag
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
-    #[Groups(['tags:write', 'tests:read'])]
+    #[Groups(['tags:write', 'tags:read', 'tests:read'])]
     private $id;
 
     #[ORM\Column(type: "string", length: 30)]
     #[Assert\Regex(pattern: "/^[a-zа-яA-ZА-Я]{2,30}$/u",
         message: "Название может содержать только кириллицу, латиницу, знак '-' и не больше 30 символов")]
-    #[Groups(['tags:write', 'tests:read', 'tags:write'])]
+    #[Groups(['tags:write', 'tests:read', 'tests:read'])]
     private $tagName;
 
     #[ORM\ManyToMany(targetEntity: Test::class, inversedBy: "tags")]

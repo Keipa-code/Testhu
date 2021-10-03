@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\QuestionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -33,6 +35,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     denormalizationContext: ['groups' => ['questions:write']],
     normalizationContext: ['groups' => ['questions:read']]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['test' => 'exact', 'position' => 'exact'])]
 class Question
 {
     #[ORM\Id]

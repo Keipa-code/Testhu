@@ -67,6 +67,14 @@ class Test
     #[Groups(['tests:read', 'tests:write'])]
     private ?int $timeLimit;
 
+    #[ORM\Column(type: "integer", nullable: true)]
+    #[Groups(['tests:read', 'tests:write'])]
+    private ?int $done;
+
+    #[ORM\Column(type: "integer", nullable: true)]
+    #[Groups(['tests:read', 'tests:write'])]
+    private ?int $passed;
+
     #[ORM\OneToMany(mappedBy: "test", targetEntity: "App\Entity\Result")]
     #[Groups(['tests:write', 'tests:read'])]
     private $results;
@@ -269,5 +277,37 @@ class Test
         }
 
         return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getDone(): ?int
+    {
+        return $this->done;
+    }
+
+    /**
+     * @param int|null $done
+     */
+    public function setDone(?int $done): void
+    {
+        $this->done = $done;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getPassed(): ?int
+    {
+        return $this->passed;
+    }
+
+    /**
+     * @param int|null $passed
+     */
+    public function setPassed(?int $passed): void
+    {
+        $this->passed = $passed;
     }
 }
