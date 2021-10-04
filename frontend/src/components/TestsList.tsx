@@ -3,12 +3,19 @@ import {ITest} from "../types/types";
 import {Card, Table} from "react-bootstrap";
 
 interface TestsListProps {
+    tableInfo? : string;
     tests: ITest[]
 }
 
-const TestsList: FC<TestsListProps> = ({tests}) => {
+const TestsList: FC<TestsListProps> = ({tests, tableInfo}) => {
     return (
         <Table>
+            <thead style={{ display: tableInfo }}>
+            <tr>
+                <th>Название</th>
+                <th>сдало / прошло</th>
+            </tr>
+            </thead>
             <tbody>
             {tests.map(test =>
                 <tr key={test.id}>

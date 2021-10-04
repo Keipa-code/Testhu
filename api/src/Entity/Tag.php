@@ -41,7 +41,7 @@ class Tag
     #[ORM\Column(type: "string", length: 30)]
     #[Assert\Regex(pattern: "/^[a-zа-яA-ZА-Я]{2,30}$/u",
         message: "Название может содержать только кириллицу, латиницу, знак '-' и не больше 30 символов")]
-    #[Groups(['tags:write', 'tests:read', 'tests:read'])]
+    #[Groups(['tags:write', 'tags:read', 'tests:read'])]
     private $tagName;
 
     #[ORM\ManyToMany(targetEntity: Test::class, inversedBy: "tags")]
