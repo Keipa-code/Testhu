@@ -63,6 +63,9 @@ api-test-migrate:
 api-test-fixtures:
 	docker-compose run --rm php-cli php ./bin/console doctrine:fixtures:load --env=test --no-interaction
 
+api-get-token:
+	curl -s -X POST -H 'Accept: application/json' -H 'Content-Type: application/json' --data '{"username":"frontend_anonymous","password":"12345678"}' http://localhost:8081/api/login
+
 frontend-clear:
 	docker run --rm -v ${PWD}/frontend://var/www -w /var/www alpine sh -c 'rm -rf .ready build'
 
