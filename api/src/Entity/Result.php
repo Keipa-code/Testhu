@@ -53,6 +53,9 @@ class Result
     #[Groups(['users:read'])]
     private $link;
 
+    #[ORM\Column(type: "boolean")]
+    private $viewed = false;
+
     #[ORM\ManyToOne(targetEntity: "App\Entity\User", inversedBy: "results")]
     #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: true)]
     private $user_id;
@@ -120,5 +123,21 @@ class Result
         $this->user_id = $user_id;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getViewed()
+    {
+        return $this->viewed;
+    }
+
+    /**
+     * @param mixed $viewed
+     */
+    public function setViewed($viewed): void
+    {
+        $this->viewed = $viewed;
     }
 }
