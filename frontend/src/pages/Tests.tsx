@@ -20,12 +20,12 @@ const Tests = () => {
                     <h2>Поиск тестов</h2>
                     <InputGroup className="mb-3">
                         <FormControl
-                            placeholder="Recipient's username"
-                            aria-label="Recipient's username"
+                            placeholder="Название или тема"
+                            aria-label="Название или тема"
                             aria-describedby="basic-addon2"
                         />
                         <Button variant="outline-secondary" id="button-addon2">
-                            Button
+                            Найти
                         </Button>
                     </InputGroup>
                     <TestsList tests={tests} tableInfo={''} />

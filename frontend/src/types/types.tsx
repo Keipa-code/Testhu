@@ -11,3 +11,10 @@ export interface ITest {
     passed: number;
     link?: string;
 }
+
+export interface IPagination {
+    "@id": string;
+    "hydra:first": string;
+    "hydra:last": string;
+    "hydra:next": string;
+}

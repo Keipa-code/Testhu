@@ -1,14 +1,29 @@
 import React, {FC} from 'react';
-import {ITest} from "../types/types";
-import {Card, Table} from "react-bootstrap";
+import {IPagination, ITest} from "../types/types";
+import {Card, Pagination, Table} from "react-bootstrap";
 
 interface TestsListProps {
+    tests: ITest[];
     tableInfo? : string;
-    tests: ITest[]
+    pagination?: IPagination;
 }
 
-const TestsList: FC<TestsListProps> = ({tests, tableInfo}) => {
+const TestsList: FC<TestsListProps> = ({tests, tableInfo, pagination}) => {
+    const items = [];
+    if (pagination) {
+        const active = pagination["@id"];
+
+        for (let number = 1; number <= 5; number++) {
+            items.push(
+                <Pagination.Item key={number} active={number === parseInt(active[active.length - 1])}>
+                    {number}
+                </Pagination.Item>,
+            );
+        }
+    }
+
     return (
+        <div>
         <Table>
             <thead style={{ display: tableInfo }}>
             <tr>
@@ -39,6 +54,11 @@ const TestsList: FC<TestsListProps> = ({tests, tableInfo}) => {
             )}
             </tbody>
         </Table>
+
+        <Pagination hidden={!pagination}>
+            {items}
+        </Pagination>
+        </div>
     );
 };
 
