@@ -62,5 +62,47 @@ final class TestFixtures extends Fixture
         $manager->persist($question);
         $manager->persist($test);
         $manager->flush();
+
+        $test1 = new Test();
+        $test1->setTestName('Мой тест');
+        $test1->setDescription('Этой мой тест. Я очень люблю свой тест. Мой тест самый лучший в мире');
+        $test1->setRules('Время прохождения теста 40 минут. Нужно выбирать один вариант');
+        $test1->setDate(new DateTimeImmutable('2021-07-20 06:10:47'));
+        $test1->setTimeLimit(60);
+
+        $test2 = new Test();
+        $test2->setTestName('Мой тест');
+        $test2->setDescription('Этой мой тест. Я очень люблю свой тест. Мой тест самый лучший в мире');
+        $test2->setRules('Время прохождения теста 40 минут. Нужно выбирать один вариант');
+        $test2->setDate(new DateTimeImmutable('2021-07-20 06:10:47'));
+        $test2->setTimeLimit(60);
+
+        $test3 = new Test();
+        $test3->setTestName('Мой тест');
+        $test3->setDescription('Этой мой тест. Я очень люблю свой тест. Мой тест самый лучший в мире');
+        $test3->setRules('Время прохождения теста 40 минут. Нужно выбирать один вариант');
+        $test3->setDate(new DateTimeImmutable('2021-07-20 06:10:47'));
+        $test3->setTimeLimit(60);
+
+        $test4 = new Test();
+        $test4->setTestName('Мой тест');
+        $test4->setDescription('Этой мой тест. Я очень люблю свой тест. Мой тест самый лучший в мире');
+        $test4->setRules('Время прохождения теста 40 минут. Нужно выбирать один вариант');
+        $test4->setDate(new DateTimeImmutable('2021-07-20 06:10:47'));
+        $test4->setTimeLimit(60);
+
+        $test5 = new Test();
+        $test5->setTestName('Мой тест');
+        $test5->setDescription('Этой мой тест. Я очень люблю свой тест. Мой тест самый лучший в мире');
+        $test5->setRules('Время прохождения теста 40 минут. Нужно выбирать один вариант');
+        $test5->setDate(new DateTimeImmutable('2021-07-20 06:10:47'));
+        $test5->setTimeLimit(60);
+
+        $manager->persist($test1);
+        $manager->persist($test2);
+        $manager->persist($test3);
+        $manager->persist($test4);
+        $manager->persist($test5);
+        $manager->flush();
     }
 }

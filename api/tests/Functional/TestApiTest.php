@@ -151,6 +151,26 @@ class TestApiTest extends ApiTestCase
         ]);
     }
 
+    public function testPagination()
+    {
+        self::createClient()->request(
+            'GET',
+            'http://localhost:8081/api/tests?page=2',
+            [
+                'auth_bearer' => $this->token,
+                'headers' => [
+                    'accept' => 'application/ld+json',
+                ],
+            ]
+        );
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertJsonContains([
+            'testName' => 'Мой тест',
+            'results' => ['/api/results/3']
+        ]);
+    }
+
     protected function createAuthenticatedClient($username = 'frontend_anonymous', $password = '12345678')
     {
         $response = self::createClient()->request(

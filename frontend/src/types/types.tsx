@@ -17,4 +17,5 @@ export interface IPagination {
     "hydra:first": string;
     "hydra:last": string;
     "hydra:next": string;
+    "hydra:previous": string;
 }

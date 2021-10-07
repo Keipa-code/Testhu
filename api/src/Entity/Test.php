@@ -31,7 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'security' => "is_granted('ROLE_USER') or object == user"
         ]
     ],
-    attributes: ['pagination_items_per_page' => 10],
+    attributes: ['pagination_items_per_page' => 2],
     denormalizationContext: ['groups' => ['tests:write']],
     normalizationContext: ['groups' => ['tests:read']]
 )]
