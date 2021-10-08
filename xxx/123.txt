@@ -1,2 +1,22 @@
-сделать пагинацию в Test +
-добавить viewed Result +
+components
+    Question
+        Question{
+            questionText,
+            position,
+            points,
+            answerType,
+            answerNumber?,
+            answerString?,
+            answers?: AnswerChoose
+        }
+        AnswerChooseItem{
+            id,
+            text,
+            correct
+        }
+        AnswerChoose{
+            answers => [
+                { id, text, correct },
+                { id, text, correct },
+            ]
+        }

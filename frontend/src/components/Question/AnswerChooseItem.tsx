@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 import {Col, Form, FormGroup, Row} from "react-bootstrap";
 
-interface answerCheckBoxItemProps {
+interface answer {
     id: number;
     correct: boolean;
     text: string;
 }
 
-const AnswerCheckBoxItem = () => {
-    const [answerText, setAnswerText] = useState<string>('');
+const AnswerChooseItem = (answer) => {
+    const [answerText, setAnswerText] = useState<answer.text>('');
     const [correctAnswers, setCorrectAnswers] = useState<[]>([]);
 
     const changeAnswerText = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,4 +43,4 @@ const AnswerCheckBoxItem = () => {
     );
 };
 
-export default AnswerCheckBoxItem;
+export default AnswerChooseItem;
