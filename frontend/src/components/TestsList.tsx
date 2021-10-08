@@ -1,26 +1,15 @@
 import React, {FC} from 'react';
 import {IPagination, ITest} from "../types/types";
-import {Card, Pagination, Table} from "react-bootstrap";
+import {Button, Card, Col, Pagination, Row, Table} from "react-bootstrap";
 
 interface TestsListProps {
     tests: ITest[];
     tableInfo? : string;
     pagination?: IPagination;
+    itemCount?: number;
 }
 
-const TestsList: FC<TestsListProps> = ({tests, tableInfo, pagination}) => {
-    const items = [];
-    if (pagination) {
-        const active = pagination["@id"];
-
-        for (let number = 1; number <= 5; number++) {
-            items.push(
-                <Pagination.Item key={number} active={number === parseInt(active[active.length - 1])}>
-                    {number}
-                </Pagination.Item>,
-            );
-        }
-    }
+const TestsList: FC<TestsListProps> = ({tests, tableInfo, pagination, itemCount}) => {
 
     return (
         <div>
@@ -29,6 +18,7 @@ const TestsList: FC<TestsListProps> = ({tests, tableInfo, pagination}) => {
             <tr>
                 <th>Название</th>
                 <th>сдало / прошло</th>
+                <th> </th>
             </tr>
             </thead>
             <tbody>
@@ -55,9 +45,19 @@ const TestsList: FC<TestsListProps> = ({tests, tableInfo, pagination}) => {
             </tbody>
         </Table>
 
-        <Pagination hidden={!pagination}>
-            {items}
-        </Pagination>
+        <Row className="align-items-center">
+            <Col className="col-sm-8">
+            <Pagination size="lg" hidden={!pagination}>
+            <Pagination.First href={pagination?.["hydra:first"]}/>
+            <Pagination.Prev href={pagination?.["hydra:previous"]}/>
+            <Pagination.Next href={pagination?.["hydra:next"]}/>
+            <Pagination.Last href={pagination?.["hydra:last"]}/>
+            </Pagination>
+            </Col>
+            <Col className="col-sm-4">
+            <p className="text-end me-3">Найдено {itemCount} тестов</p>
+            </Col>
+        </Row>
         </div>
     );
 };

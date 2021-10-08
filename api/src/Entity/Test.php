@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\TestRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -35,6 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['tests:write']],
     normalizationContext: ['groups' => ['tests:read']]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['testName' => 'partial', 'tags.tagName' => 'exact'])]
 class Test
 {
     #[ORM\Id]

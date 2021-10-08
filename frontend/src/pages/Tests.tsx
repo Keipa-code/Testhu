@@ -3,6 +3,15 @@ import {Button, Col, Container, FormControl, InputGroup, Row} from "react-bootst
 import TestsList from "../components/TestsList";
 
 const Tests = () => {
+    const itemCount = 5
+
+    const view = {
+        "hydra:first": "https://localhost:8081/tests?page=2",
+        "hydra:last": "https://localhost:8081/tests?page=5",
+        "hydra:next": "https://localhost:8081/tests?page=3",
+        "hydra:previous": "https://localhost:8081/tests?page=1"
+    }
+
     const info = 'TestHub — это сервис, который позволяет вам легко создавать тесты для проверки знаний и просматривать результаты в удобном интерфейсе. Для создания и прохождения теста не требуется регистрация, но мы советуем это сделать, так как в этом случае вы легко сможете управлять своими тестами.'
 
     const tests = [
@@ -16,7 +25,7 @@ const Tests = () => {
     return (
         <Container>
             <Row>
-                <Col sm={8}>
+                <Col className="col-sm-8">
                     <h2>Поиск тестов</h2>
                     <InputGroup className="mb-3">
                         <FormControl
@@ -28,9 +37,16 @@ const Tests = () => {
                             Найти
                         </Button>
                     </InputGroup>
-                    <TestsList tests={tests} tableInfo={''} />
+                    <TestsList tests={tests} tableInfo={''} pagination={view} itemCount={itemCount}/>
                 </Col>
-                <Col sm={4}>321</Col>
+                <Col className="col-sm-4">
+                    <p className="ms-5 mt-5">Чтобы найти нужный вам тест, введите тему, имя пользователя или ключевые слова в поле поиска. Тесты выводятся по убыванию популярности.</p>
+                    <Button className="ms-5 mt-5">Создать свой тест</Button>
+                    <br/>
+                    <div className="ms-5 mt-5">
+                        <a href={"#"}>Зарегистрироваться</a>
+                    </div>
+                </Col>
             </Row>
         </Container>
     );

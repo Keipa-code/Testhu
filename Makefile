@@ -49,7 +49,7 @@ api-cs-fix:
 api-fixtures:
 	docker-compose run --rm php-cli php ./bin/console doctrine:fixtures:load --no-interaction
 
-api-test-db-init: api-test-drop-db api-test-create-db api-test-migrate api-test-fixtures
+api-test-db-init: api-test-create-db api-test-migrate api-test-fixtures
 
 api-test-drop-db:
 	docker-compose run --rm php-cli php ./bin/console doctrine:database:drop --force --quiet --env=test

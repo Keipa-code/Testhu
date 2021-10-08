@@ -13,7 +13,7 @@ export interface ITest {
 }
 
 export interface IPagination {
-    "@id": string;
+    "@id"?: string;
     "hydra:first": string;
     "hydra:last": string;
     "hydra:next": string;

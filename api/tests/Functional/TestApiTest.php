@@ -155,7 +155,7 @@ class TestApiTest extends ApiTestCase
     {
         self::createClient()->request(
             'GET',
-            'http://localhost:8081/api/tests?page=2',
+            'http://localhost:8081/api/tests?tags.tagName=Физика&page=1',
             [
                 'auth_bearer' => $this->token,
                 'headers' => [
