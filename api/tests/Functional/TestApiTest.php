@@ -151,6 +151,9 @@ class TestApiTest extends ApiTestCase
         ]);
     }
 
+    /**
+     * @group ignore
+     */
     public function testPagination()
     {
         self::createClient()->request(
