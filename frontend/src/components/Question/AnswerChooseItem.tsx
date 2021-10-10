@@ -1,14 +1,13 @@
-import React, {useState} from 'react';
+import React, {FC, useState} from 'react';
 import {Col, Form, FormGroup, Row} from "react-bootstrap";
+import {IAnswer} from "../../types/types";
 
-interface answer {
-    id: number;
-    correct: boolean;
-    text: string;
+interface AnswerChooseItemProps {
+    answer: IAnswer;
 }
 
-const AnswerChooseItem = (answer) => {
-    const [answerText, setAnswerText] = useState<answer.text>('');
+const AnswerChooseItem: FC<AnswerChooseItemProps> = ({answer}) => {
+    const [answerText, setAnswerText] = useState<string>('');
     const [correctAnswers, setCorrectAnswers] = useState<[]>([]);
 
     const changeAnswerText = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -19,3 +19,9 @@ export interface IPagination {
     "hydra:next": string;
     "hydra:previous": string;
 }
+
+export interface IAnswer {
+    id: number;
+    correct: boolean;
+    text: string;
+}
