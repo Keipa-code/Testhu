@@ -13,27 +13,27 @@ const AnswerChooseItem: FC<AnswerChooseItemProps> = ({answer}) => {
     const changeAnswerText = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAnswerText(e.target.value)
     }
-    let checked = false
+    function handleCheckChange (e: React.ChangeEvent<HTMLInputElement>) {
+        
+    }
 
     return (
         <div>
             <Form>
                 <Row className="align-items-center">
                     <Col xs="auto">
-                        <Form.Control
-                            placeholder="Текст ответа"
-                            onChange={changeAnswerText}
+                        <Form.Check
+                            type="checkbox"
+                            checked={answer.correct}
+                            className="mb-2"
+                            onChange={handleCheckChange}
                         />
                     </Col>
 
                     <Col xs="auto">
-                        <Form.Check
-                            type="checkbox"
-                            checked={checked}
-                            className="mb-2"
-                            label="Правильный ответ"
-                        />
+                        <p>{answer.text}</p>
                     </Col>
+
 
                 </Row>
             </Form>
