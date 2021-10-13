@@ -11,7 +11,7 @@ alias app="docker-compose run --rm php-cli php bin/app.php --ansi --no-interacti
 alias linter="docker-compose run --rm php-cli composer lint"
 alias test-e2e="api-fixtures && cucumber-clear && cucumber-e2e"
 alias api-test="docker-compose run --rm php-cli composer test"
-alias phpunit="docker-compose run --rm php-cli php ./bin/phpunit"
+alias phpunit="docker-compose run --rm php-cli php ./bin/phpunit --exclude-group ignore"
 
 # Symfony
 alias console="docker-compose run --rm php-cli php ./bin/console"

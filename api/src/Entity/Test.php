@@ -46,15 +46,13 @@ class Test
     #[Groups(['tests:read', 'users:read'])]
     private $id;
 
-
     #[ORM\Column(type: "string", length: 500)]
     #[Groups(['tests:read', 'tests:write', 'users:read'])]
-    private string $testName;
+    private ?string $testName;
 
     #[ORM\Column(type: "string", length: 2000, nullable: true)]
     #[Groups(['tests:read', 'tests:write'])]
     private ?string $description;
-
 
     #[ORM\Column(type: "string", length: 2000, nullable: true)]
     #[Groups(['tests:read', 'tests:write'])]
@@ -62,7 +60,7 @@ class Test
 
     #[ORM\Column(type: "datetime_immutable", nullable: true)]
     #[Groups(['tests:read', 'tests:write'])]
-    private ?DateTimeImmutable $date;
+    private DateTimeImmutable $date;
 
     #[ORM\Column(type: "integer", nullable: true)]
     #[Assert\Regex(pattern: "/^\d{1,43200}$/",
@@ -78,6 +76,10 @@ class Test
     #[ORM\Column(type: "integer", nullable: true)]
     #[Groups(['tests:read', 'tests:write'])]
     private ?int $passed;
+
+    #[ORM\Column(type: "boolean", nullable: true)]
+    #[Groups(['tests:read', 'tests:write'])]
+    private bool $isSubmitted = false;
 
     #[ORM\OneToMany(mappedBy: "test", targetEntity: "App\Entity\Result")]
     #[Groups(['tests:write', 'tests:read'])]
@@ -313,5 +315,21 @@ class Test
     public function setPassed(?int $passed): void
     {
         $this->passed = $passed;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSubmitted(): bool
+    {
+        return $this->isSubmitted;
+    }
+
+    /**
+     * @param bool $isSubmitted
+     */
+    public function setIsSubmitted(bool $isSubmitted): void
+    {
+        $this->isSubmitted = $isSubmitted;
     }
 }

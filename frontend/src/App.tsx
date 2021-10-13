@@ -5,9 +5,9 @@ import {BrowserRouter, NavLink, Route} from "react-router-dom";
 import Home from "./pages/Home";
 import Tests from "./pages/Tests";
 import NewTest from "./pages/NewTest";
+import CreateTest from "./pages/CreateTest";
 
 const App = () => {
-
     return (
         <BrowserRouter>
             <div>
@@ -30,6 +30,9 @@ const App = () => {
                     <Tests/>
                 </Route>
                 <Route path={'/new'} exact>
+                    <CreateTest/>
+                </Route>
+                <Route path={'/new/:id'}>
                     <NewTest/>
                 </Route>
             </div>
