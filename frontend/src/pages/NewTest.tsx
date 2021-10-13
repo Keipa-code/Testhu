@@ -4,6 +4,7 @@ import {Button, Col, Container, Form, FormCheck, FormControl, InputGroup, Row} f
 const NewTest = () => {
     return (
         <Container>
+
             <Row>
                 <Col className="col-sm-8">
                     <h2>Создать новый тест</h2>

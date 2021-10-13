@@ -25,3 +25,20 @@ export interface IAnswer {
     correct: boolean;
     text: string;
 }
+
+export enum AnswerType {
+    choose = 'choose',
+    number = 'number',
+    string = 'string'
+}
+
+export interface IQuestion {
+    id: number;
+    questionText: string;
+    position: number;
+    points: number;
+    answerType: AnswerType;
+    answerNumber?: number;
+    answerString?: string;
+    answers?: IAnswer[];
+}
