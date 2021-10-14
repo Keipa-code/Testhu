@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Col, Container, Row} from "react-bootstrap";
 import {BrowserRouter, NavLink, Route} from "react-router-dom";
@@ -6,8 +6,12 @@ import Home from "./pages/Home";
 import Tests from "./pages/Tests";
 import NewTest from "./pages/NewTest";
 import CreateTest from "./pages/CreateTest";
+import TokenStore from "./stores/TokenStore";
 
 const App = () => {
+    useEffect(() => {
+        TokenStore.fetchToken()
+    }, [])
     return (
         <BrowserRouter>
             <div>
