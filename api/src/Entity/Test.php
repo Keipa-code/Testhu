@@ -60,7 +60,7 @@ class Test
 
     #[ORM\Column(type: "datetime_immutable", nullable: true)]
     #[Groups(['tests:read', 'tests:write'])]
-    private DateTimeImmutable $date;
+    private ?DateTimeImmutable $date;
 
     #[ORM\Column(type: "integer", nullable: true)]
     #[Assert\Regex(pattern: "/^\d{1,43200}$/",

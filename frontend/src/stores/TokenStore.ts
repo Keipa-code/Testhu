@@ -14,7 +14,7 @@ class TokenStore {
     }
 
     public fetchToken = () => {
-        this.token = getToken()
+        //this.token = getToken()
         console.log('token', this.token)
     }
 }

@@ -18,12 +18,12 @@ const NewTest = () => {
     const [token, setToken] = useState('');
     const params = useParams<NewTestParams>()
     useEffect(() => {
-        getJWT()
+        fetchTest()
     }, [])
 
     async function getJWT() {
         try {
-            const response = await axios.post<token>(
+            const token = await axios.post<token>(
                 '/api/api/login',
                 {
                     username: "frontend_anonymous",
@@ -31,7 +31,7 @@ const NewTest = () => {
                 }, {
                     headers: {'Content-Type': 'application/json'}
                 })
-            setToken(response.data.token)
+            setToken(token.data.token)
         } catch (e) {
             alert(e)
         }
@@ -40,10 +40,13 @@ const NewTest = () => {
     async function fetchTest() {
         try {
             const response = await axios.get<ITest>(
-                '/api/api/tests/' + params.id,
+                '/api/api/tests/1',
                 {
-                    headers: {'Content-Type': 'application/json'},
-                    data: {auth_bearer: TokenStore.token}
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + token
+                    }
+
                 })
             setTest(response.data)
         } catch (e) {
@@ -52,7 +55,11 @@ const NewTest = () => {
     }
 
     function push(){
-        console.log(token)
+        getJWT()
+    }
+
+    function fetch(){
+        fetchTest()
     }
 
     return (
@@ -74,6 +81,7 @@ const NewTest = () => {
                         aria-describedby="basic-addon2"
                     />
                     <Button className="mt-3" onClick={push}>Добавить предисловие</Button>
+                    <Button className="mt-3" onClick={fetch}>Fetch</Button>
                     <Form>
                         <Form.Check className="mt-3"
                                     label={'Разрешить смотреть список неправильных ответов после теста'}/>
