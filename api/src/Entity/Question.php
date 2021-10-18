@@ -71,7 +71,7 @@ class Question
     #[Groups(['questions:read', 'questions:write'])]
     private $position;
 
-    #[ORM\ManyToOne(targetEntity: Test::class, inversedBy: "questions")]
+    #[ORM\ManyToOne(targetEntity: Test::class, cascade: ["persist"], inversedBy: "questions")]
     #[ORM\JoinColumn(name: "test", referencedColumnName: "id", nullable: true)]
     #[Groups(['questions:read', 'questions:write'])]
     private $test;
