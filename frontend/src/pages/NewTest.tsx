@@ -18,7 +18,9 @@ const NewTest = () => {
     const [token, setToken] = useState('');
     const params = useParams<NewTestParams>()
     useEffect(() => {
-        fetchTest()
+        getJWT().then(r => {
+            fetchTest()
+        })
     }, [])
 
     async function getJWT() {
@@ -40,7 +42,7 @@ const NewTest = () => {
     async function fetchTest() {
         try {
             const response = await axios.get<ITest>(
-                '/api/api/tests/1',
+                '/api/api/tests/171',
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -55,7 +57,7 @@ const NewTest = () => {
     }
 
     function push(){
-        getJWT()
+        console.log(token)
     }
 
     function fetch(){

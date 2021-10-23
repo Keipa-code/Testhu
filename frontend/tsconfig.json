@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
     "target": "es5",
     "lib": [
       "dom",
@@ -13,12 +14,23 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
+    "suppressImplicitAnyIndexErrors": true,
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": "./src",
+    "paths": {
+      "@assets/*": ["assets/*"],
+      "@components/*": ["components/*"],
+      "@constants/*": ["constants/*"],
+      "@models/*": ["models/*"],
+      "@pages/*": ["pages/*"],
+      "@plugins": ["plugins/*"],
+      "@utils/*": ["utils/*"]
+    }
   },
   "include": [
     "src"

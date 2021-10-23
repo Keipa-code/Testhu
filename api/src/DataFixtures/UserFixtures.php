@@ -39,15 +39,11 @@ final class UserFixtures extends Fixture implements FixtureInterface
         $result = new Result();
         $result->setLink('https://result.com');
 
-        $test = new Test();
-        $test->setTestName('My test');
 
         $user->addNetwork($network);
         $user->addResult($result);
-        $user->addTest($test);
 
         $manager->persist($user);
-        $manager->persist($test);
         $manager->persist($network);
         $manager->persist($result);
 

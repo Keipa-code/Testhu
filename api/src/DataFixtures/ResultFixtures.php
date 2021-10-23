@@ -27,18 +27,13 @@ final class ResultFixtures extends Fixture
         $user->setUsername('ResultUser');
         $user->setPassword($this->hasher->hashPassword($user, '12345678'));
 
-        $test = new Test();
-        $test->setTestName('Мой тест с результатом');
-
         $result = new Result();
         $result->setLink('https://result.com');
         $result->setCorrectAnswersCount(40);
         $result->setDate(new DateTimeImmutable('2021-07-20 07:10:47'));
 
         $user->addResult($result);
-        $test->addResult($result);
         $manager->persist($user);
-        $manager->persist($test);
         $manager->persist($result);
 
         $manager->flush();

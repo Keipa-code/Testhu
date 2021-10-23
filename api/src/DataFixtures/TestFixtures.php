@@ -11,12 +11,14 @@ use App\Entity\Test;
 use App\Entity\User;
 use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-final class TestFixtures extends Fixture
+final class TestFixtures extends Fixture implements DependentFixtureInterface
 {
+    public const TESTS_REFERENCE = 'test_';
     private UserPasswordHasherInterface $hasher;
 
     public function __construct(UserPasswordHasherInterface $hasher)
@@ -28,31 +30,12 @@ final class TestFixtures extends Fixture
     {
         $faker = Factory::create('ru_RU');
 
-        $tagPhysics = new Tag();
-        $tagPhysics->setTagName('Физика');
 
-        $tagChemistry = new Tag();
-        $tagChemistry->setTagName('Химия');
 
-        $tagMath = new Tag();
-        $tagMath->setTagName('Математика');
+        $tag = ['1', '2', '3', '4', '5', '6'];
 
-        $tagGeo = new Tag();
-        $tagGeo->setTagName('География');
-
-        $tagLit = new Tag();
-        $tagLit->setTagName('Литература');
-
-        $tagProgramming = new Tag();
-        $tagProgramming->setTagName('Программирование');
-
-        $tag = [$tagPhysics, $tagChemistry, $tagMath, $tagGeo, $tagLit, $tagProgramming];
-
-        foreach ($tag as $item) {
-            $manager->persist($item);
-        }
         $batchSize = 20;
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 100; $i++) {
             $test = new Test();
             $test->setTestName($faker->sentence(2));
             $test->setDescription($faker->sentence(13));
@@ -61,34 +44,13 @@ final class TestFixtures extends Fixture
             $test->setTimeLimit(60);
             $test->setDone($faker->numberBetween(310, 700));
             $test->setPassed($faker->numberBetween(50, 300));
-            $test->setIsSubmitted(true);
+            $test->setIsSubmitted(false);
             shuffle($tag);
-            $test->addTag($tag['0']);
-            $test->addTag($tag['1']);
-            $test->addTag($tag['2']);
+            $test->addTag($this->getReference(TagFixtures::TAGS_REFERENCE . $tag['0']));
+            $test->addTag($this->getReference(TagFixtures::TAGS_REFERENCE . $tag['1']));
+            $test->addTag($this->getReference(TagFixtures::TAGS_REFERENCE . $tag['2']));
 
-            /*for ($i = 1; $i <= 3; $i++) {
-                $question = new Question();
-                $question->setQuestionText($faker->sentence(8));
-                $question->setQuestionType('choose');
-                $question->setPosition($i);
-                $question->setPoints($faker->numberBetween(5, 20));
-                for ($i = 1; $i <= 4; $i++) {
-                    $question->setVariants([
-                        'id' => $i,
-                        'correct' => ($i === 1) ?? false,
-                        'text' => $faker->sentence(5)
-                    ]);
-                }
-                $test->addQuestion($question);
-                $manager->persist($question);
-                $manager->persist($test);
-                if (($i % $batchSize) === 0) {
-                    $manager->flush();
-                    $manager->clear(); // Detaches all objects from Doctrine!
-                }
-
-            }*/
+            $this->addReference(self::TESTS_REFERENCE . $i, $test);
 
             $manager->persist($test);
             if (($i % $batchSize) === 0) {
@@ -97,6 +59,7 @@ final class TestFixtures extends Fixture
             }
 
         }
+
         $manager->flush();
         $manager->clear();
 
@@ -181,5 +144,13 @@ final class TestFixtures extends Fixture
         $manager->persist($test4);
         $manager->persist($test5);
         $manager->flush();*/
+    }
+
+
+    public function getDependencies()
+    {
+        return [
+            TagFixtures::class,
+        ];
     }
 }
