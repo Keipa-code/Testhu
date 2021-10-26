@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios'
 import { REDIRECT_URL } from '@constants/index'
 
+
 class HttpHelper {
     private store: any
     private seStore: any
@@ -12,24 +13,19 @@ class HttpHelper {
 
     public successHelper (res: AxiosResponse<any>): void {
         const url = res.config.url.split('?')[0]
-        const {data: { errors }} = res
         switch (res.status) {
             case 200 :
                 const path = url.split('/api')
                 if (path[1] === '/login') {
-                    $msg.success('登陆成功')
+                    $msg.success('Вы успешно авторизовались')
                 } else if (path[1] === '/logout') {
                     this.store.clear()
-                    $msg.success('退出登录成功')
+                    $msg.success('Вы вышли')
                     setTimeout(() => {
                         location.href = '/login'
                     }, 1000)
-                } else if (path[1] === '/upload-file') {
-                    $msg.success('文件上传成功')
-                } else if (path[0] === '/graphql' && errors) {
-                    $msg.error(errors[0].message) // graphql status:200 response contain errors
                 } else {
-                    $msg.success('操作成功')
+                    $msg.success('Успешная операция')
                 }
                 break
             default :
@@ -46,46 +42,42 @@ class HttpHelper {
             case 400 :
                 const arr = path.split('/api')
                 if (arr[1] === '/login') {
-                    $msg.error('用户名或密码错误')
+                    $msg.error('Неверное имя пользователя или пароль')
                 } else if (arr[1] === '/upload-file') {
-                    $msg.error('文件上传失败')
-                } else if (arr[0]) {
-                    $msg.error(data.errors[0].message || 'graphql params error')
-                } else {
-                    $msg.error(data.msg || err.statusText)
+                    $msg.error('Не удалось загрузить файл')
                 }
                 break
             case 401 :
                 this.store.clear()
-                $msg.error('请重新登录')
+                $msg.error('Пожалуйста, войдите в систему еще раз')
                 this.seStore.setItem(REDIRECT_URL, location.pathname)
                 setTimeout(() => {
                     location.href = '/login'
                 }, 1000)
                 break
             case 403 :
-                $msg.error(data.msg || '错误, 禁止访问')
+                $msg.error('Ошибка, доступ запрещен')
                 break
             case 404 :
-                $msg.error('未找到, 未找到资源,请检查')
+                $msg.error('Не найдено, ресурс не найден, пожалуйста, проверьте')
                 break
             case 405 :
-                $msg.error('错误, 此方法不允许')
+                $msg.error('Ошибка, этот метод не допускается')
                 break
             case 406 :
-                $msg.error('错误, 此方法不接受,请检查')
+                $msg.error('Ошибка, этот метод не принимается, пожалуйста, проверьте')
                 break
             case 500 :
-                $msg.error(data.msg || data.errors[0])
+                $msg.error('Ошибка 500')
                 break
             case 503 :
-                $msg.error('连接被拒绝, 服务不可用')
+                $msg.error('Соединение отклонено, и услуга недоступна')
                 break
             case 504 :
-                $msg.error('网关超时, 请与运维小郭联系')
+                $msg.error('Срок действия шлюза истекает')
                 break
             default :
-                $msg.error('错误, 服务端未知错误')
+                $msg.error('Ошибка, неизвестная ошибка на сервере')
                 break
         }
     }

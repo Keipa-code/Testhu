@@ -1,15 +1,15 @@
 import axios from "axios";
-import {getToken} from "../utils/GetJWT";
-import {action, computed, makeAutoObservable, observable} from "mobx";
-import {storage} from "../utils/tools";
+import {action, computed, makeAutoObservable, observable, runInAction} from "mobx";
+import {storage} from "@utils/tools";
+import {JWT_TOKEN, REDIRECT_URL} from "@constants/index";
 
 export interface token {
     token: string;
 }
 
 class TokenStore {
-    @observable username: string = ''
-    @observable password: string = ''
+    @observable username: string = "frontend_anonymous"
+    @observable password: string = "12345678"
     @observable loading: boolean = false
 
     @action inputChange = (value: string, type: string): void => {

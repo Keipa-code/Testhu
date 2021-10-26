@@ -3,9 +3,10 @@ import { AxiosResponse, AxiosError } from 'axios'
 import { storage } from '@utils/tools'
 import { JWT_TOKEN } from '@constants/index'
 import helper from './httpHelper'
+import stores from '../stores';
 
 const $http = axios.create({
-    baseURL: '',
+    baseURL: '/api',
     responseType: 'json',
     transformResponse: [function (data) {
         return data
@@ -14,6 +15,9 @@ const $http = axios.create({
 })
 
 $http.interceptors.request.use(config => {
+    if (!storage.get(JWT_TOKEN)){
+        stores.tokenStore.login()
+    }
     config.headers.common['Authorization'] = 'Bearer ' + storage.get(JWT_TOKEN)
     return config
 }, error => {
@@ -23,11 +27,7 @@ $http.interceptors.request.use(config => {
 $http.interceptors.response.use(response => {
     helper.successHelper(response)
     // console.log(response)
-    if (response.data.errors) {
-        return Promise.reject(response.data.data)
-    } else {
-        return Promise.resolve(response.data) // status:200, normal
-    }
+    return Promise.resolve(response.data) // status:200, normal
 }, error => {
     if (error.response && /^[456]\d{2}$/.test(error.response.status)) {
         helper.errorHelper(error.response)

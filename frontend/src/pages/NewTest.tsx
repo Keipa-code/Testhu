@@ -15,31 +15,12 @@ export interface token {
 
 const NewTest = () => {
     const [test, setTest] = useState<ITest | null>(null);
-    const [token, setToken] = useState('');
     const params = useParams<NewTestParams>()
     useEffect(() => {
-        getJWT().then(r => {
-            fetchTest()
-        })
-    }, [])
+        $http.get('/api/tests/171').then((response: any) => {setTest(response.data)})
+    }, )
 
-    async function getJWT() {
-        try {
-            const token = await axios.post<token>(
-                '/api/api/login',
-                {
-                    username: "frontend_anonymous",
-                    password: "12345678"
-                }, {
-                    headers: {'Content-Type': 'application/json'}
-                })
-            setToken(token.data.token)
-        } catch (e) {
-            alert(e)
-        }
-    }
-
-    async function fetchTest() {
+    /*async function fetchTest() {
         try {
             const response = await axios.get<ITest>(
                 '/api/api/tests/171',
@@ -54,14 +35,12 @@ const NewTest = () => {
         } catch (e) {
             alert(e)
         }
-    }
+    }*/
 
     function push(){
-        console.log(token)
     }
 
     function fetch(){
-        fetchTest()
     }
 
     return (

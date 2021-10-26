@@ -1,37 +1,40 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
     "target": "es5",
+    "module": "esnext",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "removeComments": false,
+    "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react-jsx",
     "lib": [
       "dom",
-      "dom.iterable",
-      "esnext"
+      "es2015"
     ],
+    "outDir": "./dist/",
+    "typeRoots": [
+      "./node_modules/@types/",
+      "./src/@types/"
+    ],
+    "baseUrl": "./src",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "baseUrl": "./src",
-    "paths": {
-      "@assets/*": ["assets/*"],
-      "@components/*": ["components/*"],
-      "@constants/*": ["constants/*"],
-      "@models/*": ["models/*"],
-      "@pages/*": ["pages/*"],
-      "@plugins": ["plugins/*"],
-      "@utils/*": ["utils/*"]
-    }
+    "noEmit": true
   },
+  "compileOnSave": false,
+  "exclude": [
+    "node_modules"
+  ],
   "include": [
     "src"
   ]
