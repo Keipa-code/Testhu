@@ -10,7 +10,15 @@ declare global {
 
     export const $notice: NotificationApi
 
-    export interface IProps extends RouteComponentProps {
+    interface ICommonProps<P = AnyObject> extends RouteComponentProps<P>, AnyObject {
         [key: string]: any
     }
+
+    interface IResponseData<T = any> {
+        data: T
+        msg: string
+        status: number
+    }
+
+    type AnyObject<T = any> = Record<string, T>
 }

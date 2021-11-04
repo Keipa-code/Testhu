@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Col, Container, Form, FormCheck, FormControl, InputGroup, Row} from "react-bootstrap";
 import {useParams} from 'react-router-dom';
-import axios from "axios";
-import {ITest} from "../types/types";
-import TokenStore from "../stores/TokenStore";
+import {ITest} from "../../types/types";
+import {useObserver} from "mobx-react-lite";
+import {useRootStore} from "../../RootStateContext";
 
 interface NewTestParams {
     id: string;
@@ -14,28 +14,21 @@ export interface token {
 }
 
 const NewTest = () => {
+    const { newTestStore } = useRootStore();
+
     const [test, setTest] = useState<ITest | null>(null);
     const params = useParams<NewTestParams>()
     useEffect(() => {
-        $http.get('/api/tests/171').then((response: any) => {setTest(response.data)})
-    }, )
+        fetchTest()
+    },[])
 
-    /*async function fetchTest() {
+    async function fetchTest() {
         try {
-            const response = await axios.get<ITest>(
-                '/api/api/tests/171',
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + token
-                    }
-
-                })
-            setTest(response.data)
+            $http.get('/api/tests/171').then((response: any) => {setTest(response.data)})
         } catch (e) {
             alert(e)
         }
-    }*/
+    }
 
     function push(){
     }
@@ -43,7 +36,7 @@ const NewTest = () => {
     function fetch(){
     }
 
-    return (
+    return useObserver(() => (
         <Container>
             <Row>
                 <Col className="col-sm-8">
@@ -75,7 +68,7 @@ const NewTest = () => {
                 </Col>
             </Row>
         </Container>
-    );
+    ))
 };
 
 export default NewTest;

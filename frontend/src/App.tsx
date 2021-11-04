@@ -1,13 +1,14 @@
-import React from 'react';
+import React, {FC} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Col, Container, Row} from "react-bootstrap";
 import {BrowserRouter, NavLink, Route} from "react-router-dom";
 import Home from "./pages/Home";
 import Tests from "./pages/Tests";
-import NewTest from "./pages/NewTest";
+import NewTest from "./pages/NewTest/NewTest";
 import CreateTest from "./pages/CreateTest";
+import stores from './stores'
 
-const App = () => {
+const App: FC = () => {
     return (
         <BrowserRouter>
             <div>

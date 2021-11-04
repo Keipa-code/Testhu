@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import { REDIRECT_URL } from '@constants/index'
+import { REDIRECT_URL } from '../constants'
 
 
 class HttpHelper {
@@ -12,6 +12,7 @@ class HttpHelper {
     }
 
     public successHelper (res: AxiosResponse<any>): void {
+
         const url = res.config.url.split('?')[0]
         switch (res.status) {
             case 200 :

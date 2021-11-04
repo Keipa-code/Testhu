@@ -1,7 +1,7 @@
 export const storage = {
     get: (key: string) => {
         const value = localStorage.getItem(key)
-        return JSON.parse(value)
+        return JSON.parse(<string>value)
     },
 
     set: (key: string, value: any): void => {

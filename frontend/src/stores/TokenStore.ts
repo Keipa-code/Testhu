@@ -1,7 +1,7 @@
 import axios from "axios";
 import {action, computed, makeAutoObservable, observable, runInAction} from "mobx";
-import {storage} from "@utils/tools";
-import {JWT_TOKEN, REDIRECT_URL} from "@constants/index";
+import {JWT_TOKEN, REDIRECT_URL} from "../constants";
+import {storage} from "../utils/tools";
 
 export interface token {
     token: string;
@@ -38,7 +38,7 @@ class TokenStore {
             password: this.password
         }).then((res: any) => {
             storage.set(JWT_TOKEN, res.data) // store jwt token
-            location.replace(sessionStorage.getItem(REDIRECT_URL) || '/home')
+            window.location.replace(sessionStorage.getItem(REDIRECT_URL) || '/home')
             runInAction(() => {
                 this.loading = false
             })

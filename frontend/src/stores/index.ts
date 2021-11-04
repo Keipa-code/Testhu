@@ -1,5 +1,7 @@
-import tokenStore from '@stores/TokenStore'
+import tokenStore from './TokenStore'
+import newTestStore from '../pages/NewTest/NewTestStore'
 
 export default {
-    tokenStore
+    tokenStore,
+    newTestStore
 }

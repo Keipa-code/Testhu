@@ -4,11 +4,15 @@ export interface ITag {
 }
 
 export interface ITest {
-    id: number;
+    id?: number;
     testName: string;
-    tags: ITag[];
-    done: number;
-    passed: number;
+    description?: string;
+    rules?: string;
+    date?: string;
+    timeLimit?: string;
+    tags?: ITag[];
+    done?: number;
+    passed?: number;
     link?: string;
 }
 

@@ -1,7 +1,7 @@
-import axios from 'axios'
+import axios, {AxiosRequestConfig} from 'axios'
 import { AxiosResponse, AxiosError } from 'axios'
-import { storage } from '@utils/tools'
-import { JWT_TOKEN } from '@constants/index'
+import { storage } from './tools'
+import { JWT_TOKEN } from '../constants/index'
 import helper from './httpHelper'
 import stores from '../stores';
 
@@ -14,11 +14,11 @@ const $http = axios.create({
     timeout: 60000 * 2
 })
 
-$http.interceptors.request.use(config => {
+$http.interceptors.request.use((config: AxiosRequestConfig) => {
     if (!storage.get(JWT_TOKEN)){
         stores.tokenStore.login()
     }
-    config.headers.common['Authorization'] = 'Bearer ' + storage.get(JWT_TOKEN)
+    config.headers['Authorization'] = 'Bearer ' + storage.get(JWT_TOKEN)
     return config
 }, error => {
     return Promise.reject(error)
