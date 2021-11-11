@@ -14,7 +14,7 @@ export const RootStateProvider: FC<React.PropsWithChildren<{}>> = ({
 }) => {
     return (
         <RootStateContext.Provider value={{ newTestStore }}>
-            {children}
+            { children }
         </RootStateContext.Provider>
     )
 }

@@ -6,7 +6,6 @@ import Home from "./pages/Home";
 import Tests from "./pages/Tests";
 import NewTest from "./pages/NewTest/NewTest";
 import CreateTest from "./pages/CreateTest";
-import stores from './stores'
 
 const App: FC = () => {
     return (

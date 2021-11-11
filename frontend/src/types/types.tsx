@@ -5,7 +5,7 @@ export interface ITag {
 
 export interface ITest {
     id?: number;
-    testName: string;
+    testName?: string;
     description?: string;
     rules?: string;
     date?: string;

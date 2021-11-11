@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Button, Col, Container, Form, FormCheck, FormControl, InputGroup, Row} from "react-bootstrap";
 import {useParams} from 'react-router-dom';
 import {ITest} from "../../types/types";
-import {useObserver} from "mobx-react-lite";
+import {observer, useObserver} from "mobx-react-lite";
 import {useRootStore} from "../../RootStateContext";
+import {Observer} from "mobx-react-lite/dist/ObserverComponent";
 
 interface NewTestParams {
     id: string;
@@ -13,40 +14,60 @@ export interface token {
     token: string;
 }
 
-const NewTest = () => {
-    const { newTestStore } = useRootStore();
+interface Props {}
 
-    const [test, setTest] = useState<ITest | null>(null);
+const NewTest: FC = observer(() => {
+    const { newTestStore } = useRootStore();
+    const [test, setTest] = useState({
+        testName: '321'
+    })
+
+    let testName = '321'
     const params = useParams<NewTestParams>()
     useEffect(() => {
-        fetchTest()
+        newTestStore.getDetail('1')
+
     },[])
 
-    async function fetchTest() {
+    useEffect(() => {
+        setTest({...test, testName: newTestStore.test.testName})
+    },[newTestStore.test])
+
+    /*async function fetchTest() {
         try {
             $http.get('/api/tests/171').then((response: any) => {setTest(response.data)})
         } catch (e) {
             alert(e)
         }
+    }*/
+
+    function fetchTest(){
+        //newTestStore.getDetail('1')
+        console.log(newTestStore.test.tags['0'].tagName)
     }
 
-    function push(){
+    function button2(){
+        testName = '123'
     }
 
-    function fetch(){
+    function handleChangeName(e: React.ChangeEvent<HTMLInputElement>){
+        setTest({testName: e.target.value})
+        newTestStore.test.testName = e.target.value
     }
 
-    return useObserver(() => (
+
+    return (
         <Container>
             <Row>
                 <Col className="col-sm-8">
                     <h2>Создать новый тест</h2>
                     <FormControl
                         className="mt-3"
-                        placeholder="Название"
-                        aria-label="Название"
+                        placeholder={"Название " + testName}
+                        aria-label={"Название " + testName}
                         aria-describedby="basic-addon2"
-                        value={test?.testName}
+                        value={newTestStore.test.testName}
+                        onChange={ handleChangeName }
                     />
                     <FormControl
                         className="mt-3"
@@ -54,8 +75,8 @@ const NewTest = () => {
                         aria-label="Тэги"
                         aria-describedby="basic-addon2"
                     />
-                    <Button className="mt-3" onClick={push}>Добавить предисловие</Button>
-                    <Button className="mt-3" onClick={fetch}>Fetch</Button>
+                    <Button className="mt-3" onClick={fetchTest}>Добавить предисловие</Button>
+                    <Button className="ms-3 mt-3" onClick={button2}>Fetch</Button>
                     <Form>
                         <Form.Check className="mt-3"
                                     label={'Разрешить смотреть список неправильных ответов после теста'}/>
@@ -67,8 +88,13 @@ const NewTest = () => {
                 <Col className="col-sm-4">
                 </Col>
             </Row>
+            <Row>
+                <Col className="mt-5" md={{ span: 3, offset: 9 }}>
+                    <Button>Сохранить</Button>
+                </Col>
+            </Row>
         </Container>
-    ))
-};
+    )
+});
 
 export default NewTest;

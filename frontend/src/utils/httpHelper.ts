@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios'
 import { REDIRECT_URL } from '../constants'
 
 
+
 class HttpHelper {
     private store: any
     private seStore: any
@@ -23,7 +24,7 @@ class HttpHelper {
                     this.store.clear()
                     $msg.success('Вы вышли')
                     setTimeout(() => {
-                        location.href = '/login'
+                        window.location.href = '/login'
                     }, 1000)
                 } else {
                     $msg.success('Успешная операция')
@@ -51,9 +52,9 @@ class HttpHelper {
             case 401 :
                 this.store.clear()
                 $msg.error('Пожалуйста, войдите в систему еще раз')
-                this.seStore.setItem(REDIRECT_URL, location.pathname)
+                this.seStore.setItem(REDIRECT_URL, window.location.pathname)
                 setTimeout(() => {
-                    location.href = '/login'
+                    window.location.href = '/login'
                 }, 1000)
                 break
             case 403 :

@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TestRepository::class)]
-#[ApiResource(
+#[ApiResource(/*
     collectionOperations: [
         'get' => [
             'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'get' => [
             'security' => "is_granted('ROLE_USER') or object == user"
         ]
-    ],
+    ],*/
     attributes: ['pagination_items_per_page' => 2],
     denormalizationContext: ['groups' => ['tests:write']],
     normalizationContext: ['groups' => ['tests:read']]
