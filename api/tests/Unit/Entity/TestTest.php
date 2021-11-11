@@ -18,7 +18,7 @@ final class TestTest extends DatabaseDependantTestCase
     public function testTestAddedInDB(): void
     {
         $this->loadFixtures([
-            'App\DataFixtures\TestFixtures',
+            'App\DataFixtures\FixturesForTests\TestFixtures',
         ]);
 
         $testRepository = $this->entityManager->getRepository(Test::class);
@@ -44,7 +44,7 @@ final class TestTest extends DatabaseDependantTestCase
         //self::assertEquals('https://result.com', $resultRecord->getLink());
         //self::assertEquals('one variant', $questionRecord->getQuestionType());
         self::assertEquals([Test::HOUR => 2, Test::MINUTE => 58], $testRecord->getTimeLimit());
-        self::assertEquals(30, $testRecord->getDate());
+        self::assertEquals(30, $testRecord->getDone());
         self::assertEquals(50, $testRecord->getPassed());
         self::assertEquals(false, $testRecord->isSubmitted());
         self::assertEquals('Физика', $tag->getTagName());

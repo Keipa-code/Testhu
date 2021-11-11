@@ -66,14 +66,8 @@ class Test
     private ?DateTimeImmutable $date;
 
     #[ORM\Column(type: "json", nullable: true)]
-    #[Assert\Regex(pattern: "/^\d{0,43200}$/",
-        message: "Ограничение по времение возможно установить не больше 43 200 минут"
-    )]
     #[Groups(['tests:read', 'tests:write'])]
-    private $timeLimit = [
-        self::HOUR => 0,
-        self::MINUTE => 0,
-    ];
+    private $timeLimit = [];
 
     #[ORM\Column(type: "integer", nullable: true)]
     #[Groups(['tests:read', 'tests:write'])]

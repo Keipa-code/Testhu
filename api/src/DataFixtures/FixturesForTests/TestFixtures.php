@@ -21,8 +21,6 @@ final class TestFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $faker = Factory::create('ru_RU');
-
 
         $tag = new Tag();
         $tag->setTagName('Физика');
@@ -40,11 +38,9 @@ final class TestFixtures extends Fixture
         $test->setIsSubmitted(false);
         $test->addTag($tag);
 
-
+        $manager->persist($tag);
         $manager->persist($test);
 
-
         $manager->flush();
-        $manager->clear();
     }
 }
