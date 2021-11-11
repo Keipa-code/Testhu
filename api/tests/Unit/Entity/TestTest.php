@@ -24,9 +24,9 @@ final class TestTest extends DatabaseDependantTestCase
         $testRepository = $this->entityManager->getRepository(Test::class);
         /** @var Test $testRecord */
         $testRecord = $testRepository->findOneBy(['testName' => 'Мой тест']);
-        $userRecord = $testRecord->getUserId();
-        $resultRecord = $testRecord->getResults()->first();
-        $questionRecord = $testRecord->getQuestions()->first();
+        //$userRecord = $testRecord->getUserId();
+        //$resultRecord = $testRecord->getResults()->first();
+        //$questionRecord = $testRecord->getQuestions()->first();
         $tag = $testRecord->getTags()->first();
 
         self::assertEquals('Мой тест', $testRecord->getTestName());
@@ -35,14 +35,18 @@ final class TestTest extends DatabaseDependantTestCase
             $testRecord->getDescription()
         );
         self::assertEquals(
-            'Время прохождения теста 40 минут. Нужно выбирать один вариант',
+            'Время прохождения теста 2 часа 58 минут. Нужно выбирать один вариант',
             $testRecord->getRules()
         );
         self::assertEquals('2021-Jul-20 06:10:47', $testRecord->getDate()->format('Y-M-d h:i:s'));
-        self::assertEquals(60, $testRecord->getTimeLimit());
-        self::assertEquals('TestUser', $userRecord->getUsername());
-        self::assertEquals('https://result.com', $resultRecord->getLink());
-        self::assertEquals('one variant', $questionRecord->getQuestionType());
+        //self::assertEquals(60, $testRecord->getTimeLimit());
+        //self::assertEquals('TestUser', $userRecord->getUsername());
+        //self::assertEquals('https://result.com', $resultRecord->getLink());
+        //self::assertEquals('one variant', $questionRecord->getQuestionType());
+        self::assertEquals([Test::HOUR => 2, Test::MINUTE => 58], $testRecord->getTimeLimit());
+        self::assertEquals(30, $testRecord->getDate());
+        self::assertEquals(50, $testRecord->getPassed());
+        self::assertEquals(false, $testRecord->isSubmitted());
         self::assertEquals('Физика', $tag->getTagName());
     }
 }

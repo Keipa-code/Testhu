@@ -40,6 +40,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(SearchFilter::class, properties: ['testName' => 'partial', 'tags.tagName' => 'exact'])]
 class Test
 {
+    public const HOUR = 'hour';
+    public const MINUTE = 'minute';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
@@ -62,12 +65,15 @@ class Test
     #[Groups(['tests:read', 'tests:write'])]
     private ?DateTimeImmutable $date;
 
-    #[ORM\Column(type: "integer", nullable: true)]
-    #[Assert\Regex(pattern: "/^\d{1,43200}$/",
-        message: "Имя пользователя может содержать только латинские символы и цифры"
+    #[ORM\Column(type: "json", nullable: true)]
+    #[Assert\Regex(pattern: "/^\d{0,43200}$/",
+        message: "Ограничение по времение возможно установить не больше 43 200 минут"
     )]
     #[Groups(['tests:read', 'tests:write'])]
-    private ?int $timeLimit;
+    private $timeLimit = [
+        self::HOUR => 0,
+        self::MINUTE => 0,
+    ];
 
     #[ORM\Column(type: "integer", nullable: true)]
     #[Groups(['tests:read', 'tests:write'])]
@@ -162,12 +168,12 @@ class Test
         return $this;
     }
 
-    public function getTimeLimit(): ?int
+    public function getTimeLimit(): ?array
     {
         return $this->timeLimit;
     }
 
-    public function setTimeLimit(?int $timeLimit): self
+    public function setTimeLimit(?array $timeLimit): self
     {
         $this->timeLimit = $timeLimit;
 

@@ -41,7 +41,10 @@ final class TestFixtures extends Fixture implements DependentFixtureInterface
             $test->setDescription($faker->sentence(13));
             $test->setRules($faker->sentence(13));
             $test->setDate(new DateTimeImmutable($faker->date('Y-m-d', 'now')));
-            $test->setTimeLimit(60);
+            $test->setTimeLimit([
+                Test::HOUR => 2,
+                Test::MINUTE => 58
+            ]);
             $test->setDone($faker->numberBetween(310, 700));
             $test->setPassed($faker->numberBetween(50, 300));
             $test->setIsSubmitted(false);

@@ -18,3 +18,9 @@ export const storage = {
         localStorage.clear()
     }
 }
+
+export function computeTimeLimit(value) {
+    const minute = (value < 60) ? value : (value - (Math.floor(value / 60) * 60))
+    const hour = Math.floor(value / 60)
+    return {minute, hour}
+}
