@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
+use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * @internal
  */
-abstract class DatabaseDependantTestCase extends KernelTestCase
+abstract class DatabaseDependantTestCase extends ApiTestCase
 {
     protected EntityManagerInterface $entityManager;
 

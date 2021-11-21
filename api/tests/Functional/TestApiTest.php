@@ -6,26 +6,10 @@ declare(strict_types=1);
 namespace App\Tests\Functional;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use App\Entity\Test;
 
 class TestApiTest extends ApiTestCase
 {
-    private $id;
-
-    protected function setUp(): void
-    {
-        $response = self::createClient()->request(
-            'POST',
-            'http://localhost:8081/api/tests',
-            [
-                'json' => [
-                    'testName' => 'apiTestForID',
-                ],
-            ]
-        );
-
-        $this->id = $response->toArray()['id'];
-    }
-
     public function testCreateTestSuccess(): void
     {
         $response = self::createClient()->request(
@@ -64,7 +48,7 @@ class TestApiTest extends ApiTestCase
     {
         self::createClient()->request(
             'PUT',
-            'http://localhost:8081/api/tests/' . $this->id,
+            'http://localhost:8081/api/tests/2',
             [
                 'headers' => [
                     'accept' => 'application/ld+json',
@@ -79,7 +63,7 @@ class TestApiTest extends ApiTestCase
 
         self::createClient()->request(
             'GET',
-            'http://localhost:8081/api/tests/' . $this->id,
+            'http://localhost:8081/api/tests/2',
             [
                 'headers' => [
                     'accept' => 'application/ld+json',
@@ -89,7 +73,7 @@ class TestApiTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(200);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
-            'testName' => 'apiTestForID',
+            'testName' => 'Мой функиональный тест',
             'questions' => [
                 '/api/questions/2'
             ]]);
@@ -99,14 +83,14 @@ class TestApiTest extends ApiTestCase
     {
         self::createClient()->request(
             'PUT',
-            'http://localhost:8081/api/tests/4',
+            'http://localhost:8081/api/tests/2',
             [
                 'headers' => [
                     'accept' => 'application/ld+json',
                     'Content-Type' => 'application/ld+json',
                 ],
                 'json' => [
-                    'results' => ['/api/results/3'],
+                    'results' => ['/api/results/2'],
                 ],
             ]
         );
@@ -114,7 +98,7 @@ class TestApiTest extends ApiTestCase
 
         self::createClient()->request(
             'GET',
-            'http://localhost:8081/api/tests/4',
+            'http://localhost:8081/api/tests/2',
             [
                 'headers' => [
                     'accept' => 'application/ld+json',
@@ -124,14 +108,11 @@ class TestApiTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(200);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
-            'testName' => 'Мой тест',
-            'results' => ['/api/results/3']
+            'testName' => 'Мой функиональный тест',
+            'results' => ['/api/results/2']
         ]);
     }
 
-    /**
-     * @group ignore
-     */
     public function testPagination()
     {
         self::createClient()->request(
@@ -146,8 +127,17 @@ class TestApiTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(200);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
-            'testName' => 'Мой тест',
-            'results' => ['/api/results/3']
+            'hydra:member' => [[
+                'testName' => 'Мой тест',
+                'description' => 'Этой мой тест. Я очень люблю свой тест. Мой тест самый лучший в мире',
+                'rules' => 'Время прохождения теста 2 часа 58 минут. Нужно выбирать один вариант',
+                'tags' => [[
+                    '@id' => '/api/tags/1',
+                    '@type' => 'Tag',
+                    'id' => 1,
+                    'tagName' => 'Физика',
+                ]],
+            ]]
         ]);
     }
 

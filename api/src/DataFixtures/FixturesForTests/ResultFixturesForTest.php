@@ -23,9 +23,15 @@ final class ResultFixturesForTest extends Fixture implements FixtureGroupInterfa
         $result->setCorrectAnswersCount(40);
         $result->setDate(new DateTimeImmutable('2021-07-20 07:10:47'));
 
+        $result2 = new Result();
+        $result2->setLink('https://result2.com');
+        $result2->setCorrectAnswersCount(40);
+        $result2->setDate(new DateTimeImmutable('2021-07-20 07:10:47'));
+
         $this->addReference('result', $result);
 
         $manager->persist($result);
+        $manager->persist($result2);
         $manager->flush();
     }
 
