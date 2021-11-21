@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataFixtures\FixturesForTests;
 
+use App\DataFixtures\TagFixtures;
 use App\Entity\Question;
 use App\Entity\Result;
 use App\Entity\Tag;
@@ -11,12 +12,13 @@ use App\Entity\Test;
 use App\Entity\User;
 use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-final class TestFixtures extends Fixture
+final class TestFixturesForTest extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
 
     public function load(ObjectManager $manager): void
@@ -36,11 +38,36 @@ final class TestFixtures extends Fixture
         $test->setDone(30);
         $test->setPassed(50);
         $test->setIsSubmitted(false);
+
+        /** @var Tag $tag */
+        $tag = $this->getReference(TagFixtures::TAGS_REFERENCE . 1);
         $test->addTag($tag);
 
-        $manager->persist($tag);
-        $manager->persist($test);
+        /** @var Question $question */
+        $question = $this->getReference('question');
+        $test->addQuestion($question);
 
+        /** @var Result $result */
+        $result = $this->getReference('result');
+        $test->addResult($result);
+
+        $this->addReference('test', $test);
+
+        $manager->persist($test);
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return [
+            TagFixtures::class,
+            QuestionFixturesForTest::class,
+            ResultFixturesForTest::class,
+        ];
+    }
+
+    public static function getGroups(): array
+    {
+        return ['TestsGroup'];
     }
 }

@@ -13,14 +13,8 @@ use Liip\TestFixturesBundle\Test\FixturesTrait;
  */
 final class NetworkTest extends DatabaseDependantTestCase
 {
-    use FixturesTrait;
-
     public function testNetworkAddedInDB(): void
     {
-        $this->loadFixtures([
-            'App\DataFixtures\NetworkFixtures',
-        ]);
-
         $networkRepository = $this->entityManager->getRepository(Network::class);
         /** @var Network $networkRecord */
         $networkRecord = $networkRepository->findOneBy(['name' => 'mail.ru']);
@@ -28,6 +22,6 @@ final class NetworkTest extends DatabaseDependantTestCase
 
         self::assertEquals('mail.ru', $networkRecord->getName());
         self::assertEquals('identity identification', $networkRecord->getIdentity());
-        self::assertEquals('NetworkUser', $userRecord->getUsername());
+        self::assertEquals('myname', $userRecord->getUserIdentifier());
     }
 }

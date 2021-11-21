@@ -8,10 +8,11 @@ use App\Entity\Question;
 use App\Entity\Tag;
 use App\Entity\Test;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-final class TagFixtures extends Fixture
+final class TagFixtures extends Fixture implements FixtureGroupInterface
 {
     public const TAGS_REFERENCE = 'tag_';
 
@@ -51,4 +52,9 @@ final class TagFixtures extends Fixture
         $manager->flush();
     }
 
+
+    public static function getGroups(): array
+    {
+        return ['FakeDataGroup', 'TestsGroup'];
+    }
 }

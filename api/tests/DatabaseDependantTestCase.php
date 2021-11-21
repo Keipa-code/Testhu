@@ -27,4 +27,14 @@ abstract class DatabaseDependantTestCase extends KernelTestCase
 
         $this->entityManager->close();
     }
+
+    protected function fetch($url, $data) {
+        $response = self::createClient()->request(
+            'POST',
+            'http://localhost:8081/api/' . $url,
+            $data
+        );
+
+        return $response->toArray()['id'];
+    }
 }

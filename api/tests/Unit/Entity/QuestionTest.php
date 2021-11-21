@@ -13,14 +13,8 @@ use Liip\TestFixturesBundle\Test\FixturesTrait;
  */
 final class QuestionTest extends DatabaseDependantTestCase
 {
-    use FixturesTrait;
-
     public function testQuestionAddedInDB(): void
     {
-        $this->loadFixtures([
-            'App\DataFixtures\QuestionFixtures',
-        ]);
-
         $questionRepository = $this->entityManager->getRepository(Question::class);
         /** @var Question $questionRecord */
         $questionRecord = $questionRepository->findOneBy(['questionType' => 'one variant']);

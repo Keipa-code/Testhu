@@ -13,14 +13,8 @@ use Liip\TestFixturesBundle\Test\FixturesTrait;
  */
 final class TagTest extends DatabaseDependantTestCase
 {
-    use FixturesTrait;
-
     public function testTagAddedInDB(): void
     {
-        $this->loadFixtures([
-            'App\DataFixtures\TagFixtures',
-        ]);
-
         $tagRepository = $this->entityManager->getRepository(Tag::class);
         /** @var Tag $tagRecord */
         $tagRecord = $tagRepository->findOneBy(['tagName' => 'Математика']);

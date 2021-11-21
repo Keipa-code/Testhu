@@ -8,11 +8,12 @@ use App\Entity\Question;
 use App\Entity\Tag;
 use App\Entity\Test;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-final class QuestionFixtures extends Fixture implements DependentFixtureInterface
+final class QuestionFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -51,5 +52,11 @@ final class QuestionFixtures extends Fixture implements DependentFixtureInterfac
         return [
             TestFixtures::class,
         ];
+    }
+
+
+    public static function getGroups(): array
+    {
+        return ['FakeDataGroup'];
     }
 }

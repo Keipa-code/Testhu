@@ -47,7 +47,7 @@ api-cs-fix:
 	docker-compose run --rm php-cli composer php-cs-fixer fix
 
 api-fixtures:
-	docker-compose run --rm php-cli php ./bin/console doctrine:fixtures:load --no-interaction
+	docker-compose run --rm php-cli php ./bin/console doctrine:fixtures:load --no-interaction --group=FakeDataGroup
 
 api-test-db-init: api-test-create-db api-test-migrate api-test-fixtures
 
@@ -61,7 +61,7 @@ api-test-migrate:
 	docker-compose run --rm php-cli php ./bin/console doctrine:migrations:migrate --env=test --no-interaction
 
 api-test-fixtures:
-	docker-compose run --rm php-cli php ./bin/console doctrine:fixtures:load --env=test --no-interaction
+	docker-compose run --rm php-cli php ./bin/console doctrine:fixtures:load --env=test --no-interaction --group=TestsGroup
 
 api-get-token:
 	curl -s -X POST -H 'Accept: application/json' -H 'Content-Type: application/json' --data '{"username":"frontend_anonymous","password":"12345678"}' http://localhost:8081/api/login
