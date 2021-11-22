@@ -15,17 +15,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: TagRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        'get' => [
-            'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
-        ],
-        'post' => [
-            'security' => "is_granted('ROLE_USER')"
-        ]
+        'get',
+        'post',
     ],
     itemOperations: [
-        'get' => [
-            'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
-        ]    
+        'get'
     ],
     denormalizationContext: ['groups' => ['tags:write']],
     normalizationContext: ['groups' => ['tags:read']]

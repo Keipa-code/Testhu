@@ -17,21 +17,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
 #[ApiResource(
     collectionOperations: [
-    'get' => [
-        'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
+        'get',
+        'post',
     ],
-    'post' => [
-        'security' => "is_granted('ROLE_ANON')"
-    ],
-],
     itemOperations: [
-    'put' => [
-        'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
+        'get',
+        'put',
     ],
-    'get' => [
-        'security' => "is_granted('ROLE_USER') or object == user"
-    ]
-],
     denormalizationContext: ['groups' => ['questions:write']],
     normalizationContext: ['groups' => ['questions:read']]
 )]

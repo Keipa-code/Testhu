@@ -16,23 +16,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TestRepository::class)]
-#[ApiResource(/*
+#[ApiResource(
     collectionOperations: [
-        'get' => [
-            'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
-        ],
-        'post' => [
-            'security' => "is_granted('ROLE_ANON')"
-        ],
+        'get',
+        'post',
     ],
     itemOperations: [
+        'get',
         'put' => [
-            'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
+            'security' => "object.isSubmitted == false"
         ],
-        'get' => [
-            'security' => "is_granted('ROLE_USER') or object == user"
-        ]
-    ],*/
+    ],
     attributes: ['pagination_items_per_page' => 2],
     denormalizationContext: ['groups' => ['tests:write']],
     normalizationContext: ['groups' => ['tests:read']]
@@ -79,7 +73,7 @@ class Test
 
     #[ORM\Column(type: "boolean", nullable: true)]
     #[Groups(['tests:read', 'tests:write'])]
-    private bool $isSubmitted = false;
+    public bool $isSubmitted = false;
 
     #[ORM\OneToMany(mappedBy: "test", targetEntity: "App\Entity\Result")]
     #[Groups(['tests:write', 'tests:read'])]

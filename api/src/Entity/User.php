@@ -24,17 +24,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[
     ApiResource(
         collectionOperations: [
-        'get' => [
-            'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')",
-        ],
-        'post' => [
-            'security' => "is_granted('ROLE_ANON')",
-        ]
+        'get',
+        'post',
     ],
         itemOperations: [
-        'get' => [
-            'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')",
-        ],
+        'get',
         'put' => [
             'security' => "is_granted('ROLE_USER') or object == user",
         ]

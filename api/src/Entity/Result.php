@@ -14,20 +14,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: ResultRepository::class)]
 #[ApiResource(
     collectionOperations: [
-    'get' => [
-        'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
-    ],
-    'post' => [
-        'security' => "is_granted('ROLE_ANON')"
-    ],
+    'get',
+    'post',
 ],
     itemOperations: [
-    'put' => [
-        'security' => "is_granted('ROLE_USER') or is_granted('ROLE_ANON')"
-    ],
-    'get' => [
-        'security' => "is_granted('ROLE_USER') or object == user"
-    ]
+    'get'
 ],
 )]
 class Result
