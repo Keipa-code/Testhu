@@ -17,7 +17,7 @@ final class QuestionTest extends DatabaseDependantTestCase
     {
         $questionRepository = $this->entityManager->getRepository(Question::class);
         /** @var Question $questionRecord */
-        $questionRecord = $questionRepository->findOneBy(['questionType' => 'one variant']);
+        $questionRecord = $questionRepository->findOneBy(['id' => '1']);
         $testRecord = $questionRecord->getTest();
 
 

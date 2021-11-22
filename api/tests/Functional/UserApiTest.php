@@ -4,35 +4,14 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use App\Tests\MailerClient;
-use Liip\TestFixturesBundle\Test\FixturesTrait;
+use App\Tests\WebApiTestCase;
 
 /**
  * @internal
  */
-final class UserApiTest extends ApiTestCase
+final class UserApiTest extends WebApiTestCase
 {
-    use FixturesTrait;
-
-    private $token;
-
-    protected function setUp(): void
-    {
-        $response = self::createClient()->request(
-            'POST',
-            'http://localhost:8081/api/login',
-            [
-                'headers' => ['Content-Type' => 'application/json'],
-                'json' => [
-                    'username' => 'frontend_anonymous',
-                    'password' => '12345678',
-                ],
-            ]
-        );
-
-        $this->token = $response->toArray()['token'];
-    }
 
     public function testCreateUserSuccess(): void
     {
@@ -43,7 +22,6 @@ final class UserApiTest extends ApiTestCase
             'POST',
             'http://localhost:8081/api/users',
             [
-                'auth_bearer' => $this->token,
                 'json' => [
                     'username' => 'apiTestUser',
                     'date' => '2021-07-20 04:10:47',
@@ -70,7 +48,7 @@ final class UserApiTest extends ApiTestCase
         $data = $this->createAuthenticatedClient('myname', '12345678');
         // The client implements Symfony HttpClient's `HttpClientInterface`, and the response `ResponseInterface`
 
-        $user = self::createClient()->request(
+        self::createClient()->request(
             'GET',
             'http://localhost:8081/getme',
             [
@@ -84,16 +62,14 @@ final class UserApiTest extends ApiTestCase
         // Asserts that the returned JSON is a superset of this one
         $this->assertJsonContains([
             '@context' => '/api/contexts/User',
-            '@id' => '/api/users/5',
             '@type' => 'User',
-            'id' => 5,
             'username' => 'myname',
             'date' => '2021-07-20T04:10:47+00:00',
             'email' => 'test@test.com',
             'passwordResetToken' => '4ed161b5-0d3c-4f06-8381-5f14678e1300',
             'newEmail' => 'new-test@test.com',
             'network' => [
-                '/api/networks/2',
+                '/api/networks/1',
             ],
             'results' => [
                 0 => [
@@ -104,7 +80,7 @@ final class UserApiTest extends ApiTestCase
             'tests' => [
                 0 => [
                     '@type' => 'Test',
-                    'testName' => 'My test',
+                    'testName' => 'Мой тест',
                 ],
             ],
         ]);
@@ -116,7 +92,6 @@ final class UserApiTest extends ApiTestCase
             'POST',
             'http://localhost:8081/api/users',
             [
-                'auth_bearer' => $this->token,
                 'json' => [
                     'username' => 'apiTestUser',
                     'date' => '2021-07-20 04:10:47',
@@ -138,7 +113,6 @@ final class UserApiTest extends ApiTestCase
             'POST',
             'http://localhost:8081/api/users',
             [
-                'auth_bearer' => $this->token,
                 'json' => [
                     'username' => 'apiTestUser',
                     'date' => '2021-07-20 04:10:47',
@@ -159,7 +133,7 @@ final class UserApiTest extends ApiTestCase
         $data = $this->createAuthenticatedClient('myname', '12345678');
         $response = self::createClient()->request(
             'PUT',
-            'http://localhost:8081/api/users/5',
+            'http://localhost:8081/api/users/1',
             [
                 'headers' => [
                     'Authorization' => sprintf('Bearer %s', $data['token']),
@@ -173,10 +147,31 @@ final class UserApiTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(200);
         $this->assertJsonContains([
             '@context' => '/api/contexts/User',
-            '@id' => '/api/users/5',
             '@type' => 'User',
-            'id' => 5,
             'username' => 'myname',
+        ]);
+
+        $newData = $this->createAuthenticatedClient('myname', 'Priv1234567890');
+
+        self::createClient()->request(
+            'GET',
+            'http://localhost:8081/getme',
+            [
+                'auth_bearer' => $newData['token'],
+            ]
+        );
+
+        $this->assertResponseIsSuccessful();
+        // Asserts that the returned content type is JSON-LD (the default)
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+
+        // Asserts that the returned JSON is a superset of this one
+        $this->assertJsonContains([
+            '@context' => '/api/contexts/User',
+            '@type' => 'User',
+            'username' => 'myname',
+            'date' => '2021-07-20T04:10:47+00:00',
+            'email' => 'test@test.com',
         ]);
     }
 
@@ -184,10 +179,7 @@ final class UserApiTest extends ApiTestCase
     {
         $response = self::createClient()->request(
             'GET',
-            'http://localhost:8081/api/users?username=myname',
-            [
-                'auth_bearer' => $this->token,
-            ]
+            'http://localhost:8081/api/users?username=myname'
         );
 
         $this->assertJsonContains([
@@ -202,10 +194,7 @@ final class UserApiTest extends ApiTestCase
     {
         $response = self::createClient()->request(
             'GET',
-            'http://localhost:8081/api/users?email=test@test.com',
-            [
-                'auth_bearer' => $this->token,
-            ]
+            'http://localhost:8081/api/users?email=test@test.com'
         );
 
         $this->assertJsonContains([
@@ -222,7 +211,7 @@ final class UserApiTest extends ApiTestCase
 
         self::createClient()->request(
             'PUT',
-            'http://localhost:8081/api/users/5',
+            'http://localhost:8081/api/users/1',
             [
                 'auth_bearer' => $data['token'],
                 'headers' => [
@@ -238,9 +227,8 @@ final class UserApiTest extends ApiTestCase
 
         self::createClient()->request(
             'GET',
-            'http://localhost:8081/api/users/5',
+            'http://localhost:8081/api/users/1',
             [
-                'auth_bearer' => $this->token,
                 'headers' => [
                     'accept' => 'application/ld+json',
                 ],
@@ -254,7 +242,7 @@ final class UserApiTest extends ApiTestCase
                 [
                     '@id' => '/api/tests/2',
                     '@type' => 'Test',
-                    'testName' => 'Мой тест с результатом',
+                    'testName' => 'Мой функиональный тест',
                 ]
             ]]);
     }
@@ -265,7 +253,7 @@ final class UserApiTest extends ApiTestCase
 
         self::createClient()->request(
             'PUT',
-            'http://localhost:8081/api/users/5',
+            'http://localhost:8081/api/users/1',
             [
                 'auth_bearer' => $data['token'],
                 'headers' => [
@@ -273,7 +261,7 @@ final class UserApiTest extends ApiTestCase
                     'Content-Type' => 'application/ld+json',
                 ],
                 'json' => [
-                    'results' => ['/api/results/3'],
+                    'results' => ['/api/results/2'],
                 ],
             ]
         );
@@ -281,9 +269,8 @@ final class UserApiTest extends ApiTestCase
 
         self::createClient()->request(
             'GET',
-            'http://localhost:8081/api/users/5',
+            'http://localhost:8081/api/users/1',
             [
-                'auth_bearer' => $this->token,
                 'headers' => [
                     'accept' => 'application/ld+json',
                 ],
@@ -295,27 +282,10 @@ final class UserApiTest extends ApiTestCase
             'username' => 'myname',
             'results' => [
                 [
-                    '@id' => '/api/results/3',
+                    '@id' => '/api/results/2',
                     '@type' => 'Result',
-                    'link' => 'https://result.com',
+                    'link' => 'https://result2.com',
                 ]
             ]]);
-    }
-
-    protected function createAuthenticatedClient($username = 'frontend_anonymous', $password = '12345678')
-    {
-        $response = self::createClient()->request(
-            'POST',
-            'http://localhost:8081/api/login',
-            [
-                'headers' => ['Content-Type' => 'application/json'],
-                'json' => [
-                    'username' => $username,
-                    'password' => $password,
-                ],
-            ]
-        );
-
-        return $response->toArray();
     }
 }
