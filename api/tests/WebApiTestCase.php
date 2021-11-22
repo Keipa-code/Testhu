@@ -7,7 +7,7 @@ namespace App\Tests;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 
-class WebApiTestCase extends ApiTestCase
+abstract class WebApiTestCase extends ApiTestCase
 {
     protected function createAuthenticatedClient($username = 'frontend_anonymous', $password = '12345678')
     {
