@@ -33,10 +33,15 @@ final class QuestionFixturesForTest extends Fixture implements FixtureGroupInter
         $question2->setVariants(['Mersedes', 'BMW', 'Volga']);
         $question2->setAnswer(['BMW']);
 
+        $question3 = new Question();
+        $question3->setQuestionText('Question with Submitted test');
+
         $this->addReference('question', $question);
+        $this->addReference('question3', $question3);
 
         $manager->persist($question);
         $manager->persist($question2);
+        $manager->persist($question3);
         $manager->flush();
     }
 

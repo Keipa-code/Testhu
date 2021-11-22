@@ -13,21 +13,11 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class UserDataPersister implements ContextAwareDataPersisterInterface
 {
-    private EntityManagerInterface $entityManager;
-    private UserPasswordHasherInterface $hasher;
-    private EmailVerifier $emailVerifier;
-    private UserRepository $repository;
-
     public function __construct(
-        EntityManagerInterface $entityManager,
-        UserRepository $repository,
-        UserPasswordHasherInterface $hasher,
-        EmailVerifier $emailVerifier
+        private EntityManagerInterface $entityManager,
+        private UserPasswordHasherInterface $hasher,
+        private EmailVerifier $emailVerifier
     ) {
-        $this->entityManager = $entityManager;
-        $this->hasher = $hasher;
-        $this->emailVerifier = $emailVerifier;
-        $this->repository = $repository;
     }
 
     public function supports($data, array $context = []): bool

@@ -66,7 +66,7 @@ class Question
     #[ORM\ManyToOne(targetEntity: Test::class, cascade: ["persist"], inversedBy: "questions")]
     #[ORM\JoinColumn(name: "test", referencedColumnName: "id", nullable: true)]
     #[Groups(['questions:read', 'questions:write'])]
-    private $test;
+    public $test;
 
     public function getId(): ?int
     {

@@ -23,18 +23,6 @@ final class TestFixturesForTest extends Fixture implements DependentFixtureInter
 
     public function load(ObjectManager $manager): void
     {
-        $testFunc = new Test();
-        $testFunc->setTestName('Мой функиональный тест');
-        $testFunc->setDescription('Этой мой тест. Я очень люблю свой тест. Мой тест самый лучший в мире');
-        $testFunc->setRules('Время прохождения теста 2 часа 58 минут. Нужно выбирать один вариант');
-        $testFunc->setDate(new DateTimeImmutable('2021-Jul-20 06:10:47'));
-        $testFunc->setTimeLimit([
-            Test::HOUR => 2,
-            Test::MINUTE => 58
-        ]);
-        $testFunc->setDone(30);
-        $testFunc->setPassed(50);
-        $testFunc->setIsSubmitted(false);
 
         $tag = new Tag();
         $tag->setTagName('Физика');
@@ -65,8 +53,30 @@ final class TestFixturesForTest extends Fixture implements DependentFixtureInter
 
         $this->addReference('test', $test);
 
+
+        $testFunc = new Test();
+        $testFunc->setTestName('Мой функиональный тест');
+        $testFunc->setDescription('Этой мой тест. Я очень люблю свой тест. Мой тест самый лучший в мире');
+        $testFunc->setRules('Время прохождения теста 2 часа 58 минут. Нужно выбирать один вариант');
+        $testFunc->setDate(new DateTimeImmutable('2021-Jul-20 06:10:47'));
+        $testFunc->setTimeLimit([
+            Test::HOUR => 2,
+            Test::MINUTE => 58
+        ]);
+        $testFunc->setDone(30);
+        $testFunc->setPassed(50);
+        $testFunc->setIsSubmitted(false);
+
+        $testSubmitted = new Test;
+        $testSubmitted->setTestName('Submitted test');
+        $testSubmitted->setIsSubmitted(true);
+        /** @var Question $question */
+        $question3 = $this->getReference('question3');
+        $testSubmitted->addQuestion($question3);
+
         $manager->persist($test);
         $manager->persist($testFunc);
+        $manager->persist($testSubmitted);
         $manager->flush();
     }
 
