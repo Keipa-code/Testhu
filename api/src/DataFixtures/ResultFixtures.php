@@ -31,6 +31,13 @@ final class ResultFixtures extends Fixture
         $result->setLink('https://result.com');
         $result->setCorrectAnswersCount(40);
         $result->setDate(new DateTimeImmutable('2021-07-20 07:10:47'));
+        $result->setTestResults([
+            '1' => false,
+            '2' => true,
+            '3' => true
+        ]);
+        $result->setIsPublic(true);
+        $result->setIsWrongAnswersVisibles(true);
 
         $user->addResult($result);
         $manager->persist($user);

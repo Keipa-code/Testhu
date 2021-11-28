@@ -47,6 +47,15 @@ class Result
     #[ORM\Column(type: "boolean")]
     private $viewed = false;
 
+    #[ORM\Column(type: "boolean")]
+    private $isWrongAnswersVisibles = false;
+
+    #[ORM\Column(type: "boolean")]
+    private $isPublic = false;
+
+    #[ORM\Column(type: "json", nullable: true)]
+    private $testResults = [];
+
     #[ORM\ManyToOne(targetEntity: "App\Entity\User", inversedBy: "results")]
     #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: true)]
     private $user_id;
@@ -130,5 +139,53 @@ class Result
     public function setViewed($viewed): void
     {
         $this->viewed = $viewed;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWrongAnswersVisibles(): bool
+    {
+        return $this->isWrongAnswersVisibles;
+    }
+
+    /**
+     * @param bool $isWrongAnswersVisibles
+     */
+    public function setIsWrongAnswersVisibles(bool $isWrongAnswersVisibles): void
+    {
+        $this->isWrongAnswersVisibles = $isWrongAnswersVisibles;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPublic(): bool
+    {
+        return $this->isPublic;
+    }
+
+    /**
+     * @param bool $isPublic
+     */
+    public function setIsPublic(bool $isPublic): void
+    {
+        $this->isPublic = $isPublic;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTestResults(): array
+    {
+        return $this->testResults;
+    }
+
+    /**
+     * @param array $testResults
+     */
+    public function setTestResults(array $testResults): void
+    {
+        $this->testResults = $testResults;
     }
 }

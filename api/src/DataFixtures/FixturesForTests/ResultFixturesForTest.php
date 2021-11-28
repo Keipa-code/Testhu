@@ -22,6 +22,13 @@ final class ResultFixturesForTest extends Fixture implements FixtureGroupInterfa
         $result->setLink('https://result.com');
         $result->setCorrectAnswersCount(40);
         $result->setDate(new DateTimeImmutable('2021-07-20 07:10:47'));
+        $result->setTestResults([
+            '1' => false,
+            '2' => true,
+            '3' => true
+        ]);
+        $result->setIsPublic(true);
+        $result->setIsWrongAnswersVisibles(true);
 
         $result2 = new Result();
         $result2->setLink('https://result2.com');
