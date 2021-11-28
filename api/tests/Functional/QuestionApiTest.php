@@ -22,7 +22,7 @@ class QuestionApiTest extends WebApiTestCase
                     'variants' => [
                         'variants1', 'variants2'
                     ],
-                    'answer' => [
+                    'answers' => [
                         'single answer'
                     ],
                     'points' => 50,
@@ -46,7 +46,7 @@ class QuestionApiTest extends WebApiTestCase
             'variants' => [
                 'variants1', 'variants2'
             ],
-            'answer' => [
+            'answers' => [
                 'single answer'
             ],
             'points' => 50,
@@ -67,7 +67,7 @@ class QuestionApiTest extends WebApiTestCase
                     'variants' => [
                         'variants1', 'variants2'
                     ],
-                    'answer' => [
+                    'answers' => [
                         'single answer'
                     ],
                     'points' => 50,
@@ -91,7 +91,7 @@ class QuestionApiTest extends WebApiTestCase
             'variants' => [
                 'variants1', 'variants2'
             ],
-            'answer' => [
+            'answers' => [
                 'single answer'
             ],
             'points' => 50,
@@ -137,7 +137,7 @@ class QuestionApiTest extends WebApiTestCase
                         1 => 'BMW',
                         2 => 'Volga',
                     ],
-                'answer' => [
+                'answers' => [
                         0 => 'BMW',
                     ],
                 'points' => 50,

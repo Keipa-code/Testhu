@@ -27,7 +27,7 @@ final class QuestionFixtures extends Fixture implements DependentFixtureInterfac
                 $question->setPosition($i);
                 $question->setPoints($faker->numberBetween(5, 20));
                 for ($iVariants = 1; $iVariants <= 4; $iVariants++) {
-                    $question->setVariants([
+                    $question->setAnswers([
                         'id' => $iVariants,
                         'correct' => ($iVariants === 1) ?? false,
                         'text' => $faker->sentence(5)

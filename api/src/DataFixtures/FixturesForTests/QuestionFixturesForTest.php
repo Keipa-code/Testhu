@@ -23,7 +23,7 @@ final class QuestionFixturesForTest extends Fixture implements FixtureGroupInter
         $question->setPosition(5);
         $question->setPoints(50);
         $question->setVariants(['Mersedes', 'BMW', 'Volga']);
-        $question->setAnswer(['BMW']);
+        $question->setAnswers(['BMW']);
 
         $question2 = new Question();
         $question2->setQuestionText('Два паравоза выехали из точкии А и Б. Какая марка у этих паравозов');
@@ -31,7 +31,7 @@ final class QuestionFixturesForTest extends Fixture implements FixtureGroupInter
         $question2->setPosition(5);
         $question2->setPoints(50);
         $question2->setVariants(['Mersedes', 'BMW', 'Volga']);
-        $question2->setAnswer(['BMW']);
+        $question2->setAnswers(['BMW']);
 
         $question3 = new Question();
         $question3->setQuestionText('Question with Submitted test');

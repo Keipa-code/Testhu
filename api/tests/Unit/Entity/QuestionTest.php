@@ -27,7 +27,7 @@ final class QuestionTest extends DatabaseDependantTestCase
         );
         self::assertEquals('one variant', $questionRecord->getQuestionType());
         self::assertEquals(['Mersedes', 'BMW', 'Volga'], $questionRecord->getVariants());
-        self::assertEquals(['BMW'], $questionRecord->getAnswer());
+        self::assertEquals(['BMW'], $questionRecord->getAnswers());
         self::assertEquals(50, $questionRecord->getPoints());
         self::assertEquals(5, $questionRecord->getPosition());
         self::assertEquals('Мой тест', $testRecord->getTestName());

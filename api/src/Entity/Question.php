@@ -53,7 +53,7 @@ class Question
 
     #[ORM\Column(type: "json", nullable: true)]
     #[Groups(['questions:read', 'questions:write'])]
-    private $answer = [];
+    private $answers = [];
 
     #[ORM\Column(type: "integer", nullable: true)]
     #[Groups(['questions:read', 'questions:write'])]
@@ -109,14 +109,14 @@ class Question
         return $this;
     }
 
-    public function getAnswer(): ?array
+    public function getAnswers(): ?array
     {
-        return $this->answer;
+        return $this->answers;
     }
 
-    public function setAnswer(?array $answer): self
+    public function setAnswers(?array $answers): self
     {
-        $this->answer = $answer;
+        $this->answers = $answers;
 
         return $this;
     }
