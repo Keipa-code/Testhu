@@ -1,6 +1,6 @@
 components
-    Question
-        Question{
+    QuestionFormList
+        QuestionFormList{
             questionText,
             position,
             points,

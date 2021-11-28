@@ -33,7 +33,7 @@ class Question
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
-    #[Groups(['questions:read', 'questions:write'])]
+    #[Groups(['questions:read'])]
     private $id;
 
     #[ORM\Column(type: "string", length: 255, nullable: true)]
@@ -66,7 +66,7 @@ class Question
     #[ORM\ManyToOne(targetEntity: Test::class, cascade: ["persist"], inversedBy: "questions")]
     #[ORM\JoinColumn(name: "test", referencedColumnName: "id", nullable: true)]
     #[Groups(['questions:read', 'questions:write'])]
-    public $test;
+    private $test;
 
     public function getId(): ?int
     {

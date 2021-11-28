@@ -1,6 +1,13 @@
+
+
 export interface ITag {
     id: number;
     tagName: string;
+}
+
+export interface ITimeLimit {
+    hour?: string;
+    minute?: string;
 }
 
 export interface ITest {
@@ -9,7 +16,7 @@ export interface ITest {
     description?: string;
     rules?: string;
     date?: string;
-    timeLimit?: string;
+    timeLimit?: ITimeLimit;
     tags?: ITag[];
     done?: number;
     passed?: number;
@@ -24,25 +31,5 @@ export interface IPagination {
     "hydra:previous": string;
 }
 
-export interface IAnswer {
-    id: number;
-    correct: boolean;
-    text: string;
-}
 
-export enum AnswerType {
-    choose = 'choose',
-    number = 'number',
-    string = 'string'
-}
 
-export interface IQuestion {
-    id: number;
-    questionText: string;
-    position: number;
-    points: number;
-    answerType: AnswerType;
-    answerNumber?: number;
-    answerString?: string;
-    answers?: IAnswer[];
-}

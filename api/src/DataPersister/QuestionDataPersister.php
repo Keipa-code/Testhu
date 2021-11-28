@@ -28,19 +28,16 @@ class QuestionDataPersister implements ContextAwareDataPersisterInterface
      */
     public function persist($data, array $context = [])
     {
-        if (($context['item_operation_name'] ?? null) !== 'put') {
-            return $data;
+        if (($context['item_operation_name'] ?? null) === 'put') {
+            if ($data->getTest()->isSubmitted()) {
+                throw new DomainException('Вопросы опубликованных тестов изменить нельзя');
+            }
         }
 
-        $test = $data->getTest();
+        $this->entityManager->persist($data);
+        $this->entityManager->flush();
 
-        if ($test->isSubmitted()) {
-            throw new DomainException('Вопросы опубликованных тестов изменить нельзя');
-        } elseif (!$test->isSubmitted()) {
-            $this->entityManager->persist($data);
-            $this->entityManager->flush();
-        }
-
+        return $data;
     }
 
     public function remove($data, array $context = [])
