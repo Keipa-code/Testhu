@@ -1,5 +1,5 @@
 import React, {FC, useEffect, useState} from 'react';
-import {Col, Form, FormGroup, Row} from "react-bootstrap";
+import {Accordion, Col, Form, FormGroup, Row} from "react-bootstrap";
 import {IQuestion, QuestionFormStore} from "./QuestionFormStore";
 import AnswerForm from "./AnswerForm";
 import {observer} from "mobx-react-lite";
@@ -22,31 +22,40 @@ const QuestionFormItem: FC<QuestionFormItemProps> = observer(({qKey, question, i
 
     return (
         <div>
-            <h5>Вопрос № {question.position}</h5>
-            <Form className="mb-5">
-                <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Control
-                        name="questionText"
-                        placeholder="Текст вопроса"
-                        value={question.questionText}
-                        onChange={handleChange}
-                    />
-                    <Form.Text className="text-muted">
-                        Хорошо подумайте над текстом, что бы было понятно
-                    </Form.Text>
-                </Form.Group>
-                <AnswerForm qKey={qKey}/>
-                <Row className="align-items-center">
-                    <Col xs="4">
-                        <Form.Control
-                            name="points"
-                            value={question.points}
-                            placeholder="Введите количество баллов за правильный ответ"
-                        />
-                    </Col>
-                </Row>
-            </Form>
-
+            <Accordion className="mb-3" defaultActiveKey="0">
+                <Accordion.Item eventKey={String(qKey)}>
+                    <Accordion.Header>Вопрос № {question.position}</Accordion.Header>
+                    <Accordion.Body>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Текст вопроса</Form.Label>
+                                <Form.Control
+                                    name="questionText"
+                                    placeholder="Введите текст вопроса"
+                                    value={question.questionText}
+                                    onChange={handleChange}
+                                />
+                                <Form.Text className="text-muted">
+                                    Хорошо подумайте над текстом, что бы было понятно
+                                </Form.Text>
+                            </Form.Group>
+                            <AnswerForm qKey={qKey}/>
+                            <Row>
+                                <Col xs="5">
+                                    <Form.Label>Число баллов за правильный ответ</Form.Label>
+                                    <Form.Control
+                                        name="points"
+                                        type="number"
+                                        value={question.points}
+                                        placeholder="Введите число баллов за правильный ответ"
+                                        onChange={handleChange}
+                                    />
+                                </Col>
+                            </Row>
+                        </Form>
+                    </Accordion.Body>
+                </Accordion.Item>
+            </Accordion>
         </div>
     );
 })

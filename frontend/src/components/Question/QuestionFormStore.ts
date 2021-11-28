@@ -47,9 +47,9 @@ export class QuestionFormStore {
         this.questions[qKey].answers.push({correct: false, text: value})
     }
 
-    answerCheckedChange = (qKey: number, aKey: number, value: boolean) => {
+    answerCheckedChange = (qKey: number, aKey: number) => {
         runInAction(() => {
-            this.questions[qKey].answers[aKey].correct = value
+            this.questions[qKey].answers[aKey].correct = !this.questions[qKey].answers[aKey].correct
         })
     }
 

@@ -19,7 +19,7 @@ const QuestionFormList = observer(() => {
 
     return (
         <div>
-            <h2 className="mb-5">Вопросы теста</h2>
+            <h2 className="mb-3">Вопросы теста</h2>
             {questionFormStore.questions.map((question, qKey) =>
                 <QuestionFormItem
                     key={qKey}
