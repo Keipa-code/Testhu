@@ -55,6 +55,7 @@ export class QuestionFormStore {
 
     removeAnswer = (qKey: number, aKey: number) => {
         this.questions[qKey].answers.splice(aKey, 1)
+        return (this.questions[qKey].answers.length !== 0)
     }
 
 

@@ -31,5 +31,8 @@ export interface IPagination {
     "hydra:previous": string;
 }
 
-
+export interface IApiResponseCollection {
+    "@type": "hydra:Collection";
+    "hydra:member": []
+}
 

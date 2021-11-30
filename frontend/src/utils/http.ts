@@ -22,9 +22,9 @@ $http.interceptors.request.use((config: AxiosRequestConfig) => {
 $http.interceptors.response.use(response => {
     //helper.successHelper(response)
     // console.log(response)
-    return Promise.resolve(response.data) // status:200, normal
+    return Promise.resolve(response) // status:200, normal
 }, error => {
-    return Promise.reject(error.response.data)
+    return Promise.reject(error.response)
 })
 
 export default $http

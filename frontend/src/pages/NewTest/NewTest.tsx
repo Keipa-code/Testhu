@@ -1,59 +1,54 @@
-import React, {FC, useEffect} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Button, Col, Container, Form, FormControl, InputGroup, Row} from "react-bootstrap";
-import {useParams} from 'react-router-dom';
 import {observer} from "mobx-react-lite";
 import {useRootStore} from "../../RootStateContext";
 import {storage} from "../../utils/tools";
 import QuestionFormList from "../../components/Question/QuestionFormList";
+import TagsForm from "../../components/TagsForm/TagsForm";
 
-interface NewTestParams {
-    id: string;
-}
-
-export interface token {
-    token: string;
-}
 
 const NewTest: FC = observer(() => {
     const {newTestStore} = useRootStore()
+    const [showDescription, setShowDescription] = useState(false)
+    const [showRules, setShowRules] = useState(false)
+    const [showWrongAnswers, setShowWrongAnswers] = useState(false)
+    const [resultIsPublic, setResultIsPublic] = useState(false)
 
-    let testName = '321'
-    const params = useParams<NewTestParams>()
     useEffect(() => {
         newTestStore.getFromStorage('newTest')
         const interval = setInterval(() => newTestStore.setToStorage('newTest'), 360000)
         return () => clearInterval(interval)
     }, [])
 
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         newTestStore.inputChange(e.target.value, e.target.name)
-    }
+    };
 
-    function setStorage() {
+    const setStorage = () => {
         storage.set('test', {hour: 10, minute: 50})
-    }
+    };
 
-    function getFromStorage() {
+    const getFromStorage = () => {
         console.log(storage.get('newTest'))
-    }
+    };
 
     return (
         <Container>
             <Row>
                 <Col className="col-sm-8">
-                    <h2>Создать новый тест</h2>
-                    <Form className="mt-5">
+                    <h2 className="mb-5">Создать новый тест</h2>
+                    <Form className="mb-3">
                         <Form.Group className="mb-3">
-                            <Form.Label>Наименование теста</Form.Label>
+                            <Form.Label>Название теста</Form.Label>
                             <Form.Control
                                 name="testName"
-                                placeholder="Введите наименование"
-                                aria-describedby="basic-addon2"
+                                placeholder="Введите название"
                                 value={newTestStore.test.testName}
                                 onChange={handleChange}
                             />
                         </Form.Group>
-                        <Form.Group className="mb-3">
+                        <TagsForm />
+                        <Form.Group hidden={!showDescription} className="mb-3">
                             <Form.Label>Описание теста</Form.Label>
                             <Form.Control
                                 as="textarea"
@@ -65,7 +60,14 @@ const NewTest: FC = observer(() => {
                                 onChange={handleChange}
                             />
                         </Form.Group>
-                        <Form.Group className="mb-3">
+                        <Button
+                            className="mb-3"
+                            variant={showDescription ? "danger" : "success"}
+                            onClick={() => {setShowDescription(!showDescription)}}
+                        >
+                            {showDescription ? "Убрать описание" : "Добавить описание"}
+                        </Button>
+                        <Form.Group hidden={!showRules} className="mb-3">
                             <Form.Label>Правила теста</Form.Label>
                             <Form.Control
                                 as="textarea"
@@ -77,7 +79,14 @@ const NewTest: FC = observer(() => {
                                 onChange={handleChange}
                             />
                         </Form.Group>
-
+                        <br/>
+                        <Button
+                            className="mb-3"
+                            variant={showRules ? "danger" : "success"}
+                            onClick={() => {setShowRules(!showRules)}}
+                        >
+                            {showRules ? "Убрать правила" : "Добавить правила"}
+                        </Button>
                     </Form>
                     <Form>
                         <Form.Label>Ограничение по времени</Form.Label>
@@ -86,15 +95,17 @@ const NewTest: FC = observer(() => {
                                 <InputGroup className="mb-3">
                                     <FormControl
                                         name="hour"
-                                        aria-describedby="basic-addon2"
+                                        type="number"
                                         value={newTestStore.test.timeLimit.hour}
+                                        placeholder="часы"
                                         onChange={handleChange}
                                     />
                                     <InputGroup.Text>ч.</InputGroup.Text>
                                     <FormControl
                                         name="minute"
-                                        aria-describedby="basic-addon2"
+                                        type="number"
                                         value={newTestStore.test.timeLimit.minute}
+                                        placeholder="минуты"
                                         onChange={handleChange}
                                     />
                                     <InputGroup.Text>м.</InputGroup.Text>
@@ -102,18 +113,22 @@ const NewTest: FC = observer(() => {
                             </Col>
                         </Row>
                     </Form>
-                    <FormControl
-                        className="mt-3"
-                        placeholder="Тэги"
-                        aria-label="Тэги"
-                        aria-describedby="basic-addon2"
-                    />
-                    <Button className="mt-3" onClick={setStorage}>Добавить предисловие</Button>
-                    <Button className="ms-3 mt-3" onClick={getFromStorage}>Fetch</Button>
+
                     <Form>
-                        <Form.Check className="mt-3"
-                                    label={'Разрешить смотреть список неправильных ответов после теста'}/>
-                        <Form.Check className="mb-5" label={'Сделать все результаты прохождения публичными'}/>
+                        <Form.Check
+                            className="mt-3"
+                            label={'Разрешить смотреть список неправильных ответов после теста'}
+                            onChange={() => {
+                                setShowWrongAnswers(!showWrongAnswers)
+                            }}
+                        />
+                        <Form.Check
+                            className="mb-5"
+                            label={'Сделать все результаты прохождения публичными'}
+                            onChange={() => {
+                                setResultIsPublic(!resultIsPublic)
+                            }}
+                        />
                     </Form>
                     <QuestionFormList />
                 </Col>

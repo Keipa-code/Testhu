@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Button, CloseButton, Col, Form, ListGroup, OverlayTrigger, Row, Tooltip} from "react-bootstrap";
 import {useRootStore} from "../../RootStateContext";
 import {observer} from "mobx-react-lite";
@@ -10,6 +10,7 @@ type AnswerFormProps = {
 const AnswerForm: FC<AnswerFormProps> = observer(({qKey}) => {
     const {questionFormStore} = useRootStore()
     const [answer, setAnswer] = useState('')
+    const [visible, setVisible] = useState(false)
     const renderTooltip = (props) => (
         <Tooltip id="button-tooltip" {...props}>
             В случае, если добавлен только один вариант ответа,
@@ -17,15 +18,25 @@ const AnswerForm: FC<AnswerFormProps> = observer(({qKey}) => {
         </Tooltip>
     );
 
+    useEffect(() => {
+        (questionFormStore.questions[qKey].answers.length === 0) ? setVisible(false) : setVisible(true)
+    }, [])
+
     // Добавить ограничение на максимальное количество вариантов - 5
-    function handleAddAnswer(e: React.MouseEvent<HTMLInputElement>) {
+    const handleAddAnswer = (e: React.MouseEvent<HTMLInputElement>) => {
         e.preventDefault()
         questionFormStore.addAnswer(qKey, answer)
         setAnswer('')
-    }
+        setVisible(true)
+        console.log(visible)
+    };
 
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAnswer(e.target.value)
+    };
+
+    const handleRemoveAnswer = (aKey) => {
+        setVisible(questionFormStore.removeAnswer(qKey, aKey))
     }
 
     return (
@@ -50,7 +61,9 @@ const AnswerForm: FC<AnswerFormProps> = observer(({qKey}) => {
                     <span className="material-icons md-dark">help</span>
                 </button>
             </OverlayTrigger>
-            <p>Поставьте галочку возле правльиного ответа. Можете выбрать несколько правильных ответов.</p>
+            <p className={!visible ? "visually-hidden" : ""}>
+                Поставьте галочку возле правильного ответа. Можете выбрать несколько правильных ответов.
+            </p>
             <ListGroup as="ol" className="mb-3">
                 {questionFormStore.questions[qKey].answers.map((answer, aKey) =>
                     <ListGroup.Item as="li" key={aKey}>
@@ -59,7 +72,7 @@ const AnswerForm: FC<AnswerFormProps> = observer(({qKey}) => {
                                 <Form.Check
                                     type="checkbox"
                                     defaultChecked={answer.correct}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    onChange={() => {
                                         questionFormStore.answerCheckedChange(qKey, aKey)
                                     }}
                                 />
@@ -70,7 +83,7 @@ const AnswerForm: FC<AnswerFormProps> = observer(({qKey}) => {
                             <Col md="auto">
                                 <CloseButton
                                     onClick={() => {
-                                        questionFormStore.removeAnswer(qKey, aKey)
+                                        handleRemoveAnswer(aKey)
                                     }}
                                 />
                             </Col>

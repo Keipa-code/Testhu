@@ -1,5 +1,5 @@
-import React, {FC, useEffect, useState} from 'react';
-import {Accordion, Col, Form, FormGroup, Row} from "react-bootstrap";
+import React, {FC, useEffect} from 'react';
+import {Accordion, Col, Form, Row} from "react-bootstrap";
 import {IQuestion, QuestionFormStore} from "./QuestionFormStore";
 import AnswerForm from "./AnswerForm";
 import {observer} from "mobx-react-lite";
@@ -16,9 +16,9 @@ const QuestionFormItem: FC<QuestionFormItemProps> = observer(({qKey, question, i
         inputChange(qKey, qKey + 1, 'position')
     }, [])
 
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         inputChange(qKey, e.target.value, e.target.name)
-    }
+    };
 
     return (
         <div>
