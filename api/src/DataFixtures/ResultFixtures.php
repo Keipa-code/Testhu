@@ -36,8 +36,6 @@ final class ResultFixtures extends Fixture
             '2' => true,
             '3' => true
         ]);
-        $result->setIsPublic(true);
-        $result->setIsWrongAnswersVisibles(true);
 
         $user->addResult($result);
         $manager->persist($user);

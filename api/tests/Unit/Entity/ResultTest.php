@@ -24,8 +24,6 @@ final class ResultTest extends DatabaseDependantTestCase
         self::assertEquals('https://result.com', $resultRecord->getLink());
         self::assertEquals(40, $resultRecord->getCorrectAnswersCount());
         self::assertEquals('2021-Jul-20 07:10:47', $resultRecord->getDate()->format('Y-M-d h:i:s'));
-        self::assertEquals(true, $resultRecord->isWrongAnswersVisibles());
-        self::assertEquals(true, $resultRecord->isPublic());
         self::assertEquals([
             '1' => false,
             '2' => true,

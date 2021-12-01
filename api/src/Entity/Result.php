@@ -47,12 +47,6 @@ class Result
     #[ORM\Column(type: "boolean")]
     private $viewed = false;
 
-    #[ORM\Column(type: "boolean")]
-    private $isWrongAnswersVisibles = false;
-
-    #[ORM\Column(type: "boolean")]
-    private $isPublic = false;
-
     #[ORM\Column(type: "json", nullable: true)]
     private $testResults = [];
 
@@ -139,38 +133,6 @@ class Result
     public function setViewed($viewed): void
     {
         $this->viewed = $viewed;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isWrongAnswersVisibles(): bool
-    {
-        return $this->isWrongAnswersVisibles;
-    }
-
-    /**
-     * @param bool $isWrongAnswersVisibles
-     */
-    public function setIsWrongAnswersVisibles(bool $isWrongAnswersVisibles): void
-    {
-        $this->isWrongAnswersVisibles = $isWrongAnswersVisibles;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isPublic(): bool
-    {
-        return $this->isPublic;
-    }
-
-    /**
-     * @param bool $isPublic
-     */
-    public function setIsPublic(bool $isPublic): void
-    {
-        $this->isPublic = $isPublic;
     }
 
     /**

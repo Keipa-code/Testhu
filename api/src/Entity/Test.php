@@ -71,6 +71,13 @@ class Test
     #[Groups(['tests:read', 'tests:write'])]
     private ?int $passed;
 
+
+    #[ORM\Column(type: "boolean")]
+    private $isWrongAnswersVisibles = false;
+
+    #[ORM\Column(type: "boolean")]
+    private $isPublic = false;
+
     #[ORM\Column(type: "boolean", nullable: true)]
     #[Groups(['tests:read', 'tests:write'])]
     public bool $isSubmitted = false;
@@ -325,5 +332,37 @@ class Test
     public function setIsSubmitted(bool $isSubmitted): void
     {
         $this->isSubmitted = $isSubmitted;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWrongAnswersVisibles(): bool
+    {
+        return $this->isWrongAnswersVisibles;
+    }
+
+    /**
+     * @param bool $isWrongAnswersVisibles
+     */
+    public function setIsWrongAnswersVisibles(bool $isWrongAnswersVisibles): void
+    {
+        $this->isWrongAnswersVisibles = $isWrongAnswersVisibles;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPublic(): bool
+    {
+        return $this->isPublic;
+    }
+
+    /**
+     * @param bool $isPublic
+     */
+    public function setIsPublic(bool $isPublic): void
+    {
+        $this->isPublic = $isPublic;
     }
 }

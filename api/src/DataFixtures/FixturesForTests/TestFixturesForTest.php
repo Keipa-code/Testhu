@@ -35,6 +35,8 @@ final class TestFixturesForTest extends Fixture implements DependentFixtureInter
             Test::HOUR => 2,
             Test::MINUTE => 58
         ]);
+        $test->setIsPublic(true);
+        $test->setIsWrongAnswersVisibles(true);
         $test->setDone(30);
         $test->setPassed(50);
         $test->setIsSubmitted(false);

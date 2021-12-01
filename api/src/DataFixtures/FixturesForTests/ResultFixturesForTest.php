@@ -27,8 +27,6 @@ final class ResultFixturesForTest extends Fixture implements FixtureGroupInterfa
             '2' => true,
             '3' => true
         ]);
-        $result->setIsPublic(true);
-        $result->setIsWrongAnswersVisibles(true);
 
         $result2 = new Result();
         $result2->setLink('https://result2.com');
