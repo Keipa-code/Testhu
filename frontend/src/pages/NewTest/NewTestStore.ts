@@ -23,6 +23,10 @@ export class NewTestStore {
         this.test[type] = (type === 'password' || typeof(value) === 'number') ? value : value.trim()
     }
 
+    addTags = (id: number) => {
+        this.test.tags.push('api/tags/' + id)
+    }
+
     getDetail = (id: string) => {
         $http.get<ITest>('/api/tests/' + id)
             .then((res: any) => {
@@ -30,6 +34,13 @@ export class NewTestStore {
                 runInAction(() => {
                     this.test = data
                 })
+            })
+    }
+
+    postNewTest = () => {
+        $http.post('/api/tests', this.test)
+            .then((res: any) => {
+                this.test.id = res.id
             })
     }
 

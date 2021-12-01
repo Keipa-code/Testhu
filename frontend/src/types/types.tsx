@@ -15,9 +15,9 @@ export interface ITest {
     testName?: string;
     description?: string;
     rules?: string;
-    date?: string;
+    date?: Date;
     timeLimit?: ITimeLimit;
-    tags?: ITag[];
+    tags?: string[];
     done?: number;
     passed?: number;
     link?: string;

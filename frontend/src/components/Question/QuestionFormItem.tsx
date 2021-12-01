@@ -10,7 +10,12 @@ interface QuestionFormItemProps {
     inputChange?: QuestionFormStore["inputChange"];
 }
 
-const QuestionFormItem: FC<QuestionFormItemProps> = observer(({qKey, question, inputChange}) => {
+const QuestionFormItem: FC<QuestionFormItemProps> = observer((
+    {
+        qKey,
+        question,
+        inputChange
+    }) => {
 
     useEffect(() => {
         inputChange(qKey, qKey + 1, 'position')

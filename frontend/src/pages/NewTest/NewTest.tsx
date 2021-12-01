@@ -5,10 +5,14 @@ import {useRootStore} from "../../RootStateContext";
 import {storage} from "../../utils/tools";
 import QuestionFormList from "../../components/Question/QuestionFormList";
 import TagsForm from "../../components/TagsForm/TagsForm";
+import $http from "../../utils/http";
+import {ITag} from "../../types/types";
 
 
 const NewTest: FC = observer(() => {
     const {newTestStore} = useRootStore()
+    const {tagsFormStore} = useRootStore()
+    const {questionFormStore} = useRootStore()
     const [showDescription, setShowDescription] = useState(false)
     const [showRules, setShowRules] = useState(false)
     const [showWrongAnswers, setShowWrongAnswers] = useState(false)
@@ -24,13 +28,11 @@ const NewTest: FC = observer(() => {
         newTestStore.inputChange(e.target.value, e.target.name)
     };
 
-    const setStorage = () => {
-        storage.set('test', {hour: 10, minute: 50})
-    };
+    const postTest = () => {
 
-    const getFromStorage = () => {
-        console.log(storage.get('newTest'))
-    };
+
+
+    }
 
     return (
         <Container>
@@ -47,7 +49,7 @@ const NewTest: FC = observer(() => {
                                 onChange={handleChange}
                             />
                         </Form.Group>
-                        <TagsForm />
+                        <TagsForm addTags={newTestStore.addTags}/>
                         <Form.Group hidden={!showDescription} className="mb-3">
                             <Form.Label>Описание теста</Form.Label>
                             <Form.Control
@@ -63,7 +65,9 @@ const NewTest: FC = observer(() => {
                         <Button
                             className="mb-3"
                             variant={showDescription ? "danger" : "success"}
-                            onClick={() => {setShowDescription(!showDescription)}}
+                            onClick={() => {
+                                setShowDescription(!showDescription)
+                            }}
                         >
                             {showDescription ? "Убрать описание" : "Добавить описание"}
                         </Button>
@@ -83,7 +87,9 @@ const NewTest: FC = observer(() => {
                         <Button
                             className="mb-3"
                             variant={showRules ? "danger" : "success"}
-                            onClick={() => {setShowRules(!showRules)}}
+                            onClick={() => {
+                                setShowRules(!showRules)
+                            }}
                         >
                             {showRules ? "Убрать правила" : "Добавить правила"}
                         </Button>
@@ -130,7 +136,7 @@ const NewTest: FC = observer(() => {
                             }}
                         />
                     </Form>
-                    <QuestionFormList />
+                    <QuestionFormList/>
                 </Col>
                 <Col className="col-sm-4">
                 </Col>

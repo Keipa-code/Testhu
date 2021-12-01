@@ -10,8 +10,8 @@ interface ITag {
 }
 
 export interface TagOption {
-    readonly id: number;
-    readonly label: string;
+    id?: number;
+    label: string;
 }
 
 export class TagsFormStore {
@@ -19,15 +19,25 @@ export class TagsFormStore {
     selectedTags: TagOption[]
 
     constructor() {
+        this.tags = []
+        this.selectedTags = []
         makeAutoObservable(this)
     }
 
-    addSelectedTags = (selectedTags: any) => {
-        this.selectedTags = selectedTags
+    addSelectedTags = async (selectedTags: TagOption, action: string) => {
+        if(action == 'create-option') {
+            this.postNewTags(selectedTags.label)
+        } else {
+            this.selectedTags.push(selectedTags)
+        }
+    }
+
+    getTagsWithoutID = () => {
+        return this.selectedTags.filter(selectedTag => !selectedTag.id)
     }
 
     fetchTags = () => {
-        $http.get<ITag>('/api/tags/')
+        $http.get<ITag>('/api/tags')
             .then((res: any) => {
                 const data: IApiResponseCollection[] = res
                 runInAction(() => {
@@ -46,10 +56,11 @@ export class TagsFormStore {
             tagName: tagName
         })
             .then((res: any) => {
-                this.tags.push({
+                this.selectedTags.push({
                     id: res.id,
                     label: tagName
                 })
             })
+            .then(this.fetchTags)
     }
 }
