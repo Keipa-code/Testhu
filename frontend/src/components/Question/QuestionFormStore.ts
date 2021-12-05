@@ -1,6 +1,7 @@
 import {makeAutoObservable, runInAction} from "mobx";
 import $http from "../../utils/http";
 import {storage} from "../../utils/tools";
+import isNumeric from "antd/es/_util/isNumeric";
 
 export enum AnswerType {
     choose = 'choose',
@@ -20,6 +21,7 @@ export interface IQuestion {
     answerType?: AnswerType;
     answerInput?: number | string;
     answers?: IAnswer[];
+    test?: string;
 }
 
 
@@ -33,9 +35,9 @@ export class QuestionFormStore {
 
     inputChange = (qKey: number, value: string | number, type: string, aKey?: number) => {
         if (!aKey) {
-            this.questions[qKey][type] = value
+            this.questions[qKey][type] = isNumeric(value) ? Number(value) : value
         } else {
-            this.questions[qKey].answers[aKey][type] = value
+            this.questions[qKey].answers[aKey][type] = isNumeric(value) ? Number(value) : value
         }
     }
 
@@ -77,6 +79,15 @@ export class QuestionFormStore {
                     this.questions = data
                 })
             })
+    }
+
+    postQuestions = (testID: string | number) => {
+        this.questions.map(question =>{
+                question.test = '/api/tests/' + testID;
+                $http.post<IQuestion[]>('/api/questions', question);
+            }
+        )
+
     }
 
     getFromStorage = (key: string) => {

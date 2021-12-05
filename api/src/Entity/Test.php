@@ -71,12 +71,13 @@ class Test
     #[Groups(['tests:read', 'tests:write'])]
     private ?int $passed;
 
+    #[ORM\Column(type: "boolean", nullable: true)]
+    #[Groups(['tests:read', 'tests:write'])]
+    public bool $isWrongAnswersVisible = false;
 
-    #[ORM\Column(type: "boolean")]
-    private $isWrongAnswersVisibles = false;
-
-    #[ORM\Column(type: "boolean")]
-    private $isPublic = false;
+    #[ORM\Column(type: "boolean", nullable: true)]
+    #[Groups(['tests:read', 'tests:write'])]
+    public bool $isPublic = false;
 
     #[ORM\Column(type: "boolean", nullable: true)]
     #[Groups(['tests:read', 'tests:write'])]
@@ -337,17 +338,17 @@ class Test
     /**
      * @return bool
      */
-    public function isWrongAnswersVisibles(): bool
+    public function isWrongAnswersVisible(): bool
     {
-        return $this->isWrongAnswersVisibles;
+        return $this->isWrongAnswersVisible;
     }
 
     /**
-     * @param bool $isWrongAnswersVisibles
+     * @param bool $isWrongAnswersVisible
      */
-    public function setIsWrongAnswersVisibles(bool $isWrongAnswersVisibles): void
+    public function setIsWrongAnswersVisible(bool $isWrongAnswersVisible): void
     {
-        $this->isWrongAnswersVisibles = $isWrongAnswersVisibles;
+        $this->isWrongAnswersVisible = $isWrongAnswersVisible;
     }
 
     /**

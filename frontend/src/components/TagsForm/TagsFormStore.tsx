@@ -15,16 +15,14 @@ export interface TagOption {
 }
 
 export class TagsFormStore {
-    tags: TagOption[]
-    selectedTags: TagOption[]
+    tags: TagOption[] = []
+    selectedTags: TagOption[] = []
 
     constructor() {
-        this.tags = []
-        this.selectedTags = []
         makeAutoObservable(this)
     }
 
-    addSelectedTags = async (selectedTags: TagOption, action: string) => {
+    addSelectedTags = (selectedTags: TagOption, action: string) => {
         if(action == 'create-option') {
             this.postNewTags(selectedTags.label)
         } else {
@@ -49,6 +47,9 @@ export class TagsFormStore {
                     })
                 })
             })
+            .then(() => {
+                return this.tags
+            })
     }
 
     postNewTags = (tagName: string) => {
@@ -60,7 +61,10 @@ export class TagsFormStore {
                     id: res.id,
                     label: tagName
                 })
+                this.tags.push({
+                    id: res.id,
+                    label: tagName
+                })
             })
-            .then(this.fetchTags)
     }
 }

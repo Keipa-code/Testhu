@@ -1,7 +1,8 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import {makeAutoObservable, runInAction} from "mobx";
 import {ITest} from "../../types/types";
 import $http from "../../utils/http";
 import {storage} from "../../utils/tools";
+import {TagOption} from "../../components/TagsForm/TagsFormStore";
 
 export class NewTestStore {
     test: ITest = {
@@ -9,8 +10,10 @@ export class NewTestStore {
         timeLimit: {
             hour: '',
             minute: ''
-        }
+        },
+        tags: []
     }
+    loading: boolean = false
 
     constructor() {
         makeAutoObservable(this)
@@ -20,11 +23,17 @@ export class NewTestStore {
         if(type === 'hour' || type === 'minute') {
             this.test.timeLimit[type] = value
         }
-        this.test[type] = (type === 'password' || typeof(value) === 'number') ? value : value.trim()
+        this.test[type] = value
     }
 
-    addTags = (id: number) => {
-        this.test.tags.push('api/tags/' + id)
+    booleanChange = (value: boolean, type: string) => {
+        this.test[type] = value
+    }
+
+    addTags = (tags: TagOption[]) => {
+        tags.map(tag =>
+            this.test.tags.push('api/tags/' + tag.id)
+        )
     }
 
     getDetail = (id: string) => {
@@ -37,10 +46,11 @@ export class NewTestStore {
             })
     }
 
-    postNewTest = () => {
-        $http.post('/api/tests', this.test)
+    postNewTest = async () => {
+        this.loading = true
+        return $http.post('/api/tests', this.test)
             .then((res: any) => {
-                this.test.id = res.id
+                return res.id
             })
     }
 

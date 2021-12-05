@@ -28,7 +28,6 @@ const AnswerForm: FC<AnswerFormProps> = observer(({qKey}) => {
         questionFormStore.addAnswer(qKey, answer)
         setAnswer('')
         setVisible(true)
-        console.log(visible)
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

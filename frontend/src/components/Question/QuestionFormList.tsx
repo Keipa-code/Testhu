@@ -29,6 +29,7 @@ const QuestionFormList = observer(() => {
                 />
             )}
             <Button className="mb-3" onClick={handleClick}>Добавить вопрос</Button>
+
         </div>
     );
 });

@@ -28,8 +28,8 @@ const TestsList: FC<TestsListProps> = ({tests, tableInfo, pagination, itemCount}
                         <Card style={{ width: '18rem', border: 0 }}>
                             <Card.Body>
                                 <Card.Title>{test.testName}</Card.Title>
-                                {test.tags.map(tag =>
-                                    <Card.Link key={tag.id} href="#">{tag.tagName}</Card.Link>
+                                {test.tags.map((tag, key) =>
+                                    <Card.Link key={key} href="#">{tag}</Card.Link>
                                 )}
                                 </Card.Body>
                         </Card>

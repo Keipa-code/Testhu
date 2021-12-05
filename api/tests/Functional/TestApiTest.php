@@ -20,18 +20,13 @@ class TestApiTest extends WebApiTestCase
                     'testName' => 'apiTestTest',
                     'date' => '2021-07-20 04:10:47',
                     'timeLimit' => ['hour' => 2, 'minute' => 57],
+                    'isWrongAnswersVisible' => true,
+                    'isPublic' => true,
                 ],
             ]
         );
 
         $this->assertResponseStatusCodeSame(201);
-
-        self::createClient()->request(
-            'GET',
-            'http://localhost:8081/api/tests/' . $response->toArray()['id']
-        );
-
-        $this->assertResponseStatusCodeSame(200);
 
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
@@ -39,9 +34,30 @@ class TestApiTest extends WebApiTestCase
             'testName' => 'apiTestTest',
             'date' => '2021-07-20T04:10:47+00:00',
             'timeLimit' => ['hour' => 2, 'minute' => 57],
-
+            'isPublic' => true,
+            'isWrongAnswersVisible' => true,
         ]);
         self::assertMatchesRegularExpression('~^/api/tests/\d+$~', $response->toArray()['@id']);
+    }
+
+    public function testGetTestByIdSuccess()
+    {
+        self::createClient()->request(
+            'GET',
+            'http://localhost:8081/api/tests/1'
+        );
+
+        $this->assertResponseStatusCodeSame(200);
+
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertJsonContains([
+            '@type' => 'Test',
+            'testName' => 'Мой тест',
+            'description' => 'Этой мой тест. Я очень люблю свой тест. Мой тест самый лучший в мире',
+            'timeLimit' => ['hour' => 2, 'minute' => 58],
+            'isPublic' => true,
+            'isWrongAnswersVisible' => true,
+        ]);
     }
 
     public function testAddQuestion()

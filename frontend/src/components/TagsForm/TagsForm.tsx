@@ -6,6 +6,7 @@ import CreatableSelect from "react-select/creatable";
 import {observer} from "mobx-react-lite";
 import {Button} from "react-bootstrap";
 import {NewTestStore} from "../../pages/NewTest/NewTestStore";
+import AsyncCreatableSelect from "react-select/async-creatable";
 
 
 interface TagsFormProps {
@@ -15,7 +16,7 @@ const TagsForm: FC<TagsFormProps> = observer(({addTags}) => {
     const {tagsFormStore} = useRootStore()
 
     useEffect(() => {
-        tagsFormStore.fetchTags()
+        //tagsFormStore.fetchTags()
     }, [])
 
     const handleChange = (
@@ -24,17 +25,16 @@ const TagsForm: FC<TagsFormProps> = observer(({addTags}) => {
     ) => {
         const id = (newValue.length - 1)
         tagsFormStore.addSelectedTags(newValue[id], actionMeta.action)
-            .then(() => {
-                addTags(id)
-            })
     }
 
     return (
         <div>
-            <CreatableSelect
+            <AsyncCreatableSelect
                 isMulti
+                cacheOptions
+                defaultOptions
                 onChange={handleChange}
-                options={tagsFormStore.tags}
+                loadOptions={tagsFormStore.fetchTags}
             />
             <Button variant="success" onClick={() => {
                 console.log(tagsFormStore.selectedTags)

@@ -20,6 +20,8 @@ export interface ITest {
     tags?: string[];
     done?: number;
     passed?: number;
+    isPublic?: boolean;
+    isWrongAnswersVisibles?: boolean;
     link?: string;
 }
 

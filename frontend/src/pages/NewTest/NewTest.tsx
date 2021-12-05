@@ -1,5 +1,5 @@
 import React, {FC, useEffect, useState} from 'react';
-import {Button, Col, Container, Form, FormControl, InputGroup, Row} from "react-bootstrap";
+import {Button, Col, Container, Form, FormControl, InputGroup, Row, Spinner} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import {useRootStore} from "../../RootStateContext";
 import {storage} from "../../utils/tools";
@@ -28,10 +28,18 @@ const NewTest: FC = observer(() => {
         newTestStore.inputChange(e.target.value, e.target.name)
     };
 
-    const postTest = () => {
-
-
-
+    const postTest = (e: React.MouseEvent<HTMLInputElement>) => {
+        e.preventDefault()
+        newTestStore.addTags(tagsFormStore.selectedTags)
+        newTestStore.booleanChange(resultIsPublic, 'isPublic')
+        newTestStore.booleanChange(showWrongAnswers, 'isWrongAnswersVisible')
+        newTestStore.postNewTest()
+            .then((id) => {
+                questionFormStore.postQuestions(id)
+            })
+            .then(() => {
+                newTestStore.loading = false
+            })
     }
 
     return (
@@ -143,7 +151,8 @@ const NewTest: FC = observer(() => {
             </Row>
             <Row>
                 <Col className="mb-5" md={{span: 3, offset: 9}}>
-                    <Button>Сохранить</Button>
+                    <Button onClick={postTest} disabled={newTestStore.loading}>Сохранить</Button>
+                    {newTestStore.loading ?? <Spinner animation="border" />}
                 </Col>
             </Row>
         </Container>

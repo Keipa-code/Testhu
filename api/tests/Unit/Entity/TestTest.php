@@ -40,7 +40,7 @@ final class TestTest extends DatabaseDependantTestCase
         self::assertEquals(30, $testRecord->getDone());
         self::assertEquals(50, $testRecord->getPassed());
         self::assertEquals(false, $testRecord->isSubmitted());
-        self::assertEquals(true, $testRecord->isWrongAnswersVisibles());
+        self::assertEquals(true, $testRecord->isWrongAnswersVisible());
         self::assertEquals(true, $testRecord->isPublic());
         self::assertEquals('Физика', $tag->getTagName());
     }

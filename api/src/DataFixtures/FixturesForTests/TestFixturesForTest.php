@@ -36,7 +36,7 @@ final class TestFixturesForTest extends Fixture implements DependentFixtureInter
             Test::MINUTE => 58
         ]);
         $test->setIsPublic(true);
-        $test->setIsWrongAnswersVisibles(true);
+        $test->setIsWrongAnswersVisible(true);
         $test->setDone(30);
         $test->setPassed(50);
         $test->setIsSubmitted(false);
@@ -72,7 +72,7 @@ final class TestFixturesForTest extends Fixture implements DependentFixtureInter
         $testSubmitted = new Test;
         $testSubmitted->setTestName('Submitted test');
         $testSubmitted->setIsSubmitted(true);
-        /** @var Question $question */
+        /** @var Question $question3 */
         $question3 = $this->getReference('question3');
         $testSubmitted->addQuestion($question3);
 
