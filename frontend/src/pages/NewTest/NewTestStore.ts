@@ -5,17 +5,11 @@ import {storage} from "../../utils/tools";
 import {TagOption} from "../../components/TagsForm/TagsFormStore";
 
 export class NewTestStore {
-    test: ITest = {
-        testName: '',
-        timeLimit: {
-            hour: '',
-            minute: ''
-        },
-        tags: []
-    }
+    test: ITest
     loading: boolean = false
 
     constructor() {
+        this.test.tags = []
         makeAutoObservable(this)
     }
 

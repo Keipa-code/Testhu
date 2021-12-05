@@ -30,6 +30,7 @@ const TagsForm: FC<TagsFormProps> = observer(({addTags}) => {
     return (
         <div>
             <AsyncCreatableSelect
+                className="mb-3"
                 isMulti
                 cacheOptions
                 defaultOptions
@@ -39,9 +40,6 @@ const TagsForm: FC<TagsFormProps> = observer(({addTags}) => {
                 onChange={handleChange}
                 loadOptions={tagsFormStore.fetchTags}
             />
-            <Button variant="success" onClick={() => {
-                console.log(tagsFormStore.selectedTags)
-            }}>Фетч</Button>
         </div>
     );
 });

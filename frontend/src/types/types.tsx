@@ -17,7 +17,7 @@ export interface ITest {
     rules?: string;
     date?: Date;
     timeLimit?: ITimeLimit;
-    tags?: string[];
+    tags: string[];
     done?: number;
     passed?: number;
     isPublic?: boolean;

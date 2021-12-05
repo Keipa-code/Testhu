@@ -153,6 +153,7 @@ const NewTest: FC = observer(() => {
                 <Col className="mb-5" md={{span: 3, offset: 9}}>
                     <Button onClick={postTest} disabled={newTestStore.loading}>Сохранить</Button>
                     {newTestStore.loading ?? <Spinner animation="border" />}
+                    <Button onClick={() => {console.log(tagsFormStore.selectedTags)}}>Печать</Button>
                 </Col>
             </Row>
         </Container>
