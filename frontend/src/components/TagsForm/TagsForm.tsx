@@ -33,6 +33,9 @@ const TagsForm: FC<TagsFormProps> = observer(({addTags}) => {
                 isMulti
                 cacheOptions
                 defaultOptions
+                value={tagsFormStore.selectedTags}
+                getOptionLabel={e => e.label}
+                getOptionValue={e => String(e.id)}
                 onChange={handleChange}
                 loadOptions={tagsFormStore.fetchTags}
             />

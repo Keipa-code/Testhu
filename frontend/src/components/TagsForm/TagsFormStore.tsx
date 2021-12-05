@@ -35,7 +35,7 @@ export class TagsFormStore {
     }
 
     fetchTags = () => {
-        $http.get<ITag>('/api/tags')
+        return $http.get<ITag>('/api/tags')
             .then((res: any) => {
                 const data: IApiResponseCollection[] = res
                 runInAction(() => {

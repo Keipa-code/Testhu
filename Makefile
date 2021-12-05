@@ -26,13 +26,13 @@ docker-down-clear:
 api-init: api-permission api-composer-install api-wait-db api-migrate api-fixtures api-test-db-init
 
 api-clear:
-	docker run --rm -v ${PWD}/api://var/www -w /var/www alpine sh -c 'rm -rf var/log/cli/* var/log/fpm-fcgi/* var/cache/* var/upload/* var/thumbs/*'
+	docker run --rm -v ${PWD}/api://var/www -w /var/www alpine sh -c 'rm -rf var/log/* var/log/cli/* var/log/fpm-fcgi/* var/cache/* var/upload/* var/thumbs/*'
 
 api-composer-install:
 	docker-compose run --rm php-cli composer install
 
 api-permission:
-	docker run --rm -v ${PWD}/api://var/www -w /var/www alpine chmod 777 var/cache/
+	docker run --rm -v ${PWD}/api://var/www -w /var/www alpine chmod 777 var/cache/ var/log
 
 api-wait-db:
 	docker-compose run --rm php-cli wait-for-it postgres:5432 -t 30
