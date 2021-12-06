@@ -9,6 +9,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\TestRepository;
 use DateTimeImmutable;
+use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -109,6 +110,7 @@ class Test
         $this->results = new ArrayCollection();
         $this->questions = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->date = new DateTimeImmutable('now', new DateTimeZone('+0500'));
     }
 
     public function getId(): ?int

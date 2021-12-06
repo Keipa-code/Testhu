@@ -1,15 +1,24 @@
 import {makeAutoObservable, runInAction} from "mobx";
-import {ITest} from "../../types/types";
+import {ITest, ITimeLimit} from "../../types/types";
 import $http from "../../utils/http";
 import {storage} from "../../utils/tools";
 import {TagOption} from "../../components/TagsForm/TagsFormStore";
 
 export class NewTestStore {
-    test: ITest
+    test: ITest = {
+        testName: '',
+        description: '',
+        rules: '',
+        date: new Date,
+        tags: [],
+        timeLimit: {
+            hour: '',
+            minute: ''
+        }
+    }
     loading: boolean = false
 
     constructor() {
-        this.test.tags = []
         makeAutoObservable(this)
     }
 
@@ -24,9 +33,12 @@ export class NewTestStore {
         this.test[type] = value
     }
 
-    addTags = (tags: TagOption[]) => {
-        tags.map(tag =>
-            this.test.tags.push('api/tags/' + tag.id)
+    addTags = (selectedTags: TagOption[]) => {
+        if(this.test.tags === undefined) {
+            this.test.tags = []
+        }
+        selectedTags.map(selectedTag =>
+            this.test.tags.push('api/tags/' + selectedTag.id)
         )
     }
 

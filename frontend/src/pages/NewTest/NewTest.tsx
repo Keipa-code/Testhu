@@ -20,6 +20,8 @@ const NewTest: FC = observer(() => {
 
     useEffect(() => {
         newTestStore.getFromStorage('newTest')
+        setShowRules(Boolean(newTestStore.test.rules))
+        setShowDescription(Boolean(newTestStore.test.description))
         const interval = setInterval(() => newTestStore.setToStorage('newTest'), 360000)
         return () => clearInterval(interval)
     }, [])
@@ -91,7 +93,7 @@ const NewTest: FC = observer(() => {
                                 onChange={handleChange}
                             />
                         </Form.Group>
-                        <br/>
+                        <br hidden={showRules}/>
                         <Button
                             className="mb-3"
                             variant={showRules ? "danger" : "success"}
@@ -153,7 +155,11 @@ const NewTest: FC = observer(() => {
                 <Col className="mb-5" md={{span: 3, offset: 9}}>
                     <Button onClick={postTest} disabled={newTestStore.loading}>Сохранить</Button>
                     {newTestStore.loading ?? <Spinner animation="border" />}
-                    <Button onClick={() => {console.log(tagsFormStore.selectedTags)}}>Печать</Button>
+                    <Button onClick={() => {
+                        console.log(newTestStore.test)
+                    }}>
+                        Печать
+                    </Button>
                 </Col>
             </Row>
         </Container>

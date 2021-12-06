@@ -22,8 +22,28 @@ export class TagsFormStore {
         makeAutoObservable(this)
     }
 
+    addTags = (tag: ITag) => {
+        if (!this.checkTag(tag.tagName)) {
+            this.tags.push({
+                id: tag.id,
+                label: tag.tagName
+            })
+        }
+    }
+
+    checkTag = (tagName: string) => {
+        return this.tags.some(tag => tag.label === tagName)
+    }
+
+    filterTags = (inputValue: string) => {
+        return this.tags.filter((i) =>
+            i.label.toLowerCase().includes(inputValue.toLowerCase())
+        );
+    };
+
+
     addSelectedTags = (selectedTags: TagOption, action: string) => {
-        if(action == 'create-option') {
+        if (action == 'create-option') {
             this.postNewTags(selectedTags.label)
         } else {
             this.selectedTags.push(selectedTags)
@@ -34,21 +54,18 @@ export class TagsFormStore {
         return this.selectedTags.filter(selectedTag => !selectedTag.id)
     }
 
-    fetchTags = () => {
+    fetchTags = (inputValue: string) => {
         return $http.get<ITag>('/api/tags')
             .then((res: any) => {
                 const data: IApiResponseCollection[] = res
                 runInAction(() => {
                     data["hydra:member"].map((tag) => {
-                        this.tags.push({
-                            id: tag.id,
-                            label: tag.tagName
-                        })
+                        this.addTags(tag)
                     })
                 })
             })
             .then(() => {
-                return this.tags
+                return this.filterTags(inputValue)
             })
     }
 
@@ -61,10 +78,7 @@ export class TagsFormStore {
                     id: res.id,
                     label: tagName
                 })
-                this.tags.push({
-                    id: res.id,
-                    label: tagName
-                })
+                this.addTags(res)
             })
     }
 }
