@@ -38,7 +38,7 @@ export class TagsFormStore {
   };
 
   addSelectedTags = (selectedTags: TagOption, action: string) => {
-    if (action == 'create-option') {
+    if (action === 'create-option') {
       this.postNewTags(selectedTags.label);
     } else {
       this.selectedTags.push(selectedTags);

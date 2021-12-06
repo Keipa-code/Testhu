@@ -15,7 +15,7 @@ const newTestStore = new NewTestStore();
 const questionFormStore = new QuestionFormStore();
 const tagsFormStore = new TagsFormStore();
 
-export const RootStateProvider: FC<React.PropsWithChildren<{}>> = ({ children }) => {
+export const RootStateProvider: FC<React.PropsWithChildren<Record<string, unknown>>> = ({ children }) => {
   return (
     <RootStateContext.Provider
       value={{
@@ -29,4 +29,4 @@ export const RootStateProvider: FC<React.PropsWithChildren<{}>> = ({ children })
   );
 };
 
-export const useRootStore = () => useContext(RootStateContext);
+export const useRootStore = (): RootStateContextValue => useContext(RootStateContext);

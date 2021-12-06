@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { MouseEvent, ChangeEvent, FC, useEffect, useState } from 'react';
 import { Button, Col, Container, Form, FormControl, InputGroup, Row, Spinner } from 'react-bootstrap';
 import { observer } from 'mobx-react-lite';
 import { useRootStore } from '../../RootStateContext';
@@ -22,11 +22,11 @@ const NewTest: FC = observer(() => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     newTestStore.inputChange(e.target.value, e.target.name);
   };
 
-  const postTest = (e: React.MouseEvent<HTMLInputElement>) => {
+  const postTest = (e: MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
     newTestStore.addTags(tagsFormStore.selectedTags);
     newTestStore.booleanChange(resultIsPublic, 'isPublic');

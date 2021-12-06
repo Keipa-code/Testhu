@@ -6,8 +6,8 @@
     "extends": [
         "plugin:@typescript-eslint/recommended",
         "plugin:react/recommended",
+        "standard",
         "plugin:react/jsx-runtime",
-        "google",
         "plugin:prettier/recommended",
         "prettier"
     ],
@@ -30,8 +30,9 @@
         }
     },
     "rules": {
-        "require-jsdoc": "off",
-        "@typescript-eslint/ban-ts-comment": "off",
-        "@typescript-eslint/no-explicit-any": "off"
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "array-callback-return": "off",
+        "prettier/prettier": "error"
     }
 }

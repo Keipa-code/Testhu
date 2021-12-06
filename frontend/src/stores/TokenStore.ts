@@ -1,6 +1,7 @@
 import { action, computed, observable, runInAction } from 'mobx';
 import { JWT_TOKEN, REDIRECT_URL } from '../constants';
 import { storage } from '../utils/tools';
+import $http from '../utils/http';
 
 export interface token {
   token: string;
@@ -23,6 +24,7 @@ class TokenStore {
     return this.password.length > 5 && this.username.length > 2;
   }
 
+  /* global $msg */
   @action login = () => {
     if (this.loading) {
       return;

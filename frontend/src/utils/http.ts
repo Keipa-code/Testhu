@@ -11,7 +11,7 @@ const $http = axios.create({
 $http.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     if (storage.get(JWT_TOKEN)) {
-      config.headers['Authorization'] = 'Bearer ' + storage.get(JWT_TOKEN);
+      config.headers.Authorization = 'Bearer ' + storage.get(JWT_TOKEN);
     }
     return config;
   },

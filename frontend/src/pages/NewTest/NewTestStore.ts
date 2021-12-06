@@ -16,6 +16,7 @@ export class NewTestStore {
       minute: '',
     },
   };
+
   loading = false;
 
   constructor() {
