@@ -1,23 +1,24 @@
-
 interface responso<T = unknown, D = any> {
-    data: T;
-    status: number;
-    statusText: string;
+  data: T;
+  status: number;
+  statusText: string;
 }
 
 class HttpHelper {
-    public successHelper(res: responso<any>): void {
-        const {data: {errors}} = res
-    }
+  public successHelper(res: responso<any>): void {
+    const {
+      data: { errors },
+    } = res;
+  }
 }
 
 const rese = {
-    data: '123',
-    status: 200,
-    statusText: 'success'
-}
-const helper = new HttpHelper()
+  data: '123',
+  status: 200,
+  statusText: 'success',
+};
+const helper = new HttpHelper();
 
-const error = helper.successHelper(rese)
+const error = helper.successHelper(rese);
 
-console.log(error)
+console.log(error);
