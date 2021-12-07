@@ -1,5 +1,5 @@
 import { Button, Col, Container, Row } from 'react-bootstrap';
-import TestsList from '../components/TestsList';
+import TestsList from '../components/Test/TestsList';
 
 const MyComponent = () => {
   const info =

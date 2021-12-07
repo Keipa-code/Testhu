@@ -1,5 +1,5 @@
 import { Button, Col, Container, FormControl, InputGroup, Row } from 'react-bootstrap';
-import TestsList from '../components/TestsList';
+import TestsList from '../components/Test/TestsList';
 
 const Tests = () => {
   const itemCount = 5;

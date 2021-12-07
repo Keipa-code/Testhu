@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { IPagination, ITest } from '../types/types';
+import { IPagination, ITest } from '../../types/types';
 import { Card, Col, Pagination, Row, Table } from 'react-bootstrap';
 
 interface TestsListProps {
