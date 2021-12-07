@@ -1,13 +1,29 @@
-import { ITest } from "../../types/types";
+import { IApiResponseCollection, IPagination, ITestList } from '../../types/types';
 import $http from '../../utils/http';
+import { makeAutoObservable } from 'mobx';
 
 export class TestListStore {
-  tests: ITest[] = []
+  tests: ITestList[] = [];
+  pagination: IPagination;
+  totalItems: number;
 
-  fetchTests = (urlParams:string = '') => {
-    $http.get('api/tests' + urlParams)
-      .then((data: any) => {
-        this.tests = data
-      })
+  constructor() {
+    makeAutoObservable(this);
   }
+
+  isEmpty = () => {
+    return this.tests.length === 0;
+  };
+
+  sliceToNumber = (value) => {
+    Object.values(value)
+  }
+
+  fetchTests = (urlParams = '') => {
+    $http.get('api/tests' + urlParams).then((data: IApiResponseCollection | any) => {
+      this.tests = data['hydra:member'];
+      this.pagination = data['hydra:view'];
+      this.totalItems = data['hydra:totalItems'];
+    });
+  };
 }

@@ -69,11 +69,11 @@ class Test
 
     #[ORM\Column(type: "integer", nullable: true)]
     #[Groups(['tests:read', 'tests:write', 'tests:shortRead'])]
-    private ?int $done;
+    private ?int $done = 0;
 
     #[ORM\Column(type: "integer", nullable: true)]
     #[Groups(['tests:read', 'tests:write', 'tests:shortRead'])]
-    private ?int $passed;
+    private ?int $passed = 0;
 
     #[ORM\Column(type: "boolean", nullable: true)]
     #[Groups(['tests:read', 'tests:write'])]

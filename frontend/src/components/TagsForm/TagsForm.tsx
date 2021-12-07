@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { useRootStore } from '../../RootStateContext';
 import { ActionMeta, OnChangeValue } from 'react-select';
 import { TagOption } from './TagsFormStore';
@@ -7,10 +7,6 @@ import AsyncCreatableSelect from 'react-select/async-creatable';
 
 const TagsForm: FC = observer(() => {
   const { tagsFormStore } = useRootStore();
-
-  useEffect(() => {
-    // tagsFormStore.fetchTags()
-  }, []);
 
   const handleChange = (newValue: OnChangeValue<TagOption, true>, actionMeta: ActionMeta<TagOption>) => {
     const id = newValue.length - 1;

@@ -1,19 +1,20 @@
-import { FC } from 'react';
-import { IPagination, ITest } from '../../types/types';
+import { FC, useEffect } from 'react';
 import { Card, Col, Pagination, Row, Table } from 'react-bootstrap';
+import { useRootStore } from '../../RootStateContext';
+import { observer } from 'mobx-react-lite';
 
-interface TestsListProps {
-  tests: ITest[];
-  tableInfo?: string;
-  pagination?: IPagination;
-  itemCount?: number;
-}
+const TestsList: FC = observer(() => {
+  const { testListStore } = useRootStore();
+  const page = '1';
 
-const TestsList: FC<TestsListProps> = ({ tests, tableInfo, pagination, itemCount }) => {
+  useEffect(() => {
+    testListStore.fetchTests('?' + 'page=' + page);
+  }, []);
+
   return (
     <div>
       <Table>
-        <thead style={{ display: tableInfo }}>
+        <thead hidden={testListStore.isEmpty()}>
           <tr>
             <th>Название</th>
             <th>сдало / прошло</th>
@@ -21,7 +22,7 @@ const TestsList: FC<TestsListProps> = ({ tests, tableInfo, pagination, itemCount
           </tr>
         </thead>
         <tbody>
-          {tests.map((test) => (
+          {testListStore.tests.map((test) => (
             <tr key={test.id}>
               <td>
                 <Card style={{ width: '18rem', border: 0 }}>
@@ -29,7 +30,7 @@ const TestsList: FC<TestsListProps> = ({ tests, tableInfo, pagination, itemCount
                     <Card.Title>{test.testName}</Card.Title>
                     {test.tags.map((tag, key) => (
                       <Card.Link key={key} href="#">
-                        {tag}
+                        {tag.tagName}
                       </Card.Link>
                     ))}
                   </Card.Body>
@@ -48,19 +49,19 @@ const TestsList: FC<TestsListProps> = ({ tests, tableInfo, pagination, itemCount
 
       <Row className="align-items-center">
         <Col className="col-sm-8">
-          <Pagination size="lg" hidden={!pagination}>
-            <Pagination.First href={pagination?.['hydra:first']} />
-            <Pagination.Prev href={pagination?.['hydra:previous']} />
-            <Pagination.Next href={pagination?.['hydra:next']} />
-            <Pagination.Last href={pagination?.['hydra:last']} />
+          <Pagination size="lg" hidden={!testListStore.pagination}>
+            <Pagination.First href={testListStore.pagination?.['hydra:first']} />
+            <Pagination.Prev href={testListStore.pagination?.['hydra:previous']} />
+            <Pagination.Next href={testListStore.pagination?.['hydra:next']} />
+            <Pagination.Last href={testListStore.pagination?.['hydra:last']} />
           </Pagination>
         </Col>
         <Col className="col-sm-4">
-          <p className="text-end me-3">Найдено {itemCount} тестов</p>
+          <p className="text-end me-3">Найдено {testListStore.totalItems} тестов</p>
         </Col>
       </Row>
     </div>
   );
-};
+});
 
 export default TestsList;

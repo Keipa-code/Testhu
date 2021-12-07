@@ -15,7 +15,6 @@ export interface ITest {
   rules?: string;
   date?: Date;
   timeLimit?: ITimeLimit;
-  tags?: string[];
   done?: number;
   passed?: number;
   isPublic?: boolean;
@@ -23,15 +22,25 @@ export interface ITest {
   link?: string;
 }
 
+export interface ITestForm extends ITest {
+  tags?: string[];
+}
+
+export interface ITestList extends ITest {
+  tags?: ITag[];
+}
+
 export interface IPagination {
   '@id'?: string;
   'hydra:first': string;
   'hydra:last': string;
-  'hydra:next': string;
-  'hydra:previous': string;
+  'hydra:next'?: string;
+  'hydra:previous'?: string;
 }
 
 export interface IApiResponseCollection {
-  '@type': 'hydra:Collection';
-  'hydra:member': [];
+  'hydra:member': ITestList[];
+  'hydra:totalItems': number;
+  'hydra:view': IPagination[];
+  // 'hydra:search':
 }
