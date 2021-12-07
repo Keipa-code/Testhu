@@ -29,13 +29,13 @@ class Tag
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
-    #[Groups(['tags:write', 'tags:read', 'tests:read'])]
+    #[Groups(['tags:write', 'tags:read', 'tests:read', 'tests:shortRead'])]
     private $id;
 
     #[ORM\Column(type: "string", length: 30)]
     #[Assert\Regex(pattern: "/^[a-zа-яA-ZА-Я]{2,30}$/u",
         message: "Название может содержать только кириллицу, латиницу, знак '-' и не больше 30 символов")]
-    #[Groups(['tags:write', 'tags:read', 'tests:read'])]
+    #[Groups(['tags:write', 'tags:read', 'tests:read', 'tests:shortRead'])]
     private $tagName;
 
     #[ORM\ManyToMany(targetEntity: Test::class, inversedBy: "tags")]

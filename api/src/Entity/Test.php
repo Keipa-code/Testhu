@@ -19,18 +19,21 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: TestRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        'get',
+        'get' => [
+            'normalization_context' => ['groups' => 'tests:shortRead']
+        ],
         'post',
     ],
     itemOperations: [
-        'get',
+        'get' => [
+            'normalization_context' => ['groups' => 'tests:read']
+        ],
         'put' => [
             'security' => "object.isSubmitted == false"
         ],
     ],
-    attributes: ['pagination_items_per_page' => 2],
-    denormalizationContext: ['groups' => ['tests:write']],
-    normalizationContext: ['groups' => ['tests:read']]
+    attributes: ['pagination_items_per_page' => 20],
+    denormalizationContext: ['groups' => ['tests:write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['testName' => 'partial', 'tags.tagName' => 'exact'])]
 class Test
@@ -41,11 +44,11 @@ class Test
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
-    #[Groups(['tests:read', 'users:read'])]
+    #[Groups(['tests:read', 'users:read', 'tests:shortRead'])]
     private $id;
 
     #[ORM\Column(type: "string", length: 500)]
-    #[Groups(['tests:read', 'tests:write', 'users:read'])]
+    #[Groups(['tests:read', 'tests:write', 'users:read', 'tests:shortRead'])]
     private ?string $testName;
 
     #[ORM\Column(type: "string", length: 2000, nullable: true)]
@@ -65,11 +68,11 @@ class Test
     private $timeLimit = [];
 
     #[ORM\Column(type: "integer", nullable: true)]
-    #[Groups(['tests:read', 'tests:write'])]
+    #[Groups(['tests:read', 'tests:write', 'tests:shortRead'])]
     private ?int $done;
 
     #[ORM\Column(type: "integer", nullable: true)]
-    #[Groups(['tests:read', 'tests:write'])]
+    #[Groups(['tests:read', 'tests:write', 'tests:shortRead'])]
     private ?int $passed;
 
     #[ORM\Column(type: "boolean", nullable: true)]
@@ -102,7 +105,7 @@ class Test
 
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: "tests")]
     #[ORM\JoinColumn(name: "tag_id", referencedColumnName: "id", nullable: true)]
-    #[Groups(['tests:read', 'tests:write'])]
+    #[Groups(['tests:read', 'tests:write', 'tests:shortRead'])]
     private $tags;
 
     public function __construct()
