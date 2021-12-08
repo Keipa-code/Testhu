@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'security' => "object.isSubmitted == false"
         ],
     ],
-    attributes: ['pagination_items_per_page' => 20],
+    attributes: ['pagination_items_per_page' => 20, "pagination_client_items_per_page" => true],
     denormalizationContext: ['groups' => ['tests:write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['testName' => 'partial', 'tags.tagName' => 'exact'])]

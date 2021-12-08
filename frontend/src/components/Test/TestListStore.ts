@@ -4,7 +4,14 @@ import { makeAutoObservable } from 'mobx';
 
 export class TestListStore {
   tests: ITestList[] = [];
-  pagination: IPagination;
+  pagination: IPagination = {
+    current: '',
+    first: '',
+    last: '',
+    next: '',
+    previous: '',
+  };
+
   totalItems: number;
 
   constructor() {
@@ -15,14 +22,22 @@ export class TestListStore {
     return this.tests.length === 0;
   };
 
-  sliceToNumber = (value) => {
-    Object.values(value)
-  }
+  totalPages = () => {
+    return Math.ceil(this.totalItems / 20);
+  };
+
+  setPagination = (value: { [key: string]: string }) => {
+    this.pagination.current = value['@id'].slice(-1);
+    this.pagination.first = value['hydra:first'].slice(10);
+    this.pagination.last = value['hydra:last'].slice(10);
+    this.pagination.next = value['hydra:next']?.slice(10) ?? '';
+    this.pagination.previous = value['hydra:previous']?.slice(10) ?? '';
+  };
 
   fetchTests = (urlParams = '') => {
     $http.get('api/tests' + urlParams).then((data: IApiResponseCollection | any) => {
       this.tests = data['hydra:member'];
-      this.pagination = data['hydra:view'];
+      this.setPagination(data['hydra:view']);
       this.totalItems = data['hydra:totalItems'];
     });
   };

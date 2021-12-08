@@ -1,7 +1,7 @@
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import TestsList from '../components/Test/TestsList';
 
-const MyComponent = () => {
+const Home = () => {
   const info =
     'TestHub — это сервис, который позволяет вам легко создавать тесты для проверки знаний и просматривать результаты в удобном интерфейсе. Для создания и прохождения теста не требуется регистрация, но мы советуем это сделать, так как в этом случае вы легко сможете управлять своими тестами.';
 
@@ -10,7 +10,7 @@ const MyComponent = () => {
       <Row>
         <Col sm={8}>
           <h2>Попробовать свои силы</h2>
-          <TestsList />
+          <TestsList home={true} />
         </Col>
         <Col sm={4}>
           <h2>О сайте</h2>
@@ -29,4 +29,4 @@ const MyComponent = () => {
   );
 };
 
-export default MyComponent;
+export default Home;

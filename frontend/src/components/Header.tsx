@@ -4,7 +4,7 @@ import { FC } from 'react';
 
 const Header: FC = () => {
   return (
-    <div className="container-fluid mb-3" style={{ background: '#2ab1fa' }}>
+    <div className="container-fluid mb-3 header-color">
       <Container>
         <Row className="pt-3 pb-3">
           <Col sm={10} className="d-flex align-items-center">
@@ -28,7 +28,7 @@ const Header: FC = () => {
           </Col>
           <Col className="d-flex flex-row-reverse align-items-center" sm={2}>
             <button className="btn btn-primary">
-              <Link className="text-white" to="login">
+              <Link className="link" to="login">
                 Войти
               </Link>
             </button>

@@ -4,6 +4,10 @@
 .material-icons.md-light { color: rgba(255, 255, 255, 1); }
 .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
 
+.header-color {
+    background: #2ab1fa
+}
+
 .nav-link {
     font-size: x-large;
     color: white !important;
@@ -11,6 +15,11 @@
 
 .nav-link-logo {
     font-size: xx-large;
+    color: white !important;
+    text-decoration: none;
+}
+
+.link {
     color: white !important;
     text-decoration: none;
 }

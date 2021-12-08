@@ -31,11 +31,11 @@ export interface ITestList extends ITest {
 }
 
 export interface IPagination {
-  '@id'?: string;
-  'hydra:first': string;
-  'hydra:last': string;
-  'hydra:next'?: string;
-  'hydra:previous'?: string;
+  current: string;
+  first: string;
+  last: string;
+  next?: string;
+  previous?: string;
 }
 
 export interface IApiResponseCollection {
