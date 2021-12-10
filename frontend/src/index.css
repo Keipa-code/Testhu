@@ -23,3 +23,7 @@
     color: white !important;
     text-decoration: none;
 }
+
+.display-block {
+    display: block !important;
+}

@@ -1,7 +1,18 @@
-import style from './Loader.module.css';
+import * as style from './Loader.module.css';
 
 const Loader = () => {
-  return <div className={style.loading} />;
+  return (
+    <div className={style['lds-roller']}>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  );
 };
 
 export default Loader;

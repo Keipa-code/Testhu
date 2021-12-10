@@ -14,7 +14,7 @@ export class TestListStore {
     numbers: [],
   };
 
-  isLoading = false;
+  private loading = false;
 
   totalPages: number;
 
@@ -28,37 +28,55 @@ export class TestListStore {
     return this.tests.length === 0;
   };
 
+  isLoading = () => {
+    return this.loading;
+  };
+
   computeTotalPages = () => {
     this.totalPages = Math.ceil(this.totalItems / 20);
   };
 
   setPagination = (value: { [key: string]: string }) => {
-    this.pagination.current = value['@id'].slice(-1);
-    this.pagination.first = value['hydra:first'].slice(-1);
-    this.pagination.last = value['hydra:last'].slice(-1);
+    this.pagination.current = value['@id']?.slice(-1);
+    this.pagination.first = value['hydra:first']?.slice(-1);
+    this.pagination.last = value['hydra:last']?.slice(-1);
     this.pagination.next = value['hydra:next']?.slice(-1) ?? '';
     this.pagination.previous = value['hydra:previous']?.slice(-1) ?? '';
     this.pagination.numbers = paginate(+this.pagination.current, this.totalPages);
   };
 
-  fetchTests = (page, limit) => {
-    this.isLoading = true;
+  clearPagination = () => {
+    delete this.pagination.current;
+  };
+
+  fetchTests = (page, limit, sort, order, search?, tagName?) => {
+    this.loading = true;
+    const sortKey = 'order[' + sort + ']';
+    const tagKey = 'tags.tagName';
     $http
       .get('api/tests', {
         params: {
           page: page,
           itemsPerPage: limit,
+          [sortKey]: order,
+          testName: search,
+          [tagKey]: tagName,
         },
       })
       .then((data: IApiResponseCollection | any) => {
+        console.log(data);
         this.tests = data['hydra:member'];
         this.totalItems = data['hydra:totalItems'];
         this.computeTotalPages();
         return data;
       })
       .then((data: any) => {
-        this.setPagination(data['hydra:view']);
+        if (this.totalItems > 15) {
+          this.setPagination(data['hydra:view']);
+        } else {
+          this.clearPagination();
+        }
       })
-      .finally(() => (this.isLoading = false));
+      .finally(() => (this.loading = false));
   };
 }

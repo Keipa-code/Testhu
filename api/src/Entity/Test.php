@@ -36,7 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     attributes: ['pagination_items_per_page' => 20, "pagination_client_items_per_page" => true],
     denormalizationContext: ['groups' => ['tests:write']]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['testName' => 'partial', 'tags.tagName' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['testName' => 'ipartial', 'tags.tagName' => 'iexact'])]
 #[ApiFilter(OrderFilter::class, properties: ['id', 'testName', 'done', 'passed'], arguments: ['orderParameterName' => 'order'])]
 class Test
 {

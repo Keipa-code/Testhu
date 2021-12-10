@@ -1,4 +1,4 @@
-import { Button, Col, Container, FormControl, InputGroup, Row } from 'react-bootstrap';
+import { Button, Col, Container, Row } from 'react-bootstrap';
 import TestsList from '../components/Test/TestsList';
 import { observer } from 'mobx-react-lite';
 
@@ -8,16 +8,6 @@ const Tests = observer(() => {
       <Row>
         <Col className="col-sm-8">
           <h2>Поиск тестов</h2>
-          <InputGroup className="mb-3">
-            <FormControl
-              placeholder="Название или тема"
-              aria-label="Название или тема"
-              aria-describedby="basic-addon2"
-            />
-            <Button variant="outline-secondary" id="button-addon2">
-              Найти
-            </Button>
-          </InputGroup>
           <TestsList home={false} />
         </Col>
         <Col className="col-sm-4">

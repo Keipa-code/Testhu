@@ -1,7 +1,7 @@
 const computeStart = (current, total) => {
   if (total - current < 3) {
     if (total < 5) {
-      return [total - 4, total] as const;
+      return [current === 1 ? 1 : total - current > 0 ? total - current : 1, total] as const;
     }
     return [total - 4, 5] as const;
   } else {

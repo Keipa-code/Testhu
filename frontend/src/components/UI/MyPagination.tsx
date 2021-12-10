@@ -14,7 +14,7 @@ const MyPagination: FC<MyPaginationProps> = observer(({ pages, changePage }) => 
   };
   return (
     <div>
-      <Pagination hidden={!pages}>
+      <Pagination hidden={!pages.current}>
         <Pagination.First onClick={() => handleClick(pages.first)} />
         <Pagination.Prev onClick={() => handleClick(pages.previous)} disabled={Boolean(!pages.previous)} />
         {pages.numbers.map((number) => (
