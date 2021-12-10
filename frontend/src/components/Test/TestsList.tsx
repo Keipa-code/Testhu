@@ -85,7 +85,7 @@ const TestsList: FC<TestsListProps> = observer(({ home }) => {
         </div>
       ) : (
         <div>
-          <Row className="mb-3 pe-4">
+          <Row className="mb-3">
             <Col className="col-sm-10 flex-fill">
               <Form onSubmit={find}>
                 <Form.Control onChange={handleChange} defaultValue={search} placeholder="Введите название для поиска" />

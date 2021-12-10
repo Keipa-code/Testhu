@@ -64,7 +64,6 @@ export class TestListStore {
         },
       })
       .then((data: IApiResponseCollection | any) => {
-        console.log(data);
         this.tests = data['hydra:member'];
         this.totalItems = data['hydra:totalItems'];
         this.computeTotalPages();
