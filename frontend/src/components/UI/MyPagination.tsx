@@ -1,39 +1,32 @@
 import { Pagination } from 'react-bootstrap';
 import { IPagination } from '../../types/types';
-import { FC, useMemo } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { FC } from 'react';
+import { observer } from 'mobx-react-lite';
 
 interface MyPaginationProps {
-  view: IPagination;
-  numbers: number[];
+  pages?: IPagination;
+  changePage?: (a) => void;
 }
 
-const MyPagination: FC<MyPaginationProps> = ({ view, numbers }) => {
-  const useQuery = () => {
-    const { search } = useLocation();
-    return useMemo(() => new URLSearchParams(search), [search]);
-  };
-  const query = useQuery();
-  const router = useHistory();
+const MyPagination: FC<MyPaginationProps> = observer(({ pages, changePage }) => {
   const handleClick = (pageNumber) => {
-    query.set('page', String(pageNumber));
-    router.push('?' + query.toString());
+    changePage(pageNumber);
   };
   return (
     <div>
-      <Pagination size="lg" hidden={!view}>
-        <Pagination.First onClick={() => handleClick(view.first)} />
-        <Pagination.Prev onClick={() => handleClick(view.previous)} />
-        {numbers.map((number) => (
-          <Pagination.Item onClick={() => handleClick(number)} key={number} active={+view.current === number}>
+      <Pagination hidden={!pages}>
+        <Pagination.First onClick={() => handleClick(pages.first)} />
+        <Pagination.Prev onClick={() => handleClick(pages.previous)} disabled={Boolean(!pages.previous)} />
+        {pages.numbers.map((number) => (
+          <Pagination.Item onClick={() => handleClick(number)} key={number} active={+pages.current === number}>
             {number}
           </Pagination.Item>
         ))}
-        <Pagination.Next onClick={() => handleClick(view.next)} />
-        <Pagination.Last onClick={() => handleClick(view.last)} />
+        <Pagination.Next onClick={() => handleClick(pages.next)} disabled={Boolean(!pages.next)} />
+        <Pagination.Last onClick={() => handleClick(pages.last)} />
       </Pagination>
     </div>
   );
-};
+});
 
 export default MyPagination;

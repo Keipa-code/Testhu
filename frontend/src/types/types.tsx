@@ -36,6 +36,7 @@ export interface IPagination {
   last: string;
   next?: string;
   previous?: string;
+  numbers: number[];
 }
 
 export interface IApiResponseCollection {

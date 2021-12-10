@@ -33,6 +33,7 @@
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "array-callback-return": "off",
+        "node/no-callback-literal": "off",
         "prettier/prettier": "error"
     }
 }

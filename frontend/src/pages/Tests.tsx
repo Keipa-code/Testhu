@@ -1,9 +1,10 @@
 import { Button, Col, Container, FormControl, InputGroup, Row } from 'react-bootstrap';
 import TestsList from '../components/Test/TestsList';
+import { observer } from 'mobx-react-lite';
 
-const Tests = () => {
+const Tests = observer(() => {
   return (
-    <Container>
+    <Container className="mb-lg-5">
       <Row>
         <Col className="col-sm-8">
           <h2>Поиск тестов</h2>
@@ -17,7 +18,7 @@ const Tests = () => {
               Найти
             </Button>
           </InputGroup>
-          <TestsList />
+          <TestsList home={false} />
         </Col>
         <Col className="col-sm-4">
           <p className="ms-5 mt-5">
@@ -33,6 +34,6 @@ const Tests = () => {
       </Row>
     </Container>
   );
-};
+});
 
 export default Tests;
