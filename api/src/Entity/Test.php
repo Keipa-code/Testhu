@@ -37,6 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['tests:write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['testName' => 'partial', 'tags.tagName' => 'exact'])]
+#[ApiFilter(OrderFilter::class, properties: ['id', 'testName', 'done', 'passed'], arguments: ['orderParameterName' => 'order'])]
 class Test
 {
     public const HOUR = 'hour';
