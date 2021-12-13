@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Tests from './pages/Tests';

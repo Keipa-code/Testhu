@@ -47,16 +47,17 @@ export class QuestionFormStore {
     this.questions[qKey].answers.push({ correct: false, text: value });
   };
 
-  answerCheckedChange = (qKey: number, text: string) => {
+  answerCheckedChange = (qKey: number, answerIndex: number) => {
     runInAction(() => {
-      const key = this.questions[qKey].answers.findIndex((answer) => answer.text === text);
-      this.questions[qKey].answers[key].correct = !this.questions[qKey].answers[key].correct;
+      this.questions[qKey].answers[answerIndex].correct = !this.questions[qKey].answers[answerIndex].correct;
     });
   };
 
-  removeAnswer = (qKey: number, text: string) => {
-    const key = this.questions[qKey].answers.findIndex((answer) => answer.text === text);
-    this.questions[qKey].answers.splice(key, 1);
+  removeAnswer = (qKey: number, answerIndex: number): void => {
+    this.questions[qKey].answers.splice(answerIndex, 1);
+  };
+
+  answersIsEmpty = (qKey: number): boolean => {
     return this.questions[qKey].answers.length !== 0;
   };
 

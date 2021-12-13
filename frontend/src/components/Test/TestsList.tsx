@@ -156,8 +156,8 @@ const TestsList: FC<TestsListProps> = observer(({ home }) => {
               </Select>
             </Col>
           </Row>
-          <Table dataSource={dataSource()} columns={columns} pagination={false} />
-          <Row className="align-items-center">
+          <Table className="mb-3" dataSource={dataSource()} columns={columns} pagination={false} />
+          <Row className="ant-row-end">
             <Col>
               <div hidden={home}>
                 <Pagination
@@ -172,9 +172,7 @@ const TestsList: FC<TestsListProps> = observer(({ home }) => {
                 />
               </div>
               <Button hidden={!home}>
-                <Link className="link" to="/tests">
-                  Смотреть все тесты
-                </Link>
+                <Link to="/tests">Смотреть все тесты</Link>
               </Button>
             </Col>
           </Row>

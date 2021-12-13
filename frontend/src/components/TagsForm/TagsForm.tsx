@@ -5,6 +5,7 @@ import { TagOption } from './TagsFormStore';
 import { observer } from 'mobx-react-lite';
 import AsyncCreatableSelect from 'react-select/async-creatable';
 
+// TODO Не обновляется список тегов после добовления нового
 const TagsForm: FC = observer(() => {
   const { tagsFormStore } = useRootStore();
 

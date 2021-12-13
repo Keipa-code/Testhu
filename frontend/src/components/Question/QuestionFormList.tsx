@@ -32,7 +32,7 @@ const QuestionFormList = observer(() => {
   return (
     <div>
       <h2 className="mb-3">Вопросы теста</h2>
-      <Collapse accordion>
+      <Collapse accordion className="mb-3">
         {questionFormStore.questions.map((question, qKey) => (
           <Panel
             header={'Вопрос № ' + (qKey + 1)}
@@ -44,7 +44,9 @@ const QuestionFormList = observer(() => {
           </Panel>
         ))}
       </Collapse>
-      <Button onClick={handleClick}>Добавить вопрос</Button>
+      <Button className="mb-3" onClick={handleClick}>
+        Добавить вопрос
+      </Button>
     </div>
   );
 });

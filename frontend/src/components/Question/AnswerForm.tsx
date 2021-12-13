@@ -14,7 +14,9 @@ const AnswerForm: FC<AnswerFormProps> = observer(({ qKey }) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    questionFormStore.questions[qKey].answers.length === 0 ? setVisible(false) : setVisible(true);
+    if (!questionFormStore.answersIsEmpty(qKey)) {
+      setVisible(!visible);
+    }
   }, []);
 
   // Добавить ограничение на максимальное количество вариантов - 5
@@ -22,15 +24,18 @@ const AnswerForm: FC<AnswerFormProps> = observer(({ qKey }) => {
     e.preventDefault();
     questionFormStore.addAnswer(qKey, answer);
     setAnswer('');
-    setVisible(true);
+    setVisible(questionFormStore.answersIsEmpty(qKey));
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAnswer(e.target.value);
   };
 
-  const handleRemoveAnswer = (text) => {
-    setVisible(questionFormStore.removeAnswer(qKey, text));
+  const handleRemoveAnswer = (answerIndex) => {
+    questionFormStore.removeAnswer(qKey, answerIndex);
+    if (!questionFormStore.answersIsEmpty(qKey)) {
+      setVisible(!visible);
+    }
   };
 
   return (
@@ -52,17 +57,15 @@ const AnswerForm: FC<AnswerFormProps> = observer(({ qKey }) => {
       <p className={!visible ? 'visually-hidden' : ''}>
         Поставьте галочку возле правильного ответа. Можете выбрать несколько правильных ответов.
       </p>
-      <List
-        itemLayout="horizontal"
-        dataSource={questionFormStore.questions[qKey].answers}
-        renderItem={(answer) => (
+      <List itemLayout="horizontal">
+        {questionFormStore.questions[qKey].answers.map((answer, index) => (
           <List.Item
             key={answer.text}
             actions={[
               <CloseOutlined
                 key="list-remove"
                 onClick={() => {
-                  handleRemoveAnswer(answer.text);
+                  handleRemoveAnswer(index);
                 }}
               />,
             ]}
@@ -71,14 +74,14 @@ const AnswerForm: FC<AnswerFormProps> = observer(({ qKey }) => {
               <Checkbox
                 defaultChecked={answer.correct}
                 onChange={() => {
-                  questionFormStore.answerCheckedChange(qKey, answer.text);
+                  questionFormStore.answerCheckedChange(qKey, index);
                 }}
               />
               {answer.text}
             </div>
           </List.Item>
-        )}
-      />
+        ))}
+      </List>
     </div>
   );
 });

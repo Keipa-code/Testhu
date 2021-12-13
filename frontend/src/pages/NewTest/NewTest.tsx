@@ -33,7 +33,7 @@ const NewTest: FC = observer(() => {
     newTestStore.booleanChange(showWrongAnswers, 'isWrongAnswersVisible');
     newTestStore
       .postNewTest()
-      .then((id) => {
+      .then((id: any) => {
         questionFormStore.postQuestions(id);
       })
       .then(() => {
@@ -57,7 +57,7 @@ const NewTest: FC = observer(() => {
   return (
     <div className="container">
       <Row>
-        <Col className="col-sm-8">
+        <Col className="ant-col-sm-18 ant-label">
           <h2 className="mb-5">Создать новый тест</h2>
           <Form labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} layout="horizontal">
             <Form.Item label="Название теста">
@@ -150,11 +150,11 @@ const NewTest: FC = observer(() => {
           </Form>
           <QuestionFormList />
         </Col>
-        <Col className="col-sm-4"></Col>
+        <Col className="ant-col-sm-6">Текст</Col>
       </Row>
-      <Row>
-        <Col className="mb-5 text-align-right">
-          <Button onClick={postTest} disabled={newTestStore.loading}>
+      <Row className="ant-row-end">
+        <Col className="mb-5 ant-col-sm-10">
+          <Button className="text-align-right" onClick={postTest} disabled={newTestStore.loading}>
             Сохранить
           </Button>
           {newTestStore.loading ?? <Spin />}

@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 const Tests = observer(() => {
   return (
     <div className="container">
-      <Row gutter={16}>
+      <Row gutter={16} className="mb-3">
         <Col className="gutter-row" flex="auto">
           <h2>Поиск тестов</h2>
           <TestsList home={false} />

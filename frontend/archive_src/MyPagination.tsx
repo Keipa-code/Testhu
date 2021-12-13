@@ -1,5 +1,5 @@
 import { Pagination } from 'react-bootstrap';
-import { IPagination } from '../../types/types';
+import { IPagination } from '../src/types/types';
 import { FC } from 'react';
 import { observer } from 'mobx-react-lite';
 
