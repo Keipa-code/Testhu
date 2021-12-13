@@ -39,18 +39,24 @@ export class QuestionFormStore {
     this.questions.push({ points: 50, answers: [] });
   };
 
+  removeQuestion = (index: number) => {
+    this.questions.splice(index, 1);
+  };
+
   addAnswer = (qKey: number, value: string) => {
     this.questions[qKey].answers.push({ correct: false, text: value });
   };
 
-  answerCheckedChange = (qKey: number, aKey: number) => {
+  answerCheckedChange = (qKey: number, text: string) => {
     runInAction(() => {
-      this.questions[qKey].answers[aKey].correct = !this.questions[qKey].answers[aKey].correct;
+      const key = this.questions[qKey].answers.findIndex((answer) => answer.text === text);
+      this.questions[qKey].answers[key].correct = !this.questions[qKey].answers[key].correct;
     });
   };
 
-  removeAnswer = (qKey: number, aKey: number) => {
-    this.questions[qKey].answers.splice(aKey, 1);
+  removeAnswer = (qKey: number, text: string) => {
+    const key = this.questions[qKey].answers.findIndex((answer) => answer.text === text);
+    this.questions[qKey].answers.splice(key, 1);
     return this.questions[qKey].answers.length !== 0;
   };
 

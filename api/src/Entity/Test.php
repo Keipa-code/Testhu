@@ -54,7 +54,7 @@ class Test
     private ?string $testName;
 
     #[ORM\Column(type: "string", length: 2000, nullable: true)]
-    #[Groups(['tests:read', 'tests:write'])]
+    #[Groups(['tests:read', 'tests:write', 'tests:shortRead'])]
     private ?string $description;
 
     #[ORM\Column(type: "string", length: 2000, nullable: true)]

@@ -1,4 +1,4 @@
-import { Button, Col, Container, Row } from 'react-bootstrap';
+import { Button, Col, Divider, Row } from 'antd';
 import TestsList from '../components/Test/TestsList';
 
 const Home = () => {
@@ -6,26 +6,27 @@ const Home = () => {
     'TestHub — это сервис, который позволяет вам легко создавать тесты для проверки знаний и просматривать результаты в удобном интерфейсе. Для создания и прохождения теста не требуется регистрация, но мы советуем это сделать, так как в этом случае вы легко сможете управлять своими тестами.';
 
   return (
-    <Container>
-      <Row>
-        <Col sm={8}>
+    <div className="container">
+      <Row gutter={16}>
+        <Col className="gutter-row" flex="auto">
           <h2>Попробовать свои силы</h2>
+          <Divider />
           <TestsList home={true} />
         </Col>
-        <Col sm={4}>
+        <Col className="gutter-row" span={6} flex="auto">
           <h2>О сайте</h2>
           <p>{info}</p>
           <br />
           <br />
           <p>Присоединяйтесь к сообществу TestHub</p>
-          <Button variant="outline-primary">Создать тест</Button>
+          <Button type="primary">Создать тест</Button>
           <br />
           <a href="#">Зарегистрироваться</a>
           <br />
           <a href="#">Подробнее о сайте TestHub</a>
         </Col>
       </Row>
-    </Container>
+    </div>
   );
 };
 

@@ -16,7 +16,7 @@ const TagsForm: FC = observer(() => {
   return (
     <div>
       <AsyncCreatableSelect
-        className="mb-3"
+        className="ant-select"
         isMulti
         cacheOptions
         defaultOptions

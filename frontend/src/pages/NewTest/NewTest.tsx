@@ -1,5 +1,5 @@
 import { MouseEvent, ChangeEvent, FC, useEffect, useState } from 'react';
-import { Button, Col, Container, Form, FormControl, InputGroup, Row, Spinner } from 'react-bootstrap';
+import { Button, Checkbox, Col, Form, Input, Row, Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { useRootStore } from '../../RootStateContext';
 import QuestionFormList from '../../components/Question/QuestionFormList';
@@ -22,7 +22,7 @@ const NewTest: FC = observer(() => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     newTestStore.inputChange(e.target.value, e.target.name);
   };
 
@@ -41,118 +41,123 @@ const NewTest: FC = observer(() => {
       });
   };
 
+  const tailFormItemLayout = {
+    wrapperCol: {
+      xs: {
+        span: 24,
+        offset: 0,
+      },
+      sm: {
+        span: 16,
+        offset: 5,
+      },
+    },
+  };
+
   return (
-    <Container>
+    <div className="container">
       <Row>
         <Col className="col-sm-8">
           <h2 className="mb-5">Создать новый тест</h2>
-          <Form className="mb-3">
-            <Form.Group className="mb-3">
-              <Form.Label>Название теста</Form.Label>
-              <Form.Control
+          <Form labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} layout="horizontal">
+            <Form.Item label="Название теста">
+              <Input
                 name="testName"
                 placeholder="Введите название"
                 value={newTestStore.test.testName}
                 onChange={handleChange}
               />
-            </Form.Group>
-            <TagsForm />
-            <Form.Group hidden={!showDescription} className="mb-3">
-              <Form.Label>Описание теста</Form.Label>
-              <Form.Control
-                as="textarea"
+            </Form.Item>
+            <Form.Item label="Тэги">
+              <TagsForm />
+            </Form.Item>
+            <Form.Item hidden={!showDescription} label="Описание теста">
+              <Input.TextArea
                 rows={4}
                 name="description"
                 placeholder="Введите описание"
-                aria-describedby="basic-addon2"
                 value={newTestStore.test.description}
                 onChange={handleChange}
               />
-            </Form.Group>
-            <Button
-              className="mb-3"
-              variant={showDescription ? 'danger' : 'success'}
-              onClick={() => {
-                setShowDescription(!showDescription);
-              }}
-            >
-              {showDescription ? 'Убрать описание' : 'Добавить описание'}
-            </Button>
-            <Form.Group hidden={!showRules} className="mb-3">
-              <Form.Label>Правила теста</Form.Label>
-              <Form.Control
-                as="textarea"
+            </Form.Item>
+            <Form.Item {...tailFormItemLayout}>
+              <Button
+                danger={showDescription}
+                onClick={() => {
+                  setShowDescription(!showDescription);
+                }}
+              >
+                {showDescription ? 'Убрать описание' : 'Добавить описание'}
+              </Button>
+            </Form.Item>
+            <Form.Item hidden={!showRules} label="Правила теста">
+              <Input.TextArea
                 rows={4}
                 name="rules"
                 placeholder="Введите правила теста"
-                aria-describedby="basic-addon2"
                 value={newTestStore.test.rules}
                 onChange={handleChange}
               />
-            </Form.Group>
-            <br hidden={showRules} />
-            <Button
-              className="mb-3"
-              variant={showRules ? 'danger' : 'success'}
-              onClick={() => {
-                setShowRules(!showRules);
-              }}
-            >
-              {showRules ? 'Убрать правила' : 'Добавить правила'}
-            </Button>
-          </Form>
-          <Form>
-            <Form.Label>Ограничение по времени</Form.Label>
-            <Row className="align-items-center">
-              <Col xs="4">
-                <InputGroup className="mb-3">
-                  <FormControl
-                    name="hour"
-                    type="number"
-                    value={newTestStore.test.timeLimit.hour}
-                    placeholder="часы"
-                    onChange={handleChange}
-                  />
-                  <InputGroup.Text>ч.</InputGroup.Text>
-                  <FormControl
-                    name="minute"
-                    type="number"
-                    value={newTestStore.test.timeLimit.minute}
-                    placeholder="минуты"
-                    onChange={handleChange}
-                  />
-                  <InputGroup.Text>м.</InputGroup.Text>
-                </InputGroup>
-              </Col>
-            </Row>
-          </Form>
-
-          <Form>
-            <Form.Check
-              className="mt-3"
-              label={'Разрешить смотреть список неправильных ответов после теста'}
-              onChange={() => {
-                setShowWrongAnswers(!showWrongAnswers);
-              }}
-            />
-            <Form.Check
-              className="mb-5"
-              label={'Сделать все результаты прохождения публичными'}
-              onChange={() => {
-                setResultIsPublic(!resultIsPublic);
-              }}
-            />
+            </Form.Item>
+            <Form.Item {...tailFormItemLayout}>
+              <Button
+                danger={showRules}
+                onClick={() => {
+                  setShowRules(!showRules);
+                }}
+              >
+                {showRules ? 'Убрать правила' : 'Добавить правила'}
+              </Button>
+            </Form.Item>
+            <Form.Item label="Ограничение по времени">
+              <Input
+                className="width-100"
+                addonAfter="ч."
+                name="hour"
+                type="number"
+                value={newTestStore.test.timeLimit.hour}
+                placeholder="часы"
+                onChange={handleChange}
+              />
+              <Input
+                className="width-100"
+                addonAfter="м."
+                name="minute"
+                type="number"
+                value={newTestStore.test.timeLimit.minute}
+                placeholder="минуты"
+                onChange={handleChange}
+              />
+            </Form.Item>
+            <Form.Item {...tailFormItemLayout}>
+              <Checkbox
+                onChange={() => {
+                  setShowWrongAnswers(!showWrongAnswers);
+                }}
+              >
+                Разрешить смотреть список неправильных ответов после теста
+              </Checkbox>
+            </Form.Item>
+            <Form.Item {...tailFormItemLayout}>
+              <Checkbox
+                onChange={() => {
+                  setResultIsPublic(!resultIsPublic);
+                }}
+              >
+                Сделать все результаты прохождения публичными
+              </Checkbox>
+            </Form.Item>
           </Form>
           <QuestionFormList />
         </Col>
         <Col className="col-sm-4"></Col>
       </Row>
       <Row>
-        <Col className="mb-5" md={{ span: 3, offset: 9 }}>
+        <Col className="mb-5 text-align-right">
           <Button onClick={postTest} disabled={newTestStore.loading}>
             Сохранить
           </Button>
-          {newTestStore.loading ?? <Spinner animation="border" />}
+          {newTestStore.loading ?? <Spin />}
           <Button
             onClick={() => {
               console.log(newTestStore.test);
@@ -162,7 +167,7 @@ const NewTest: FC = observer(() => {
           </Button>
         </Col>
       </Row>
-    </Container>
+    </div>
   );
 });
 

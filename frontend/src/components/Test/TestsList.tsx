@@ -1,12 +1,11 @@
 import { ChangeEvent, FC, useEffect, useState } from 'react';
-import { Button, Card, Col, Row, Table, Form } from 'react-bootstrap';
+import { Row, message, Col, Button, Select, Form, Input, Table, Card, Pagination } from 'antd';
 import { Link, useHistory } from 'react-router-dom';
 import { useRootStore } from '../../RootStateContext';
 import { observer } from 'mobx-react-lite';
-import MyPagination from '../UI/MyPagination';
 import Loader from '../UI/Loader/Loader';
 import { useQuery } from '../../hooks/useQuery';
-import { message } from 'antd';
+import { ITestList } from '../../types/types';
 
 interface TestsListProps {
   home?: boolean;
@@ -26,22 +25,22 @@ const TestsList: FC<TestsListProps> = observer(({ home }) => {
   const [order, setOrder] = useState(query.get('order') ?? 'asc');
   const [search, setSearch] = useState(query.get('search') ?? '');
   const [tag, setTag] = useState(query.get('tag') ?? '');
-
-  const limit = home ? 5 : 20;
+  const [limit, setLimit] = useState(home ? 5 : 20);
 
   useEffect(() => {
     testListStore.fetchTests(page, limit, sort, order, search, tag);
   }, []);
 
-  const changePage = (pageNumber) => {
+  const changePage = (pageNumber, pageSize?) => {
     setPage(pageNumber);
-    testListStore.fetchTests(pageNumber, limit, sort, order, search, tag);
+    setLimit(pageSize ?? limit);
+    testListStore.fetchTests(pageNumber, pageSize ?? limit, sort, order, search, tag);
     query.set('page', String(pageNumber));
     router.push('?' + query.toString());
   };
 
-  const changeSort = (e: ChangeEvent<HTMLSelectElement>) => {
-    const [selectedSort, selectedOrder] = decomposeSort(e.target.value);
+  const changeSort = (value: string) => {
+    const [selectedSort, selectedOrder] = decomposeSort(value);
     setSort(selectedSort);
     setOrder(selectedOrder);
     testListStore.fetchTests(1, limit, selectedSort, selectedOrder, search, tag);
@@ -77,6 +76,50 @@ const TestsList: FC<TestsListProps> = observer(({ home }) => {
     console.log(testListStore);
   };
 
+  const columns = [
+    {
+      title: 'Название теста',
+      dataIndex: 'test',
+      key: 'test',
+      render: (test: ITestList) => (
+        <Card
+          title={test.testName}
+          extra={<a href="#">More</a>}
+          actions={test.tags.map((tag) => (
+            <a
+              key={tag.id}
+              onClick={() => {
+                findByTag(tag.tagName);
+              }}
+            >
+              {tag.tagName}
+            </a>
+          ))}
+        >
+          {test.description.slice(0, 100) + ' ...'}
+        </Card>
+      ),
+    },
+    {
+      title: 'Сдали',
+      dataIndex: 'passed',
+      key: 'passed',
+    },
+    {
+      title: 'Прошли',
+      dataIndex: 'done',
+      key: 'done',
+    },
+  ];
+
+  const dataSource = () => {
+    return testListStore.tests.map((test) => ({
+      test: test,
+      passed: test.passed,
+      done: test.done,
+    }));
+  };
+
   return (
     <div>
       {testListStore.isLoading() ? (
@@ -85,16 +128,23 @@ const TestsList: FC<TestsListProps> = observer(({ home }) => {
         </div>
       ) : (
         <div>
-          <Row className="mb-3">
-            <Col className="col-sm-10 flex-fill">
-              <Form onSubmit={find}>
-                <Form.Control onChange={handleChange} defaultValue={search} placeholder="Введите название для поиска" />
+          <Row hidden={home}>
+            <Col flex="auto">
+              <Form onFinish={find}>
+                <Form.Item>
+                  <Input onChange={handleChange} defaultValue={search} placeholder="Введите название для поиска" />
+                </Form.Item>
               </Form>
             </Col>
           </Row>
-          <Row className="mb-3">
-            <Col className="col-sm-4">
-              <Form.Select size="sm" aria-label="Sort selector" onChange={changeSort} defaultValue={sort + '=' + order}>
+          <Row className="mb-3" hidden={home}>
+            <Col span={6}>
+              <Select
+                className="select"
+                aria-label="Sort selector"
+                onChange={changeSort}
+                defaultValue={sort + '=' + order}
+              >
                 <option value="id=asc">От новых к старым</option>
                 <option value="id=desc">От старых к новым</option>
                 <option value="testName=asc">По названию (А-Я)</option>
@@ -103,60 +153,29 @@ const TestsList: FC<TestsListProps> = observer(({ home }) => {
                 <option value="passed=desc">Сдавшие (по уменьшению)</option>
                 <option value="done=asc">Прошедшие (по возрастанию)</option>
                 <option value="done=desc">Прошедшие (по уменьшению)</option>
-              </Form.Select>
+              </Select>
             </Col>
           </Row>
-          <Table responsive="md">
-            <thead hidden={testListStore.isEmpty()}>
-              <tr>
-                <th>Название</th>
-                <th>сдало / прошло</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {testListStore.tests.map((test) => (
-                <tr key={test.id}>
-                  <td>
-                    <Card>
-                      <Card.Body>
-                        <Card.Title>{test.testName}</Card.Title>
-                        {test.tags.map((tag) => (
-                          <Card.Link
-                            key={tag.id}
-                            onClick={() => {
-                              findByTag(tag.tagName);
-                            }}
-                          >
-                            {tag.tagName}
-                          </Card.Link>
-                        ))}
-                      </Card.Body>
-                    </Card>
-                  </td>
-                  <td>
-                    {test.passed} / {test.done}
-                  </td>
-                  <td>
-                    <a href="#">&#9658;</a>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+          <Table dataSource={dataSource()} columns={columns} pagination={false} />
           <Row className="align-items-center">
-            <Col className="col-sm-8">
+            <Col>
               <div hidden={home}>
-                <MyPagination pages={testListStore.pagination} changePage={changePage} />
+                <Pagination
+                  showQuickJumper
+                  defaultCurrent={+testListStore.pagination.current}
+                  total={testListStore.totalItems}
+                  onChange={changePage}
+                  pageSize={limit}
+                  responsive={true}
+                  onShowSizeChange={changePage}
+                  showTotal={(total) => `Найдено ${total} тестов`}
+                />
               </div>
               <Button hidden={!home}>
                 <Link className="link" to="/tests">
                   Смотреть все тесты
                 </Link>
               </Button>
-            </Col>
-            <Col className="col-sm-4">
-              <p className="text-end me-3">Найдено {testListStore.totalItems} тестов</p>
             </Col>
           </Row>
           <Button
