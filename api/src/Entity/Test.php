@@ -15,7 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TestRepository::class)]
 #[ApiResource(
@@ -101,6 +101,9 @@ class Test
     #[Groups(['tests:read', 'tests:write'])]
     private $link;
 
+    #[ORM\Column(type: "uuid")]
+    private $token;
+
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "tests")]
     #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: true)]
     private $user_id;
@@ -116,6 +119,7 @@ class Test
         $this->questions = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->date = new DateTimeImmutable('now', new DateTimeZone('+0500'));
+        $this->token = Uuid::v4();
     }
 
     public function getId(): ?int
@@ -372,5 +376,13 @@ class Test
     public function setIsPublic(bool $isPublic): void
     {
         $this->isPublic = $isPublic;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getToken()
+    {
+        return $this->token;
     }
 }

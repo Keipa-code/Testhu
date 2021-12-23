@@ -20,6 +20,7 @@ export interface ITest {
   isPublic?: boolean;
   isWrongAnswersVisible?: boolean;
   link?: string;
+  token?: string;
 }
 
 export interface ITestForm extends ITest {

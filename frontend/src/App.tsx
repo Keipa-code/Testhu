@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Tests from './pages/Tests';
 import NewTest from './pages/NewTest/NewTest';
 import Header from './components/Header';
+import Publish from './pages/Publish/Publish';
 
 const App: FC = () => {
   return (
@@ -18,6 +19,9 @@ const App: FC = () => {
         </Route>
         <Route path={'/new'} exact>
           <NewTest />
+        </Route>
+        <Route path={'/publish/:id/:token'} exact>
+          <Publish />
         </Route>
       </div>
     </BrowserRouter>

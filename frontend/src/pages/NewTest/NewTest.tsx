@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { useRootStore } from '../../RootStateContext';
 import QuestionFormList from '../../components/Question/QuestionFormList';
 import TagsForm from '../../components/TagsForm/TagsForm';
+import { useHistory } from 'react-router-dom';
 
 const NewTest: FC = observer(() => {
   const { newTestStore } = useRootStore();
@@ -13,6 +14,7 @@ const NewTest: FC = observer(() => {
   const [showRules, setShowRules] = useState(false);
   const [showWrongAnswers, setShowWrongAnswers] = useState(false);
   const [resultIsPublic, setResultIsPublic] = useState(false);
+  const router = useHistory();
 
   useEffect(() => {
     newTestStore.getFromStorage('newTest');
@@ -33,11 +35,12 @@ const NewTest: FC = observer(() => {
     newTestStore.booleanChange(showWrongAnswers, 'isWrongAnswersVisible');
     newTestStore
       .postNewTest()
-      .then((id: any) => {
-        questionFormStore.postQuestions(id);
+      .then((res: any) => {
+        questionFormStore.postQuestions(res.id);
       })
       .then(() => {
         newTestStore.loading = false;
+        router.push(`/publish/${newTestStore.test.id}/${newTestStore.test.token}`);
       });
   };
 
@@ -160,6 +163,7 @@ const NewTest: FC = observer(() => {
           {newTestStore.loading ?? <Spin />}
           <Button
             onClick={() => {
+              newTestStore.test.id = undefined;
               console.log(newTestStore.test);
             }}
           >

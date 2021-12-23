@@ -53,7 +53,9 @@ export class NewTestStore {
   postNewTest = async () => {
     this.loading = true;
     return $http.post('/api/tests', this.test).then((res: any) => {
-      return res.id;
+      this.test.id = res.id;
+      this.test.token = res.token;
+      return res;
     });
   };
 
